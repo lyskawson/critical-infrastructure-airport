@@ -447,7 +447,7 @@
   "buildings": [
     {
       "id": "T0",
-      "name": "Terminal with SOC and back-of-house rooms",
+      "name": "Terminal z SOC i zapleczem",
       "origin_site_m": [
         20,
         25
@@ -468,7 +468,7 @@
   "areas": [
     {
       "id": "A01",
-      "name": "Entrance forecourt and open pedestrian approach",
+      "name": "Plac wejściowy i otwarte dojście piesze",
       "rect_site_m": [
         20,
         15,
@@ -479,7 +479,7 @@
     },
     {
       "id": "A02",
-      "name": "Staff car park",
+      "name": "Parking pracowników",
       "rect_site_m": [
         48,
         20,
@@ -501,7 +501,7 @@
     },
     {
       "id": "A04",
-      "name": "Operational context",
+      "name": "Kontekst operacyjny",
       "rect_site_m": [
         0,
         52,
@@ -512,7 +512,7 @@
     },
     {
       "id": "A00",
-      "name": "Vehicle approach before the gate",
+      "name": "Dojazd przed bramą",
       "rect_site_m": [
         63,
         0,
@@ -523,7 +523,7 @@
     },
     {
       "id": "A05",
-      "name": "East approach and emergency exit",
+      "name": "Wschodnie dojście i wyjście ewakuacyjne",
       "rect_site_m": [
         44,
         25,
@@ -534,7 +534,7 @@
     },
     {
       "id": "A06",
-      "name": "West emergency exit",
+      "name": "Zachodnie wyjście ewakuacyjne",
       "rect_site_m": [
         16,
         25,
@@ -547,7 +547,7 @@
   "rooms": [
     {
       "id": "R101",
-      "name": "Public hall",
+      "name": "Hol publiczny",
       "building": "T0",
       "rect_local_m": [
         0,
@@ -558,12 +558,12 @@
       "height_m": 3.0,
       "occupancy_max": 40,
       "security_zone": "public",
-      "coverage": "Two PIRs after closing, C05, full FAS detection. Low furniture up to 1.5 m.",
+      "coverage": "Dwie PIR po zamknięciu, C05, pełna detekcja SSP. Niskie meble do1.5m.",
       "conditions": "dry clean; no combustion engines or cooking"
     },
     {
       "id": "R102",
-      "name": "Staff entrance and passage",
+      "name": "Wejście i przejście pracowników",
       "building": "T0",
       "rect_local_m": [
         16,
@@ -574,7 +574,7 @@
       "height_m": 3.0,
       "occupancy_max": 8,
       "security_zone": "staff",
-      "coverage": "PIR, C01-C04, full FAS detection.",
+      "coverage": "PIR, C01-C04, pełna detekcja SSP.",
       "conditions": "dry clean; no combustion engines or cooking"
     },
     {
@@ -590,12 +590,12 @@
       "height_m": 3.0,
       "occupancy_max": 2,
       "security_zone": "restricted",
-      "coverage": "Continuously staffed, ACS and hold-up; no PIR armed during the shift; FAS.",
+      "coverage": "Stała obsada, KD i napad; bez PIR uzbrajanej na dyżurze; SSP.",
       "conditions": "dry clean; no combustion engines or cooking"
     },
     {
       "id": "R104",
-      "name": "IT and security equipment",
+      "name": "IT i urządzenia zabezpieczeń",
       "building": "T0",
       "rect_local_m": [
         6,
@@ -606,12 +606,12 @@
       "height_m": 3.0,
       "occupancy_max": 2,
       "security_zone": "restricted",
-      "coverage": "PIR, ACS and FAS. 2 m cabinet, detector over the clear aisle.",
+      "coverage": "PIR, KD i SSP. Szafa2m, czujka nad wolnym przejściem.",
       "conditions": "dry clean; no combustion engines or cooking"
     },
     {
       "id": "R105",
-      "name": "Back-office room",
+      "name": "Biuro zaplecza",
       "building": "T0",
       "rect_local_m": [
         10,
@@ -622,12 +622,12 @@
       "height_m": 3.0,
       "occupancy_max": 6,
       "security_zone": "staff",
-      "coverage": "PIR when vacated, FAS; no camera at desks.",
+      "coverage": "PIR po opuszczeniu, SSP; brak kamery przy biurkach.",
       "conditions": "dry clean; no combustion engines or cooking"
     },
     {
       "id": "R106",
-      "name": "Accessible toilet",
+      "name": "WC dostępne",
       "building": "T0",
       "rect_local_m": [
         16,
@@ -638,12 +638,12 @@
       "height_m": 3.0,
       "occupancy_max": 1,
       "security_zone": "private",
-      "coverage": "Heat detection, no CCTV/PIR; no shower.",
+      "coverage": "Detekcja ciepła, bez CCTV/PIR; brak prysznica.",
       "conditions": "dry clean, no aerosols; WC occasional water vapour"
     },
     {
       "id": "R107",
-      "name": "Small store",
+      "name": "Magazyn podręczny",
       "building": "T0",
       "rect_local_m": [
         20,
@@ -654,7 +654,7 @@
       "height_m": 3.0,
       "occupancy_max": 1,
       "security_zone": "staff",
-      "coverage": "PIR, FAS; 2 m shelves, no chemicals or dust.",
+      "coverage": "PIR, SSP; regały2m, bez chemikaliów i pyłu.",
       "conditions": "dry clean; no combustion engines or cooking"
     }
   ],
@@ -1211,7 +1211,7 @@
       ]
     },
     "READER": {
-      "name": "HID Signo 40K Standard, Seos/SIO profile (HID Elite)",
+      "name": "HID Signo 40K Standard, profil Seos/SIO (HID Elite)",
       "category": "reader",
       "ports": [
         "BUS",
@@ -1228,7 +1228,7 @@
       ]
     },
     "STRIKE": {
-      "name": "effeff 118.13 A71 + lock with inside handle",
+      "name": "effeff 118.13 A71 + zamek z klamką wewnętrzną",
       "category": "strike",
       "ports": [
         "DC"
@@ -1239,7 +1239,7 @@
       "voltage_max": 24
     },
     "CONTACT": {
-      "name": "SATEL S-4 NC with tamper",
+      "name": "SATEL S-4 NC z sabotażem",
       "category": "contact",
       "ports": [
         "LINE"
@@ -1247,7 +1247,7 @@
       "source": "S-SSWIN"
     },
     "REX": {
-      "name": "Mechanical handle NC contact",
+      "name": "Styk klamki mechanicznej NC",
       "category": "exit_contact",
       "ports": [
         "LINE"
@@ -1255,7 +1255,7 @@
       "source": "OWN"
     },
     "CSP": {
-      "name": "SATEL ACSP-402 with factory APS-318",
+      "name": "SATEL ACSP-402 z fabrycznym APS-318",
       "category": "fire_panel",
       "ports": [
         "AC",
@@ -1334,7 +1334,7 @@
       "isolator": true
     },
     "SSWIN": {
-      "name": "SATEL VERSA 15 + 40 VA transformer / OPU-4 P",
+      "name": "SATEL VERSA 15 + transformator 40VA / OPU-4 P",
       "category": "intrusion_panel",
       "ports": [
         "AC",
@@ -1366,7 +1366,7 @@
       "ac_max_va": 40
     },
     "PIR": {
-      "name": "SATEL SLIM-PIR, standard lens",
+      "name": "SATEL SLIM-PIR, soczewka standardowa",
       "category": "intrusion_detector",
       "ports": [
         "LINE"
@@ -1414,7 +1414,7 @@
       "min_voltage": 9.6
     },
     "PANIC": {
-      "name": "SATEL PNK-1 NC hold-up button with tamper",
+      "name": "SATEL PNK-1 napadowy NC z sabotażem",
       "category": "panic",
       "ports": [
         "LINE"
@@ -1458,7 +1458,7 @@
       "ac_basis": "worst published complete AC input including 384W PD; never add camera/controller watts again"
     },
     "NAS": {
-      "name": "Synology DS923+ (disks listed separately)",
+      "name": "Synology DS923+ (dyski w oddzielnej pozycji)",
       "category": "storage",
       "ports": [
         "ETH",
@@ -1510,7 +1510,7 @@
       "power_basis": "12W adapter output / assumed efficiency .8; catalog device max 7.94W is not added"
     },
     "UPS": {
-      "name": "Eaton 5PX1500IRT2UG2 (EBMs listed separately)",
+      "name": "Eaton 5PX1500IRT2UG2 (EBM w oddzielnej pozycji)",
       "category": "ups",
       "ports": [
         "AC",
@@ -1539,7 +1539,7 @@
       "source": "S-UPS"
     },
     "BAT": {
-      "name": "12 V 17 Ah VRLA battery (SATEL B-17)",
+      "name": "Akumulator VRLA 12V 17Ah (SATEL B-17)",
       "category": "battery",
       "ports": [
         "DC"
@@ -1560,7 +1560,7 @@
       "poe_pse_limit_w": 60
     },
     "PANEL": {
-      "name": "Distribution board RSEC / PWP / PE",
+      "name": "Rozdzielnica RSEC / PWP / PE",
       "category": "distribution",
       "ports": [
         "IN",
@@ -1590,7 +1590,7 @@
       "source": "S-NAS"
     },
     "PASSIVE": {
-      "name": "Mechanical access-point hardware",
+      "name": "Wyposażenie mechaniczne przejścia",
       "category": "mechanical",
       "ports": [
         "MECH",
@@ -2198,7 +2198,7 @@
       "switch_port": "P09",
       "channel": 1,
       "access_point": "D01",
-      "tamper": "integrated case switch; local controller event; not an IDS electrical input"
+      "tamper": "integrated case switch; local controller event; not an SSWiN electrical input"
     },
     {
       "id": "RD-D01-IN",
@@ -2264,7 +2264,7 @@
       },
       "node": "N0",
       "power_source": "passive",
-      "usage": "ACS DPS input, independent IDS reed at D01 only"
+      "usage": "KD DPS input, independent SSWiN reed at D01 only"
     },
     {
       "id": "RX-D01",
@@ -2309,7 +2309,7 @@
       "switch_port": "P10",
       "channel": 1,
       "access_point": "D02",
-      "tamper": "integrated case switch; local controller event; not an IDS electrical input"
+      "tamper": "integrated case switch; local controller event; not an SSWiN electrical input"
     },
     {
       "id": "RD-D02-IN",
@@ -2375,7 +2375,7 @@
       },
       "node": "N0",
       "power_source": "passive",
-      "usage": "ACS DPS input, independent IDS reed at D01 only"
+      "usage": "KD DPS input, independent SSWiN reed at D01 only"
     },
     {
       "id": "RX-D02",
@@ -2420,7 +2420,7 @@
       "switch_port": "P11",
       "channel": 1,
       "access_point": "D03",
-      "tamper": "integrated case switch; local controller event; not an IDS electrical input"
+      "tamper": "integrated case switch; local controller event; not an SSWiN electrical input"
     },
     {
       "id": "RD-D03-IN",
@@ -2486,7 +2486,7 @@
       },
       "node": "N0",
       "power_source": "passive",
-      "usage": "ACS DPS input, independent IDS reed at D01 only"
+      "usage": "KD DPS input, independent SSWiN reed at D01 only"
     },
     {
       "id": "RX-D03",
@@ -2531,7 +2531,7 @@
       "switch_port": "P12",
       "channel": 1,
       "access_point": "D04",
-      "tamper": "integrated case switch; local controller event; not an IDS electrical input"
+      "tamper": "integrated case switch; local controller event; not an SSWiN electrical input"
     },
     {
       "id": "RD-D04-IN",
@@ -2597,7 +2597,7 @@
       },
       "node": "N0",
       "power_source": "passive",
-      "usage": "ACS DPS input, independent IDS reed at D01 only"
+      "usage": "KD DPS input, independent SSWiN reed at D01 only"
     },
     {
       "id": "RX-D04",
@@ -3326,7 +3326,7 @@
       "power_source": "passive",
       "line": 7,
       "arm_zone": "IZ1",
-      "usage": "separate physical NC reed for IDS, 2EOL; D01 does not reuse DC-D01"
+      "usage": "separate physical NC reed for SSWiN, 2EOL; D01 does not reuse DC-D01"
     },
     {
       "id": "IC-E02",
@@ -3349,7 +3349,7 @@
       "power_source": "passive",
       "line": 8,
       "arm_zone": "IZ1",
-      "usage": "separate physical NC reed for IDS, 2EOL; D01 does not reuse DC-D01"
+      "usage": "separate physical NC reed for SSWiN, 2EOL; D01 does not reuse DC-D01"
     },
     {
       "id": "IC-E03",
@@ -3372,7 +3372,7 @@
       "power_source": "passive",
       "line": 9,
       "arm_zone": "IZ1",
-      "usage": "separate physical NC reed for IDS, 2EOL; D01 does not reuse DC-D01"
+      "usage": "separate physical NC reed for SSWiN, 2EOL; D01 does not reuse DC-D01"
     },
     {
       "id": "IC-D01",
@@ -3395,7 +3395,7 @@
       "power_source": "passive",
       "line": 10,
       "arm_zone": "IZ1",
-      "usage": "separate physical NC reed for IDS, 2EOL; D01 does not reuse DC-D01"
+      "usage": "separate physical NC reed for SSWiN, 2EOL; D01 does not reuse DC-D01"
     },
     {
       "id": "F01",
@@ -4031,7 +4031,7 @@
       },
       "node": "N0",
       "power_source": "passive",
-      "usage": "IDS cabinet tamper switch, NC, Z14 24h2EOL, separate from alarm circuits",
+      "usage": "SSWiN cabinet tamper switch, NC, Z14 24h2EOL, separate from alarm circuits",
       "parent": "SSWiN-0"
     },
     {
@@ -4058,14 +4058,14 @@
   ],
   "cable_types": {
     "CAT-I": {
-      "name": "F/UTP Cat.6A Cu AWG23 LSZH",
+      "name": "F/UTP kat.6A Cu AWG23 LSZH",
       "section_mm2": 0.258,
       "function": "IP PoE inside",
       "rho_ohm_mm2_per_m": 0.0225,
       "source": "OWN"
     },
     "CAT-O": {
-      "name": "F/UTP Cat.6A Cu AWG23 PE outdoor water resistant",
+      "name": "F/UTP kat.6A Cu AWG23 PE outdoor water resistant",
       "section_mm2": 0.258,
       "function": "IP PoE outside",
       "rho_ohm_mm2_per_m": 0.0225,
@@ -4081,7 +4081,7 @@
     "SIGNAL": {
       "name": "6x0.5mm2 Cu LSZH",
       "section_mm2": 0.5,
-      "function": "2EOL contacts, handle signal or FAS relay information",
+      "function": "2EOL contacts, handle signal or SSP relay information",
       "rho_ohm_mm2_per_m": 0.0225,
       "source": "OWN"
     },
@@ -4102,7 +4102,7 @@
     "FIRE": {
       "name": "HTKSHekw 1x2x1.0mm (Cu diameter1mm)",
       "section_mm2": 0.7853981633974483,
-      "function": "addressable FAS loop; separate certified supports, function survival not inferred from cable marking",
+      "function": "addressable SSP loop; separate certified supports, function survival not inferred from cable marking",
       "rho_ohm_mm2_per_m": 0.0225,
       "source": "S-FIRE"
     },
@@ -4116,7 +4116,7 @@
     "AC-F": {
       "name": "NHXH-J FE180/E90 3x1.5mm2 + compatible E90 supports",
       "section_mm2": 1.5,
-      "function": "dedicated FAS AC supply before PWP",
+      "function": "dedicated SSP AC supply before PWP",
       "rho_ohm_mm2_per_m": 0.0225,
       "source": "S-FIRE"
     },
@@ -4207,7 +4207,7 @@
           2.7
         ]
       ],
-      "function": "IP/ACS/IDS divided tray, 100x50mm, 0.15m below fire run",
+      "function": "IP/KD/SSWiN divided tray, 100x50mm, 0.15m below fire run",
       "procurement_m": 25,
       "interpretation": "main routing envelope only; individual connections carry authoritative full 3D centreline including room leads and transitions"
     },
@@ -4245,7 +4245,7 @@
           2.9
         ]
       ],
-      "function": "FAS outward path, separate supports",
+      "function": "SSP outward path, separate supports",
       "procurement_m": 25,
       "interpretation": "main routing envelope only; individual connections carry authoritative full 3D centreline including room leads and transitions"
     },
@@ -4264,7 +4264,7 @@
           2.9
         ]
       ],
-      "function": "FAS return path, separate supports; separated by 6.2m from R3",
+      "function": "SSP return path, separate supports; separated by 6.2m from R3",
       "procurement_m": 25,
       "interpretation": "main routing envelope only; individual connections carry authoritative full 3D centreline including room leads and transitions"
     },
@@ -5985,7 +5985,7 @@
         "source_min_v": 10.5
       },
       "conductor_map": {
-        "1-2": "AUX+/COM at IDS -> detector power",
+        "1-2": "AUX+/COM at SSWiN -> detector power",
         "3-4": "Zi/COM -> 2EOL alarm+tamper",
         "5-6": "spare insulated"
       }
@@ -6049,7 +6049,7 @@
         "source_min_v": 10.5
       },
       "conductor_map": {
-        "1-2": "AUX+/COM at IDS -> detector power",
+        "1-2": "AUX+/COM at SSWiN -> detector power",
         "3-4": "Zi/COM -> 2EOL alarm+tamper",
         "5-6": "spare insulated"
       }
@@ -6113,7 +6113,7 @@
         "source_min_v": 10.5
       },
       "conductor_map": {
-        "1-2": "AUX+/COM at IDS -> detector power",
+        "1-2": "AUX+/COM at SSWiN -> detector power",
         "3-4": "Zi/COM -> 2EOL alarm+tamper",
         "5-6": "spare insulated"
       }
@@ -6182,7 +6182,7 @@
         "source_min_v": 10.5
       },
       "conductor_map": {
-        "1-2": "AUX+/COM at IDS -> detector power",
+        "1-2": "AUX+/COM at SSWiN -> detector power",
         "3-4": "Zi/COM -> 2EOL alarm+tamper",
         "5-6": "spare insulated"
       }
@@ -6246,7 +6246,7 @@
         "source_min_v": 10.5
       },
       "conductor_map": {
-        "1-2": "AUX+/COM at IDS -> detector power",
+        "1-2": "AUX+/COM at SSWiN -> detector power",
         "3-4": "Zi/COM -> 2EOL alarm+tamper",
         "5-6": "spare insulated"
       }
@@ -6310,7 +6310,7 @@
         "source_min_v": 10.5
       },
       "conductor_map": {
-        "1-2": "AUX+/COM at IDS -> detector power",
+        "1-2": "AUX+/COM at SSWiN -> detector power",
         "3-4": "Zi/COM -> 2EOL alarm+tamper",
         "5-6": "spare insulated"
       }
@@ -9227,7 +9227,7 @@
       "waste_fraction": 0.1,
       "installed_m": 12.26333,
       "purchase_m": 14,
-      "supervision": "normally closed dry contact RPO; open circuit trips UPS; separate local test, not an FAS output"
+      "supervision": "normally closed dry contact RPO; open circuit trips UPS; separate local test, not an SSP output"
     },
     {
       "id": "IP-C07-A",
@@ -10742,8 +10742,8 @@
   "intrusion_zones": [
     {
       "id": "IZ1",
-      "name": "Perimeter and hall after closing",
-      "arm_condition": "terminal emptied and guard checked, no automatic arm by ACS",
+      "name": "Obwód i hol po zamknięciu",
+      "arm_condition": "terminal emptied and guard checked, no automatic arm by KD",
       "entry_delay_s": 30,
       "exit_delay_s": 60,
       "devices": [
@@ -10758,7 +10758,7 @@
     },
     {
       "id": "IZ2",
-      "name": "IT, office and store, independently",
+      "name": "IT, biuro i magazyn niezależnie",
       "arm_condition": "these three rooms unoccupied; SOC remains staffed",
       "entry_delay_s": 0,
       "exit_delay_s": 30,
@@ -10838,7 +10838,7 @@
     "single_stage": true,
     "alarm_delay_s": 0,
     "dso": "not installed: whole fictitious port <=150 persons, low single-storey terminal; no other category in section29. Acoustic evacuation plus staffed assistance, not a voice system",
-    "psp_transmission": "not installed: FAS voluntary for model below mandatory section28 criteria; Art5 transmission obligation concerns mandatory FAS. Duty guard calls 112; event IP/phone is not automatic transmission to PSP",
+    "psp_transmission": "not installed: SSP voluntary for model below mandatory section28 criteria; Art5 transmission obligation concerns mandatory SSP. Duty guard calls 112; event IP/phone is not automatic transmission to PSP",
     "battery_goal_standby_h": 24,
     "battery_goal_alarm_h": 0.5,
     "battery_capacity_factor": 1.25,
@@ -10860,7 +10860,7 @@
           "L1:SF-04",
           "CSP-0:OUT1"
         ],
-        "action": "all eight sounders on, local CSP display, fire event to IDS",
+        "action": "all eight sounders on, local CSP display, fire event to SSWiN",
         "supervision": "loop poll, isolators per device; INFO-FIRE 2EOL",
         "reset": "CSP access level2 after inspection, cause removed, guard authorisation"
       },
@@ -10901,11 +10901,11 @@
         "outputs": [],
         "action": "CSP continues locally; SOC reads actual panel; no effect on egress",
         "supervision": "IT diagnostics independent from fire controls",
-        "reset": "IT repair after proof that local FAS unaffected"
+        "reset": "IT repair after proof that local SSP unaffected"
       },
       {
         "id": "CE05",
-        "trigger": "fire while doors in ACS locked",
+        "trigger": "fire while doors in KD locked",
         "condition": "any power/LAN state",
         "outputs": [],
         "action": "inner levers mechanically retract latch on D01-D04; E01-E03 panic hardware; no electromagnetic locks",
@@ -10931,11 +10931,11 @@
       },
       {
         "id": 20,
-        "role": "ACS"
+        "role": "KD"
       },
       {
         "id": 30,
-        "role": "IDS"
+        "role": "SSWiN"
       },
       {
         "id": 40,
@@ -10946,7 +10946,7 @@
         "role": "management"
       }
     ],
-    "firewall_rules": "deny default; permit camera RTSP/HTTPS+events -> SOC-0, SOC-0 SMB3 -> NAS-0, SOC-0 HTTPS -> ACS, ETHM -> authorised SOC; local NTP on SOC; WAN unplugged",
+    "firewall_rules": "deny default; permit camera RTSP/HTTPS+events -> SOC-0, SOC-0 SMB3 -> NAS-0, SOC-0 HTTPS -> KD, ETHM -> authorised SOC; local NTP on SOC; WAN unplugged",
     "bandwidth": {
       "camera_mbps_max": 6,
       "cameras_per_live_view": 8,
@@ -11373,7 +11373,7 @@
   "sources": [
     {
       "id": "OWN",
-      "title": "Project assumptions, geometry and acceptance targets",
+      "title": "Założenia własne, geometria i cele odbiorowe",
       "url": "local:data/design.json",
       "pinpoint": "revision A-2026-10-24-R1: assumed geometry, corrected pinhole optics and low-speed vehicle sweep; no field measurements",
       "access_date": "2026-10-24",
@@ -11381,7 +11381,7 @@
     },
     {
       "id": "L-FIRE",
-      "title": "Polish Ministry of the Interior and Administration, consolidated fire-protection regulation, Journal of Laws 2023, item 822",
+      "title": "MSWiA, tekst jednolity rozporządzenia ppoż. Dz.U.2023 poz.822",
       "url": "https://eli.gov.pl/api/acts/DU/2023/822/text.html",
       "pinpoint": "§3, §28 ust1 pkt19, §29 ust1 pkt8, §31; full list of triggers reviewed for the low 384m2 model",
       "access_date": "2026-10-22",
@@ -11389,7 +11389,7 @@
     },
     {
       "id": "L-2024",
-      "title": "Polish Ministry of the Interior and Administration, amendment, Journal of Laws 2024, item 1716",
+      "title": "MSWiA, zmiana Dz.U.2024 poz.1716",
       "url": "https://api.sejm.gov.pl/eli/acts/DU/2024/1716/text.html",
       "pinpoint": "§1: fire separation signs, autonomous smoke/CO detection; no change of thresholds in §28/29",
       "access_date": "2026-10-22",
@@ -11397,7 +11397,7 @@
     },
     {
       "id": "L-2026",
-      "title": "Polish Ministry of the Interior and Administration, amendment, Journal of Laws 2026, item 1276",
+      "title": "MSWiA, zmiana Dz.U.2026 poz.1276",
       "url": "https://api.sejm.gov.pl/eli/acts/DU/2026/1276/text.pdf",
       "pinpoint": "§1 and §3, effective30.09.2026: shelter marking; no change in §28/29",
       "access_date": "2026-10-22",
@@ -11405,15 +11405,15 @@
     },
     {
       "id": "L-ACT",
-      "title": "Polish Fire Protection Act, Journal of Laws 2025, item 188, amended by 2026, item 815",
+      "title": "Ustawa o ochronie przeciwpożarowej, Dz.U.2025 poz.188 ze zm.2026 poz.815",
       "url": "https://api.sejm.gov.pl/eli/acts/DU/2025/188/text.pdf",
-      "pinpoint": "art5: transmission for objects with mandatory FAS; change2026/815 reviewed separately",
+      "pinpoint": "art5: transmission for objects with mandatory SSP; change2026/815 reviewed separately",
       "access_date": "2026-10-22",
       "kind": "official_law"
     },
     {
       "id": "L-KP",
-      "title": "Polish Labour Code, consolidated text, Journal of Laws 2026, item 1245",
+      "title": "Kodeks pracy, tekst jednolity Dz.U.2026 poz.1245",
       "url": "https://api.sejm.gov.pl/eli/acts/DU/2026/1245/text.pdf",
       "pinpoint": "art22(1)b and22(2); replaces 2025/277 referenced in class notes",
       "access_date": "2026-10-22",
@@ -11421,7 +11421,7 @@
     },
     {
       "id": "L-GDPR",
-      "title": "GDPR, Regulation (EU) 2016/679",
+      "title": "RODO, rozporządzenie UE2016/679",
       "url": "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
       "pinpoint": "art5,6,9,13,32,35; biometric special category only for unique identification",
       "access_date": "2026-10-22",
@@ -11461,7 +11461,7 @@
     },
     {
       "id": "S-FIRE",
-      "title": "SATEL ACSP-402, product page and technical specifications",
+      "title": "SATEL ACSP-402, karta produktu i parametry techniczne",
       "url": "https://www.satel.pl/en/products/fire-alarm-systems/acsp-system/control-panel/acsp-402/",
       "pinpoint": "technical data:2x128,200mA/loop,100ohm,12V17Ah battery,220/320mA,charger1.4A, Imax1.6A; installer05/23 section10; newer PL03/26 installer access restricted, not claimed fully read",
       "access_date": "2026-10-22",
@@ -11469,7 +11469,7 @@
     },
     {
       "id": "S-DMP",
-      "title": "SATEL DMP-400 / DCP-400, product page",
+      "title": "SATEL DMP-400 / DCP-400, karta produktu",
       "url": "https://demo.satel.pl/pl/leaflet/1129%2CDMP-400",
       "pinpoint": "table:500/700microA,18-26V,A1R,DB400,isolator; DCP current conservatively bounded by DMP",
       "access_date": "2026-10-22",
@@ -11477,7 +11477,7 @@
     },
     {
       "id": "S-ROP",
-      "title": "SATEL ROP-400/PL product page",
+      "title": "SATEL ROP-400/PL karta",
       "url": "https://demo.satel.pl/pl/product/10385/ROP-400/PL%2CAdresowalny-reczny-ostrzegacz-pozarowy",
       "pinpoint": "technical data:170/450microA,18-26V,isolator",
       "access_date": "2026-10-22",
@@ -11485,7 +11485,7 @@
     },
     {
       "id": "S-SND",
-      "title": "SATEL SPP-400 product page",
+      "title": "SATEL SPP-400 karta",
       "url": "https://demo.satel.pl/pl/product/10387/SPP-400%2CAdresowalny-sygnalizator-akustyczny-pozarowy",
       "pinpoint": "technical data:250microA/4mA,18-26V,isolator; sound coverage requires actual measurement",
       "access_date": "2026-10-22",
@@ -11493,7 +11493,7 @@
     },
     {
       "id": "S-SSWIN",
-      "title": "SATEL VERSA15 / S-4 / PNK1 / B17, system family",
+      "title": "SATEL VERSA15 / S-4 / PNK1 / B17, rodzina systemu",
       "url": "https://przemek.satel.pl/pl/product/391/versa%2015",
       "pinpoint": "technical data:15inputs,2partitions,135/160mA,2A PSU,350mA charging,40VA transformer; NC dry contacts S4/PNK1",
       "access_date": "2026-10-22",
@@ -11501,7 +11501,7 @@
     },
     {
       "id": "S-PIR",
-      "title": "SATEL SLIM-PIR product page",
+      "title": "SATEL SLIM-PIR karta",
       "url": "https://www.satel.pl/produkty/sswin/czujki-przewodowe/czujki-ruchu-pir/slim-pir/",
       "pinpoint": "standby10mA, maximum25mA; 2EOL2x1.1kohm,12V+-15%,2.4m mounting; conservative15m sector used",
       "access_date": "2026-10-22",
@@ -11509,7 +11509,7 @@
     },
     {
       "id": "S-LCD",
-      "title": "SATEL VERSA-LCDM product page",
+      "title": "SATEL VERSA-LCDM karta",
       "url": "https://profesjonalni.satel.pl/en/product/572/VERSA-LCDM-WH%2CLCD-keypad-for-VERSA-panels",
       "pinpoint": "12V+-15%,50/60mA; wired keypad, not WRL",
       "access_date": "2026-10-22",
@@ -11517,7 +11517,7 @@
     },
     {
       "id": "S-ETHM",
-      "title": "SATEL ETHM1 Plus product page 947",
+      "title": "SATEL ETHM1 Plus karta947",
       "url": "https://demo.satel.pl/pl/leaflet/947%2CETHM-1%20PLUS",
       "pinpoint": "70/80mA; VERSA compatible; local IP, no contracted remote monitoring",
       "access_date": "2026-10-22",
@@ -11525,7 +11525,7 @@
     },
     {
       "id": "S-SIREN",
-      "title": "SATEL SPW100 manual 04/07",
+      "title": "SATEL SPW100 instrukcja04/07",
       "url": "https://www.satel.eu/en/download/instrukcje/spw100_pl.pdf",
       "pinpoint": "p2:12V+-20%,max120mA,tamper; intrusion only, not fire sounder",
       "access_date": "2026-10-22",
@@ -11621,9 +11621,9 @@
     },
     {
       "id": "L-ACT-2026",
-      "title": "Polish Act, Journal of Laws 2026, item 815",
+      "title": "Ustawa Dz.U.2026 poz.815",
       "url": "https://api.sejm.gov.pl/eli/acts/DU/2026/815/text.pdf",
-      "pinpoint": "art5 modifies art14fa(3) of fire act, not the art5 obligation for mandatory FAS transmission",
+      "pinpoint": "art5 modifies art14fa(3) of fire act, not the art5 obligation for mandatory SSP transmission",
       "access_date": "2026-10-22",
       "kind": "official_law"
     },
@@ -11647,7 +11647,7 @@
   "bom_accessories": [
     {
       "id": "B-TRAY",
-      "name": "Divided 100x50 mm tray R1+R2",
+      "name": "Koryto dzielone 100x50mm R1+R2",
       "quantity": 50,
       "unit": "m",
       "basis": "two 22m spines, rounded to 25m each",
@@ -11655,7 +11655,7 @@
     },
     {
       "id": "B-FSUP",
-      "name": "FAS R3/R4 system supports and substrate",
+      "name": "Uchwyty i podłoże systemowe tras SSP R3/R4",
       "quantity": 50,
       "unit": "m",
       "basis": "two 22m spines rounded to 25m each; room leads included per cable; final supports to match cable system",
@@ -11663,7 +11663,7 @@
     },
     {
       "id": "B-DUCT",
-      "name": "HDPE40 duct for R5-R8 tree",
+      "name": "Rura HDPE40 drzewa R5-R8",
       "quantity": 95,
       "unit": "m",
       "basis": "unique R5-R8 tree85.0m +10%, rounded95m",
@@ -11671,25 +11671,25 @@
     },
     {
       "id": "B-RACK",
-      "name": "24U N0 cabinet with passive ventilation and power strip",
+      "name": "Szafa 24U N0 z wentylacją pasywną i listwą",
       "quantity": 1,
-      "unit": "set",
+      "unit": "kpl.",
       "basis": "N0",
       "quantity_rule": "assumed_exact"
     },
     {
       "id": "B-CASE",
-      "name": "Car park IP66 junction/SPD enclosures and G01 reader hoods",
+      "name": "Obudowa IP66 złącz i SPD przy parkingu, daszki czytników G01",
       "quantity": 3,
-      "unit": "set",
+      "unit": "kpl.",
       "basis": "G01 reader junction, C07 SPD enclosure, C08 SPD enclosure; gate controller is indoors",
       "quantity_rule": "assumed_exact"
     },
     {
       "id": "B-POLE",
-      "name": "4 m C07 pole with bracket and PE bond",
+      "name": "Słup 4m C07 z uchwytem i połączeniem PE",
       "quantity": 1,
-      "unit": "pcs",
+      "unit": "szt.",
       "basis": "C07",
       "quantity_rule": "assumed_exact"
     },
@@ -11697,56 +11697,56 @@
       "id": "B-CARD",
       "name": "HID Seos5006 8K SIO, HID Elite site profile",
       "quantity": 30,
-      "unit": "pcs",
+      "unit": "szt.",
       "basis": "20personal cards+10stock; cryptographic authentication in Signo, no UID-only",
       "quantity_rule": "assumed_exact"
     },
     {
       "id": "B-PP",
-      "name": "24-port Cat6A patch panel",
+      "name": "Panel kat6A 24-portowy",
       "quantity": 1,
-      "unit": "pcs",
+      "unit": "szt.",
       "basis": "17 logical Ethernet links",
       "quantity_rule": "patchpanels"
     },
     {
       "id": "B-PATCH",
-      "name": "2 m Cat6A device/rack patch cord",
+      "name": "Patchcord kat6A 2m aparat/szafa",
       "quantity": 34,
-      "unit": "pcs",
+      "unit": "szt.",
       "basis": "34 patchcords for17 logical links, of which3 explicitly shown (two camera SPD tails and KD05); all covered_by_bom links excluded from metre purchase",
       "quantity_rule": "ethernet_patchcords"
     },
     {
       "id": "B-EOL",
-      "name": "1.1 kohm 1% resistors for 2EOL",
+      "name": "Rezystory 1.1kohm 1% dla 2EOL",
       "quantity": 30,
-      "unit": "pcs",
+      "unit": "szt.",
       "basis": "15 supervised lines x2;6PIR have12integrated resistors; remaining9lines require18loose",
       "purchase_quantity": 18,
       "quantity_rule": "intrusion_eol"
     },
     {
       "id": "B-PANIC",
-      "name": "E01/E02/E03 panic hardware and D01-D04 inside handles",
+      "name": "Okucia antypaniczne E01/E02/E03 i klamki wewnętrzne D01-D04",
       "quantity": 7,
-      "unit": "set",
+      "unit": "kpl.",
       "basis": "7 egress openings; mechanical, not extra electronic release",
       "quantity_rule": "egress_hardware"
     },
     {
       "id": "B-SEAL",
-      "name": "Sleeve and seal for wall penetration",
+      "name": "Tuleja i uszczelnienie przejścia przez przegrodę",
       "quantity": 30,
-      "unit": "set",
+      "unit": "kpl.",
       "basis": "one per PRxx in penetrations; ordinary internal partition is not falsely labelled fire compartment; external seals watertight",
       "quantity_rule": "penetrations"
     },
     {
       "id": "B-SPARE-CAM",
-      "name": "CAM camera for spare stock",
+      "name": "Kamera CAM na zapas magazynowy",
       "quantity": 1,
-      "unit": "pcs",
+      "unit": "szt.",
       "basis": "not installed, no port or power",
       "quantity_rule": "assumed_exact"
     },
@@ -11754,39 +11754,39 @@
       "id": "B-LIC",
       "name": "AXIS Camera Station Pro Core Device License 5y",
       "quantity": 13,
-      "unit": "licence",
+      "unit": "lic.",
       "basis": "8 cameras+5 controllers; Object Analytics included in C08",
       "quantity_rule": "licensed_devices"
     },
     {
       "id": "B-CHAMBER",
-      "name": "400x400 telecommunications chamber outside vehicle traffic",
+      "name": "Studzienka teletechniczna 400x400 na terenie bez ruchu kołowego",
       "quantity": 3,
-      "unit": "pcs",
+      "unit": "szt.",
       "basis": "JC01(44.3,38), JC02(44.3,27), JC03(62,11): all400x400mm outside vehicle corridor; JC03 lies on unchanged R5 west of gate swing",
       "quantity_rule": "parking_chambers"
     },
     {
       "id": "B-KD-EOL",
-      "name": "1 kohm 1% ACS DPS supervision resistors",
+      "name": "Rezystory nadzoru DPS KD 1kohm1%",
       "quantity": 10,
-      "unit": "pcs",
-      "basis": "5 DPS lines x2 at field contacts, separately from IDS EOL",
+      "unit": "szt.",
+      "basis": "5 DPS lines x2 at field contacts, separately from SSWiN EOL",
       "quantity_rule": "access_dps_eol"
     },
     {
       "id": "B-F-CLAMPS",
-      "name": "FAS branch supports, spacing up to 0.3 m +10%",
+      "name": "Uchwyty odgałęzień SSP, rozstaw do0.3m +10%",
       "quantity": 861,
-      "unit": "pcs",
+      "unit": "szt.",
       "basis": "conservative separate support at each0.3m on all fire cable runs; spine supports not substituted for room leads",
       "quantity_rule": "fire_clamps"
     },
     {
       "id": "B-POLE-C08",
-      "name": "3 m C08 pole with lane-side bracket and foundation",
+      "name": "Słup C08 3m z uchwytem od strony pasa i fundamentem",
       "quantity": 1,
-      "unit": "set",
+      "unit": "kpl.",
       "basis": "camera optical centre SITE63,20,3; pole base at62.8,20, size0.3x0.3m outside4m vehicle corridor, inner0.2m arm; assumed installation kit, no claim of foundation load test",
       "quantity_rule": "assumed_exact"
     }

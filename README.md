@@ -2,7 +2,7 @@
 
 An academic security-system design for a fictional airport terminal and staff car park. The project combines CCTV, access control, intrusion and hold-up alarms, fire detection, network design, and backup power in a reproducible LaTeX report.
 
-[Technical report](output/pdf/north-airport.pdf) · [Device and connection register](docs/device-register.md) · [Overleaf guide](docs/overleaf.md)
+[Technical report](output/pdf/lotnisko-polnoc.pdf) · [Device and connection register](docs/rejestr-urzadzen.md) · [Overleaf guide](docs/overleaf.md)
 
 ## Scope
 
@@ -18,7 +18,7 @@ Requires Python 3 and TeX Live or MacTeX with `latexmk`, pdfLaTeX, `longtable`, 
 make pdf
 ```
 
-The report is written to `output/pdf/north-airport.pdf`; the compilation log is `build/main.log`.
+The report is written to `output/pdf/lotnisko-polnoc.pdf`; the compilation log is `build/main.log`.
 
 ```sh
 make data
@@ -34,7 +34,7 @@ python3 tools/validate_design.py --self-test
 make overleaf
 ```
 
-Upload `output/airport-overleaf.zip` as an Overleaf project, using `main.tex` and pdfLaTeX. The archive includes the report sources, model, generated tables, and supporting tools. See [the Overleaf guide](docs/overleaf.md) for import and synchronisation options.
+Upload `output/lotnisko-overleaf.zip` as an Overleaf project, using `main.tex` and pdfLaTeX. The archive includes the report sources, model, generated tables, and supporting tools. See [the Overleaf guide](docs/overleaf.md) for import and synchronisation options.
 
 ## Repository structure
 

@@ -148,7 +148,7 @@ def tex(s):
 
 
 def num(x, decimals=2):
-    return f'{x:.{decimals}f}'
+    return f'{x:.{decimals}f}'.replace('.', ',')
 
 
 def coordinate(point):
@@ -186,68 +186,68 @@ def outputs(d):
         for key, val in [('Standby',bank['standby_a']),('Alarm',bank['alarm_a']),('Ah',bank['required_ah']),('Recharge',bank['recharge_h'])]:macros[prefix+key]=num(val,3 if key in ['Standby','Alarm'] else 2)
     t = '% Generated from data/design.json; do not edit. SHA256 '+digest+'\n'
     t += ''.join('\\newcommand{\\'+k+'}{'+tex(v)+'}\n' for k,v in macros.items())
-    t += '\\newcommand{\\ModelRooms}{\n'+table(['ID / function','Local plan [m]','Protection'],[(tex(x['id']+' '+x['name']),tex(str(x['rect_local_m'])),tex(x['coverage'])) for x in d['rooms']],['32mm','32mm','86mm'])+'}\n'
-    t += '\\newcommand{\\CameraTable}{\n'+table(['ID / location','Position / target [m]','View / direction'],[(tex(x['id']+' / '+x['location']['room_or_area']),tex(coordinate(x['location']['xyz_m'])+' / '+coordinate(x['target']['xyz_m'])+' ('+x['target']['frame']+')'),tex(num(x['target']['width_m'],2)+' m; '+num(x['view']['ppm'],0)+' px/m; az. '+num(x['view']['azimuth_deg'],1)+'; tilt '+num(x['view']['down_tilt_deg'],1)+'; HFOV '+num(x['view']['hfov_deg'],1))) for x in d['devices'] if x['model']=='CAM'],['25mm','63mm','62mm'])+'}\n'
-    t += '\\newcommand{\\FirePointTable}{\n'+table(['ID / model','Room / local position [m]','L1 / address'],[(tex(x['id']+' / '+x['model']),tex(x['location']['room_or_area']+' '+str(x['location']['xyz_m'])),str(x['address'])) for x in sorted(d['devices'],key=lambda x:x.get('address',999)) if 'fire_loop' in x],['40mm','88mm','22mm'])+'}\n'
-    t += '\\newcommand{\\DeviceBom}{\n'+table(['Model and devices','Count','Power supply'],[(tex(models[mid]['name']),str(sum(x['model']==mid for x in d['devices'])),tex(', '.join(sorted({x['power_source'] for x in d['devices'] if x['model']==mid})))) for mid in models if any(x['model']==mid for x in d['devices'])],['92mm','13mm','45mm'])+'}\n'
-    t += '\\newcommand{\\CableBom}{\n'+table(['Cable type','Sections','Plan / vertical [m]','Purchase [m]'],[(tex(k),str(v['connections']),num(v['plan_m'],1)+' / '+num(v['vertical_m'],1),str(v['purchase_m'])) for k,v in sorted(r['cables'].items())],['46mm','18mm','54mm','32mm'])+'}\n'
-    t += '\\newcommand{\\AccessoryBom}{\n'+table(['Accessory / licence / stock','Purchase qty','Unit'],[(tex(x['name']),str(x.get('purchase_quantity',x['quantity'])),tex(x['unit'])) for x in bom_quantities(d)],['110mm','23mm','17mm'])+'}\n'
-    t += '\\newcommand{\\ConnectionTable}{\n'+table(['Cable','Devices and ports','Type','Plan/vertical/slack [m]','Purchase [m]'],[(tex(c['id']),tex(' -> '.join(e['device']+':'+e['port'] for e in c['ends'])),tex(c['cable_type']),num(c['plan_m'],1)+'/'+num(c['vertical_m'],1)+'/'+num(c['service_m'],1),str(c['purchase_m'])+('*' if c.get('included_in_assembly') or c.get('covered_by_bom') else '')) for c in d['connections']],['28mm','51mm','19mm','33mm','19mm'])+'}\n'
-    t += '\\newcommand{\\VoltageTable}{\n'+table(['Circuit','Current [A]','Input / drop [V]','Voltage / min. [V]'],[(tex(x['connection']),num(next(c['voltage_check']['current_a'] for c in d['connections'] if c['id']==x['connection']),2),num(x['source_v'],3)+' / '+num(x['drop_v'],3),num(x['voltage_v'],3)+' / '+num(x['required_v'],2)) for x in r['voltage_checks']],['48mm','20mm','35mm','47mm'])+'}\n'
-    t += '\\newcommand{\\OpticalVerificationTable}{\n'+table(['Point / camera','Height [m]','Min. px/m','Max. |x| / |y|'],[(tex(v['id']+' / '+v['camera']),'1.2--2.0',num(v['min_ppm'],1),num(v['max_abs_x'],3)+' / '+num(v['max_abs_y'],3)) for v in r['optical']['kd']],['40mm','30mm','25mm','55mm'])+'}\n'
-    t += '\\newcommand{\\PathViewTable}{\n'+table(['Camera / view','y segment [m]','Min. px/m','Max. |x| / |y|'],[(tex(v['camera']+' / '+['front','rear','left profile','right profile'][i]),num(d['path_observation']['views'][i]['segment_local_m'][0][1],1)+'--'+num(d['path_observation']['views'][i]['segment_local_m'][1][1],1),num(v['min_ppm'],1),num(v['max_abs_x'],3)+' / '+num(v['max_abs_y'],3)) for i,v in enumerate(r['optical']['path'])],['44mm','27mm','25mm','54mm'])+'}\n'
-    t += '\\newcommand{\\OpticsTable}{\n'+table(['Camera','Azimuth / tilt','HFOV / VFOV','Near / far [m]'],[(tex(c['id']),num(c['view']['azimuth_deg'],2)+' / '+num(c['view']['down_tilt_deg'],2),num(c['view']['hfov_deg'],2)+' / '+num(c['view']['vfov_deg'],2),num(c['view']['near_clip_m'],1)+' / '+num(c['view']['far_clip_m'],1)) for c in d['devices'] if c['model']=='CAM'],['23mm','43mm','43mm','41mm'])+'}\n'
-    t += '\\newcommand{\\OpeningTable}{\n'+table(['Opening','Position / frame [m]','Clear width [m]','Sides'],[(tex(o['id']),tex(str(o.get('centre_local_m',o.get('centre_site_m')))+' / '+('T0' if 'centre_local_m' in o else 'SITE')),num(o['width_clear_m'],1),tex(' / '.join(o['sides']))) for o in d['openings']],['20mm','65mm','25mm','40mm'])+'}\n'
-    t += '\\newcommand{\\RouteTable}{\n'+table(['Route / frame','Main points [m]'],[(tex(o['id']+' / '+o['frame']),tex(' -> '.join(map(str,o['points_m'])))) for o in d['routes']],['27mm','123mm'])+'}\n'
-    t += '\\newcommand{\\PowerTable}{\n'+table(['UPS load','AC envelope [W]','Basis'],[(tex(i),num(models[dev[i]['model']].get('ac_max_w',models[dev[i]['model']].get('ac_design_w',0)),1),tex('full AC including PoE' if i=='SW-0' else 'design limit including adapter')) for i in d['power']['ups_load_device_ids']],['50mm','35mm','65mm'])+'}\n'
+    t += '\\newcommand{\\ModelRooms}{\n'+table(['ID / funkcja','Rzut lokalny [m]','Ochrona'],[(tex(x['id']+' '+x['name']),tex(str(x['rect_local_m'])),tex(x['coverage'])) for x in d['rooms']],['32mm','32mm','86mm'])+'}\n'
+    t += '\\newcommand{\\CameraTable}{\n'+table(['ID / miejsce','Punkt / cel [m]','Kadr / kierunek'],[(tex(x['id']+' / '+x['location']['room_or_area']),tex(coordinate(x['location']['xyz_m'])+' / '+coordinate(x['target']['xyz_m'])+' ('+x['target']['frame']+')'),tex(num(x['target']['width_m'],2)+' m; '+num(x['view']['ppm'],0)+' px/m; az. '+num(x['view']['azimuth_deg'],1)+'; tilt '+num(x['view']['down_tilt_deg'],1)+'; HFOV '+num(x['view']['hfov_deg'],1))) for x in d['devices'] if x['model']=='CAM'],['25mm','63mm','62mm'])+'}\n'
+    t += '\\newcommand{\\FirePointTable}{\n'+table(['ID / model','Pom. / punkt lokalny [m]','L1 / adres'],[(tex(x['id']+' / '+x['model']),tex(x['location']['room_or_area']+' '+str(x['location']['xyz_m'])),str(x['address'])) for x in sorted(d['devices'],key=lambda x:x.get('address',999)) if 'fire_loop' in x],['40mm','88mm','22mm'])+'}\n'
+    t += '\\newcommand{\\DeviceBom}{\n'+table(['Model i urządzenia','Liczba','Zasilanie'],[(tex(models[mid]['name']),str(sum(x['model']==mid for x in d['devices'])),tex(', '.join(sorted({x['power_source'] for x in d['devices'] if x['model']==mid})))) for mid in models if any(x['model']==mid for x in d['devices'])],['92mm','13mm','45mm'])+'}\n'
+    t += '\\newcommand{\\CableBom}{\n'+table(['Typ kabla','Odc.','Rzut / pion [m]','Zakup [m]'],[(tex(k),str(v['connections']),num(v['plan_m'],1)+' / '+num(v['vertical_m'],1),str(v['purchase_m'])) for k,v in sorted(r['cables'].items())],['46mm','18mm','54mm','32mm'])+'}\n'
+    t += '\\newcommand{\\AccessoryBom}{\n'+table(['Osprzęt / licencja / zapas','Ilość zakupu','Jedn.'],[(tex(x['name']),str(x.get('purchase_quantity',x['quantity'])),tex(x['unit'])) for x in bom_quantities(d)],['110mm','23mm','17mm'])+'}\n'
+    t += '\\newcommand{\\ConnectionTable}{\n'+table(['Kabel','Końce urządzeń i porty','Typ','Rzut/pion/zapas [m]','Zakup [m]'],[(tex(c['id']),tex(' -> '.join(e['device']+':'+e['port'] for e in c['ends'])),tex(c['cable_type']),num(c['plan_m'],1)+'/'+num(c['vertical_m'],1)+'/'+num(c['service_m'],1),str(c['purchase_m'])+('*' if c.get('included_in_assembly') or c.get('covered_by_bom') else '')) for c in d['connections']],['28mm','51mm','19mm','33mm','19mm'])+'}\n'
+    t += '\\newcommand{\\VoltageTable}{\n'+table(['Obwód','Prąd [A]','Wejście / spadek [V]','Napięcie / min. [V]'],[(tex(x['connection']),num(next(c['voltage_check']['current_a'] for c in d['connections'] if c['id']==x['connection']),2),num(x['source_v'],3)+' / '+num(x['drop_v'],3),num(x['voltage_v'],3)+' / '+num(x['required_v'],2)) for x in r['voltage_checks']],['48mm','20mm','35mm','47mm'])+'}\n'
+    t += '\\newcommand{\\OpticalVerificationTable}{\n'+table(['Punkt / kamera','Wysokość [m]','Min. px/m','Maks. |x| / |y|'],[(tex(v['id']+' / '+v['camera']),'1,2--2,0',num(v['min_ppm'],1),num(v['max_abs_x'],3)+' / '+num(v['max_abs_y'],3)) for v in r['optical']['kd']],['40mm','30mm','25mm','55mm'])+'}\n'
+    t += '\\newcommand{\\PathViewTable}{\n'+table(['Kamera / ujęcie','Odcinek y [m]','Min. px/m','Maks. |x| / |y|'],[(tex(v['camera']+' / '+['przód','tył','lewy profil','prawy profil'][i]),num(d['path_observation']['views'][i]['segment_local_m'][0][1],1)+'--'+num(d['path_observation']['views'][i]['segment_local_m'][1][1],1),num(v['min_ppm'],1),num(v['max_abs_x'],3)+' / '+num(v['max_abs_y'],3)) for i,v in enumerate(r['optical']['path'])],['44mm','27mm','25mm','54mm'])+'}\n'
+    t += '\\newcommand{\\OpticsTable}{\n'+table(['Kamera','Azymut / tilt','HFOV / VFOV','Near / far [m]'],[(tex(c['id']),num(c['view']['azimuth_deg'],2)+' / '+num(c['view']['down_tilt_deg'],2),num(c['view']['hfov_deg'],2)+' / '+num(c['view']['vfov_deg'],2),num(c['view']['near_clip_m'],1)+' / '+num(c['view']['far_clip_m'],1)) for c in d['devices'] if c['model']=='CAM'],['23mm','43mm','43mm','41mm'])+'}\n'
+    t += '\\newcommand{\\OpeningTable}{\n'+table(['Otwór','Punkt / układ [m]','Światło [m]','Strony'],[(tex(o['id']),tex(str(o.get('centre_local_m',o.get('centre_site_m')))+' / '+('T0' if 'centre_local_m' in o else 'SITE')),num(o['width_clear_m'],1),tex(' / '.join(o['sides']))) for o in d['openings']],['20mm','65mm','25mm','40mm'])+'}\n'
+    t += '\\newcommand{\\RouteTable}{\n'+table(['Trasa / układ','Punkty główne [m]'],[(tex(o['id']+' / '+o['frame']),tex(' -> '.join(map(str,o['points_m'])))) for o in d['routes']],['27mm','123mm'])+'}\n'
+    t += '\\newcommand{\\PowerTable}{\n'+table(['Odbiornik UPS','Obwiednia AC [W]','Podstawa'],[(tex(i),num(models[dev[i]['model']].get('ac_max_w',models[dev[i]['model']].get('ac_design_w',0)),1),tex('pełne AC z PoE' if i=='SW-0' else 'limit projektowy z zasilaczem')) for i in d['power']['ups_load_device_ids']],['50mm','35mm','65mm'])+'}\n'
     # Authoritative bibliography from same source ledger.
     b = '\\begin{thebibliography}{99}\n'
     for s in d['sources']:
-        b += '\\bibitem{'+s['id']+'} '+tex(s['title'])+'. '+tex(s['pinpoint'])+'. Accessed: '+s['access_date']+'.'
+        b += '\\bibitem{'+s['id']+'} '+tex(s['title'])+'. '+tex(s['pinpoint'])+'. Dostęp: '+s['access_date']+'.'
         b += '\n'+('\\texttt{data/design.json}' if s['id']=='OWN' else '\\url{'+s['url'].replace('%',r'\%')+'}')+'\n\n'
     b += '\\end{thebibliography}\n'
     # Markdown register is an export, including full 3D traces for independent handoff.
-    md = ['# Device and connection register - package A','',f"Export from `data/design.json`, revision `{d['revision']}`, SHA256 `{digest}`.", 'Do not edit independently; regenerate with `make data`. Units: m, W, A; points are not surveyed.', '', '## Devices', '', '| ID | Model | Location; frame; (x,y,z) | Power supply | Port/circuit |', '|---|---|---|---|---|']
+    md = ['# Rejestr urządzeń i połączeń - pakiet A','',f"Eksport z `data/design.json`, wersja `{d['revision']}`, SHA256 `{digest}`.", 'Nie edytować niezależnie; regeneracja: `make data`. Jednostki: m, W, A; punkty nie są pomiarem.', '', '## Urządzenia', '', '| ID | Model | Miejsce; układ; (x,y,z) | Zasilanie | Port/obwód |', '|---|---|---|---|---|']
     con_by_dev = defaultdict(list)
     for c in d['connections']:
         for e in c['ends']:con_by_dev[e['device']].append(c['id']+':'+e['port'])
     for x in d['devices']:
-        loc = x['location']; info = ', '.join(con_by_dev[x['id']]) or ('mechanical: '+x.get('mechanical_parent','no cable'))
+        loc = x['location']; info = ', '.join(con_by_dev[x['id']]) or ('mechanicznie: '+x.get('mechanical_parent','bez przewodu'))
         md.append(f"| {x['id']} | {models[x['model']]['name']} | {loc['room_or_area']}; {loc['frame']}; {loc['xyz_m']} | {x['power_source']} | {info} |")
-    md += ['', 'DB-400 bases belong to assemblies F01-F11; each has its own base, included in its name and BOM. A bracket or fitting is not an additional electrical point.', '', '## ACS and independent egress', '']
-    for a in d['access_points']:md += [f"### {a['id']} - {a['from_zone']} -> {a['to_zone']}", f"{a['controller']}, channel {a['channel']}; readers {', '.join(a['readers'])}; lock {a['lock']}; state {a['door_contact']}; handle {a['rex']}.",f"Normal: {a['normal']}. No LAN: {a['no_lan']}. No power: {a['no_power']}. Fire: {a['fire']}. Egress path: {a['physical_egress_path']}.", '']
-    md += ['## CCTV / target geometry', '', '| ID | Purpose and target position | Width / px per m | Azimuth / tilt / HFOV |','|---|---|---|---|']
+    md += ['', 'Gniazda DB-400 należą do zespołów F01-F11; każdy ma własne gniazdo, ujęte w nazwie i BOM. Uchwyt/okucie nie jest dodatkowym punktem elektrycznym.', '', '## KD i niezależne wyjście', '']
+    for a in d['access_points']:md += [f"### {a['id']} - {a['from_zone']} -> {a['to_zone']}", f"{a['controller']}, kanał {a['channel']}; czytniki {', '.join(a['readers'])}; zamek {a['lock']}; stan {a['door_contact']}; klamka {a['rex']}.",f"Normalnie: {a['normal']}. Brak LAN: {a['no_lan']}. Brak energii: {a['no_power']}. Pożar: {a['fire']}. Tor wyjścia: {a['physical_egress_path']}.", '']
+    md += ['## CCTV / geometria celów', '', '| ID | Cel i punkt celu | Szerokość / px na m | Azymut / pochylenie / HFOV |','|---|---|---|---|']
     for x in d['devices']:
         if x['model']=='CAM':md.append(f"| {x['id']} | {x['target']['purpose']}; {x['target']['frame']} {x['target']['xyz_m']} | {x['target']['width_m']} / {x['view']['ppm']} | {x['view']['azimuth_deg']} / {x['view']['down_tilt_deg']} / {x['view']['hfov_deg']} |")
-    md += ['', '## 3D views and geometry for B', '',
+    md += ['', '## Kadry 3D i dane geometryczne dla B', '',
            'Model: '+d['optical_model']['projection']+'. '+d['optical_model']['distortion']+'.',
            d['optical_model']['axes_definition']+'. Near/far: '+d['optical_model']['near_far_definition']+'.',
-           'The corner rays below are unnormalised SITE vectors from the camera. The field is a rectangular pyramid between these rays, with positive optical depth and clipping by near/far radius and opaque walls. Target checks also require |x|,|y| <=0.96. Table image width refers to the plane perpendicular to the optical axis through the target, not a ground projection.', '']
+           'Promienie narożne poniżej są wektorami w SITE od punktu kamery, bez normalizacji. Sektor: prostokątna piramida między tymi promieniami, dodatnia głębokość optyczna, obcięcie promieniem near/far i nieprzezroczystymi ścianami. Dla kontroli celu obowiązuje dodatkowo |x|,|y| <=0.96. Szerokość kadru w tabeli dotyczy płaszczyzny prostopadłej do osi przez cel, nie rzutu podłoża.', '']
     for c in d['devices']:
         if c['model']!='CAM':continue
         f,right,up=camera_axes(c);h=math.tan(math.radians(c['view']['hfov_deg']/2));v=math.tan(math.radians(c['view']['vfov_deg']/2))
         rays=[[round(f[j]+xx*h*right[j]+yy*v*up[j],8) for j in range(3)] for xx,yy in [(-1,-1),(1,-1),(1,1),(-1,1)]]
-        md.append(f"- {c['id']}: HFOV/VFOV {c['view']['hfov_deg']:.6f}/{c['view']['vfov_deg']:.6f} deg; near/far {c['view']['near_clip_m']}/{c['view']['far_clip_m']} m; BL,BR,TR,TL rays: {rays}.")
+        md.append(f"- {c['id']}: HFOV/VFOV {c['view']['hfov_deg']:.6f}/{c['view']['vfov_deg']:.6f} deg; near/far {c['view']['near_clip_m']}/{c['view']['far_clip_m']} m; promienie BL,BR,TR,TL: {rays}.")
     md += ['', 'PATH1: '+json.dumps(d['path_observation']['views'],ensure_ascii=False),
-           '', 'AI: detection point at feet z=0; person envelope '+json.dumps(d['ai']['person_envelope'],ensure_ascii=False)+'.',
-           'Feet ROI in SITE: '+str(d['ai']['zone_polygon_site_m'])+'; line: '+str(d['ai']['line_site_m'])+'.',
-           'ROI in normalised image coordinates (x right, y up): '+str([[round(project(dev['C08'],p+[0])[key],6) for key in ['x','y']] for p in d['ai']['zone_polygon_site_m']])+'.',
-           '', '## Car park and manoeuvre', '', json.dumps(d['site']['parking_layout'],ensure_ascii=False,indent=2),
-           '', 'View and manoeuvre results are also included in the calculations at the end of the register.']
-    md += ['', '## FAS: L1 in connection order', '', ' -> '.join(['CSP-0:L1A']+d['fire']['loops'][0]['devices']+['CSP-0:L1B']), '', '| ID | Address | Room | Local coordinates |','|---|---|---|---|']
+           '', 'AI: punkt detekcji przy stopach z=0; obwiednia osoby '+json.dumps(d['ai']['person_envelope'],ensure_ascii=False)+'.',
+           'ROI stóp SITE: '+str(d['ai']['zone_polygon_site_m'])+'; linia: '+str(d['ai']['line_site_m'])+'.',
+           'ROI w obrazie znormalizowanym (x w prawo, y w górę): '+str([[round(project(dev['C08'],p+[0])[key],6) for key in ['x','y']] for p in d['ai']['zone_polygon_site_m']])+'.',
+           '', '## Parking i manewr', '', json.dumps(d['site']['parking_layout'],ensure_ascii=False,indent=2),
+           '', 'Wyniki kontroli kadru i manewru są także w obliczeniach na końcu rejestru.']
+    md += ['', '## SSP: L1 w kolejności połączeń', '', ' -> '.join(['CSP-0:L1A']+d['fire']['loops'][0]['devices']+['CSP-0:L1B']), '', '| ID | Adres | Pomieszczenie | Współrzędne lokalne |','|---|---|---|---|']
     for id in d['fire']['loops'][0]['devices']:
         x=dev[id];md.append(f"| {id} | {x['address']} | {x['location']['room_or_area']} | {x['location']['xyz_m']} |")
-    md += ['', '## Cause-and-effect matrix', '']
-    for x in d['fire']['control_matrix']:md += [f"- **{x['id']}** {x['trigger']}; condition: {x['condition']}; outputs: {', '.join(x['outputs']) or 'no electrical control'}; effect: {x['action']}; supervision: {x['supervision']}; reset: {x['reset']}."]
-    md += ['', '## Wall penetrations', '', '| ID | Wall | SITE position | Cables |', '|---|---|---|---|']
+    md += ['', '## Macierz przyczyna-skutek', '']
+    for x in d['fire']['control_matrix']:md += [f"- **{x['id']}** {x['trigger']}; warunek: {x['condition']}; wyjścia: {', '.join(x['outputs']) or 'brak sterowania elektrycznego'}; skutek: {x['action']}; nadzór: {x['supervision']}; reset: {x['reset']}."]
+    md += ['', '## Przepusty przez przegrody', '', '| ID | Ściana | Punkt SITE | Kable |', '|---|---|---|---|']
     for pr in d['penetrations']:md.append(f"| {pr['id']} | {pr['wall']} | {pr['xyz_site_m']} | {', '.join(pr['connections'])} |")
-    md += ['', '## Cables - complete SITE paths', '', 'Purchase = ceil((plan + vertical + service slack) * (1 + waste)). Factory connections and patch cords listed as accessories do not increase installation-cable quantities. OSDP data (RS485) and reader power (DC-READER) use separate cables and connections, without counting one cable twice.', '', '| ID | Endpoints | Type; route | Plan / vertical / slack / purchase [m] | SITE points (x,y,z) |','|---|---|---|---|---|']
+    md += ['', '## Kable - kompletny przebieg w układzie SITE', '', 'Zakup = ceil((rzut + pion + zapas montażowy) * (1 + odpad)). Fabryczne połączenia i patchcordy wskazane w osprzęcie nie zwiększają przedmiaru kabla instalacyjnego. Dane OSDP (RS485) i zasilanie czytników (DC-READER) są osobnymi przewodami i osobnymi połączeniami, bez podwójnego zaliczenia jednego kabla.', '', '| ID | Końce | Typ; trasa | Rzut / pion / zapas / zakup [m] | Punkty (x,y,z) SITE |','|---|---|---|---|---|']
     for c in d['connections']:
-        note = ' (factory / accessories)' if c.get('included_in_assembly') or c.get('covered_by_bom') else ''
+        note = ' (fabryczne / osprzęt)' if c.get('included_in_assembly') or c.get('covered_by_bom') else ''
         md.append('| '+c['id']+' | '+' -> '.join(e['device']+':'+e['port'] for e in c['ends'])+f" | {c['cable_type']}; {c['route']} | {c['plan_m']} / {c['vertical_m']} / {c['service_m']} / {c['purchase_m']}{note} | "+' -> '.join(map(str,c['points_site_m']))+' |')
-    md += ['', '## Calculation results', '', '```json',json.dumps(r,ensure_ascii=False,indent=2),'```', '', '## Parameter sources', '']
-    for s in d['sources']:md.append(f"- **{s['id']}** {s['title']}; {s['pinpoint']}; {s['url']}; accessed {s['access_date']}.")
-    return {ROOT/'generated/design-data.tex':t, ROOT/'generated/references.tex':b, ROOT/'docs/device-register.md':'\n'.join(md)+'\n'}
+    md += ['', '## Wyniki obliczeń', '', '```json',json.dumps(r,ensure_ascii=False,indent=2),'```', '', '## Źródła parametrów', '']
+    for s in d['sources']:md.append(f"- **{s['id']}** {s['title']}; {s['pinpoint']}; {s['url']}; dostęp {s['access_date']}.")
+    return {ROOT/'generated/design-data.tex':t, ROOT/'generated/references.tex':b, ROOT/'docs/rejestr-urzadzen.md':'\n'.join(md)+'\n'}
 
 
 def main():
@@ -257,8 +257,8 @@ def main():
         if args.check:
             if not path.exists() or path.read_text()!=content:stale.append(str(path.relative_to(ROOT)))
         else:path.parent.mkdir(parents=True,exist_ok=True);path.write_text(content)
-    if stale:raise SystemExit('Stale export: '+', '.join(stale)+'; run make data')
-    print('Data export: '+('current' if args.check else 'written'))
+    if stale:raise SystemExit('Nieaktualny eksport: '+', '.join(stale)+'; uruchom make data')
+    print('Eksport danych: '+('aktualny' if args.check else 'zapisany'))
 
 
 if __name__=='__main__':main()

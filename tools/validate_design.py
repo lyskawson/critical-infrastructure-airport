@@ -102,8 +102,8 @@ def validate(d):
         check(v['visible'],'PATH1 upper-body outside 3D frame: '+v['camera'])
         check(v['min_ppm']>=v['minimum_ppm'],'PATH1 pixel density: '+v['camera'])
     for v in optics['kd']:
-        check(v['visible'],'ACS opening outside verification 3D frame: '+v['id']+'/'+v['camera'])
-        check(v['min_ppm']>=v['minimum_ppm'],'ACS verification pixel density: '+v['id'])
+        check(v['visible'],'KD opening outside verification 3D frame: '+v['id']+'/'+v['camera'])
+        check(v['min_ppm']>=v['minimum_ppm'],'KD verification pixel density: '+v['id'])
     check(optics['ai_line']['visible'],'AI line feet/body outside 3D frame')
     check(optics['ai_roi']['visible'],'AI ROI feet/body outside 3D frame')
     check(optics['ai_roi']['min_person_height_px']>=d['ai']['minimum_image_height_fraction']*dev[d['ai']['camera_ids'][0]]['video_vertical_px'],'AI human image height')
@@ -117,29 +117,29 @@ def validate(d):
     check(ys[0]-half>max(r[1]+r[3] for r in d['site']['parking_layout']['open_gate_leaf_rects_site_m']),'AI body intersects open gate leaves')
     controls=set()
     for a in d['access_points']:
-        check(a['controller'] in dev and dev[a['controller']]['model']=='CTRL','ACS controller: '+a['id'])
-        check((a['controller'],a['channel']) not in controls,'ACS channel reused');controls.add((a['controller'],a['channel']))
-        check(a['channel']==1 and 1<=len(a['readers'])<=2,'ACS capacity')
-        check(all(r in dev and dev[r]['model']=='READER' for r in a['readers']),'ACS reader reference')
-        check(sum(models[dev[r]['model']]['max_current_a'] for r in a['readers'])<=models['CTRL']['reader_current_capacity_a'],'ACS reader power')
+        check(a['controller'] in dev and dev[a['controller']]['model']=='CTRL','KD controller: '+a['id'])
+        check((a['controller'],a['channel']) not in controls,'KD channel reused');controls.add((a['controller'],a['channel']))
+        check(a['channel']==1 and 1<=len(a['readers'])<=2,'KD capacity')
+        check(all(r in dev and dev[r]['model']=='READER' for r in a['readers']),'KD reader reference')
+        check(sum(models[dev[r]['model']]['max_current_a'] for r in a['readers'])<=models['CTRL']['reader_current_capacity_a'],'KD reader power')
         load=sum(models[dev[r]['model']]['max_current_a'] for r in a['readers'])
         if dev[a['lock']]['model']=='STRIKE':load+=models['STRIKE']['max_current_a']
-        check(load<=models['CTRL']['peripheral_capacity_a'],'ACS peripheral current budget')
-        check(a['door_contact'] in dev and a['dps_supervision']['series_ohm']==a['dps_supervision']['parallel_ohm'],'ACS supervised DPS')
-        check(a['from_zone'] in places and a['to_zone'] in places,'ACS side/zone reference: '+a['id'])
-        check(bool(a['no_lan'] and a['no_power'] and a['fire'] and a['physical_egress_path']),'ACS missing failure state')
-        for cid in a['verification_cameras']:check(cid in dev and dev[cid]['model']=='CAM','ACS verification camera reference')
-        check(bool(a['verification_cameras']),'ACS missing verification frame: '+a['id'])
+        check(load<=models['CTRL']['peripheral_capacity_a'],'KD peripheral current budget')
+        check(a['door_contact'] in dev and a['dps_supervision']['series_ohm']==a['dps_supervision']['parallel_ohm'],'KD supervised DPS')
+        check(a['from_zone'] in places and a['to_zone'] in places,'KD side/strefa reference: '+a['id'])
+        check(bool(a['no_lan'] and a['no_power'] and a['fire'] and a['physical_egress_path']),'KD missing failure state')
+        for cid in a['verification_cameras']:check(cid in dev and dev[cid]['model']=='CAM','KD verification camera reference')
+        check(bool(a['verification_cameras']),'KD missing verification frame: '+a['id'])
         if a['id']!='G01':
-            check(a['door_contact'] in dev and a['rex'] in dev,'ACS contact/exit reference')
-            check(models[dev[a['lock']]['model']]['max_current_a']<=models['CTRL']['lock_current_capacity_a'],'ACS strike overload')
+            check(a['door_contact'] in dev and a['rex'] in dev,'KD contact/exit reference')
+            check(models[dev[a['lock']]['model']]['max_current_a']<=models['CTRL']['lock_current_capacity_a'],'KD strike overload')
             check(a['ssprelease_channel'] is None,'unnecessary electrical unlock for mechanical egress')
-    check(dev['DC-D01']['id']!=dev['IC-D01']['id'],'ACS/IDS same contact counted twice')
+    check(dev['DC-D01']['id']!=dev['IC-D01']['id'],'KD/SSWiN same contact counted twice')
     intrusion_lines=[]
     for c in d['connections']:
         for e in c['ends']:
             if e['device']=='SSWiN-0' and e['port'].startswith('Z'):intrusion_lines.append(int(e['port'][1:]))
-    check(len(intrusion_lines)==len(set(intrusion_lines)) and all(1<=n<=15 for n in intrusion_lines),'IDS input capacity/reuse')
+    check(len(intrusion_lines)==len(set(intrusion_lines)) and all(1<=n<=15 for n in intrusion_lines),'SSWiN input capacity/reuse')
     check(len(d['intrusion_zones'])<=2,'VERSA partitions')
     for z in d['intrusion_zones']:check(all(x in dev for x in z['devices']),'intrusion zone reference')
     loop=d['fire']['loops'][0];order=loop['devices'];loop_cs=loop['connections']
@@ -237,16 +237,16 @@ def validate(d):
     check(r['sd_hours']>=d['video']['local_buffer_target_h'],'local storage buffer')
     check(d['video']['licences']['core_device_5y']==r['count']['camera']+r['count']['access_controller'],'VMS licence count')
     check(r['loop_alarm_a']<=loop['max_current_a'] and r['loop_resistance_ohm']<=models['CSP']['loop_max_resistance_ohm'],'loop current/resistance')
-    check(r['loop_far_voltage_v']>=max(models[dev[x]['model']]['voltage_min'] for x in order),'FAS far voltage')
+    check(r['loop_far_voltage_v']>=max(models[dev[x]['model']]['voltage_min'] for x in order),'SSP far voltage')
     for v in r['voltage_checks']:check(v['voltage_v']>=v['required_v'],'DC voltage: '+v['connection'])
     for bank,selected in zip(r['banks'],d['power']['dc_batteries']):
         check(bank['required_ah']<=bank['selected_ah'],'battery capacity: '+bank['id'])
         check(bank['recharge_h']<=selected['recharge_goal_h'],'recharge duration: '+bank['id'])
         check(len(selected['battery_ids'])==selected['series']*selected['parallel'],'battery series/parallel topology')
-    check(r['fire_supply_with_charge_a']<=models['CSP']['psu_i_max_a'],'FAS PSU charging overload')
-    check(r['intrusion_supply_with_charge_a']<=models['SSWIN']['psu_a'],'IDS PSU charging overload')
+    check(r['fire_supply_with_charge_a']<=models['CSP']['psu_i_max_a'],'SSP PSU charging overload')
+    check(r['intrusion_supply_with_charge_a']<=models['SSWIN']['psu_a'],'SSWiN PSU charging overload')
     alarm_aux=sum(models[x['model']].get('alarm_a',0) for x in dev.values() if x['model'] in ['PIR','ETHM'])
-    check(alarm_aux<=.5 and models['KEYPAD']['alarm_a']<=.5 and models['SIREN']['alarm_a']<=1.1,'IDS AUX/KPD/output capacity')
+    check(alarm_aux<=.5 and models['KEYPAD']['alarm_a']<=.5 and models['SIREN']['alarm_a']<=1.1,'SSWiN AUX/KPD/output capacity')
     check(r['ups_design_w']<=models['UPS']['rating_w'],'UPS rating')
     check(r['ups_derated_minutes']>=d['power']['ups_target_minutes'],'UPS published runtime insufficient')
     # No independent AC load may disappear from the UPS calculation; PoE counted within switch AC envelope.
@@ -278,7 +278,7 @@ def self_test(d):
     case('stale penetration geometry',lambda x:x['penetrations'][0].update(xyz_site_m=[0,0,0]))
     case('nonexistent control output',lambda x:x['fire']['control_matrix'][0]['outputs'].append('CSP-0:UNKNOWN'))
     case('occupied stall blocks entry',lambda x:x['site']['parking_layout']['stalls'].append(dict(id='P04',rect_site_m=[62,20,2.5,5],accessible=False)), 'parking entry / occupied stall collision')
-    case('D01 outside far clip',lambda x:next(v for v in x['devices'] if v['id']=='C01')['view'].update(far_clip_m=8), 'ACS opening outside verification 3D frame: D01')
+    case('D01 outside far clip',lambda x:next(v for v in x['devices'] if v['id']=='C01')['view'].update(far_clip_m=8), 'KD opening outside verification 3D frame: D01')
     case('AI line below image',lambda x:next(v for v in x['devices'] if v['id']=='C08')['view'].update(down_tilt_deg=0), 'AI line feet/body outside 3D frame')
     case('PATH1 upper body clipped',lambda x:next(v for v in x['devices'] if v['id']=='C02')['view'].update(down_tilt_deg=45), 'PATH1 upper-body outside 3D frame: C02')
     case('independent optimistic last-reader voltage',lambda x:next(c for c in x['connections'] if c['id']=='DC-RD-G01-OUT')['voltage_check'].update(source_min_v=12), 'DC cascade has independent source voltage')
@@ -286,7 +286,7 @@ def self_test(d):
         errors,_=validate(changed)
         if not errors:raise SystemExit('Self-test failed to reject '+name)
         if expected and not any(expected in e for e in errors):raise SystemExit('Self-test rejected for unrelated reason: '+name)
-    print(f'Validator negative tests: {len(cases)}/{len(cases)} rejected.')
+    print(f'Próby negatywne walidatora: {len(cases)}/{len(cases)} odrzucone.')
 
 
 def main():
@@ -294,13 +294,13 @@ def main():
     d=load_design();errors,r=validate(d)
     if errors:raise SystemExit('\n'.join(sorted(set(errors))))
     stale=[str(p.relative_to(ROOT)) for p,t in outputs(d).items() if not p.exists() or p.read_text()!=t]
-    if stale:raise SystemExit('Stale export: '+', '.join(stale)+'; make data')
+    if stale:raise SystemExit('Nieaktualny eksport: '+', '.join(stale)+'; make data')
     if args.self_test:self_test(d)
     if args.report:args.report.parent.mkdir(parents=True,exist_ok=True);args.report.write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n')
-    print(f"OK: {len(d['devices'])} devices/assemblies, {len(d['connections'])} connections; 1 data source.")
-    print(f"PoE with reserve {r['poe_with_margin_w']:.1f}/384W; longest channel {r['max_copper_channel_m']:.1f}m; FAS {r['loop_length_m']:.1f}m, {r['loop_far_voltage_v']:.2f}V; manual call-point walk {r['rop_max_walk_m']:.2f}m.")
-    print(f"Recording {r['storage_required_tb']:.3f}/{r['storage_available_tb']:.1f}TB; UPS {r['ups_load_w']:.1f}W, after derating {r['ups_derated_minutes']:.2f}min; cable purchase {r['cable_purchase_m']}m.")
-    print('Consistency checks do not establish engineering correctness or standards compliance and are not site-test results.')
+    print(f"OK: {len(d['devices'])} urządzeń/zespołów, {len(d['connections'])} połączeń; 1 źródło danych.")
+    print(f"PoE z rezerwą {r['poe_with_margin_w']:.1f}/384W; najdłuższy kanał {r['max_copper_channel_m']:.1f}m; SSP {r['loop_length_m']:.1f}m, {r['loop_far_voltage_v']:.2f}V; ROP dojście {r['rop_max_walk_m']:.2f}m.")
+    print(f"Zapis {r['storage_required_tb']:.3f}/{r['storage_available_tb']:.1f}TB; UPS {r['ups_load_w']:.1f}W, po współczynnikach {r['ups_derated_minutes']:.2f}min; kabel zakup {r['cable_purchase_m']}m.")
+    print('Kontrole spójności nie są potwierdzeniem poprawności inżynierskiej, zgodności normatywnej ani wynikiem prób obiektu.')
 
 
 if __name__=='__main__':main()

@@ -8,7 +8,7 @@ data:
 pdf: data check
 	latexmk -pdf -interaction=nonstopmode -halt-on-error -file-line-error -outdir=build main.tex
 	mkdir -p output/pdf
-	cp build/main.pdf output/pdf/north-airport.pdf
+	cp build/main.pdf output/pdf/lotnisko-polnoc.pdf
 
 check:
 	$(PYTHON) tools/validate_design.py

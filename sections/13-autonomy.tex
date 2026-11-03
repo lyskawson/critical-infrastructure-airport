@@ -1,42 +1,42 @@
-\section{Autonomy, batteries, and voltage drop}
-\subsection{UPS sizing from the manufacturer curve}
-The Eaton 5PX1500IRT2UG2 UPS is rated 1500 VA / 1500 W and uses two 5PXEBM48RT2UG2 battery modules. The \UPSDesign{} W envelope is within its output rating. The next higher published load point for this exact configuration is used: \UPSCurveW{} W and \UPSCurveMin{} min. No favourable interpolation is applied. With the manufacturer's $-15\%$ tolerance and the project's 0.8 ageing factor:
+\section{Autonomia, baterie i spadki napięć}
+\subsection{UPS na podstawie krzywej producenta}
+Wybrano UPS Eaton o mocy 1500 VA / 1500 W, model 5PX1500IRT2UG2. Uzupełniają go dwa moduły baterii 5PXEBM48RT2UG2. Obwiednia \UPSDesign{} W mieści się w mocy wyjściowej. Z opublikowanego szeregu producenta dla dokładnie tej konfiguracji przyjęto następny wyższy punkt: \UPSCurveW{} W i \UPSCurveMin{} min. Nie interpolowano w korzystniejszą stronę. Po tolerancji producenta $-15\%$ i własnym współczynniku starzenia 0,8:
 \[
-t_{\mathrm{design}}=\UPSCurveMin{}\cdot0.85\cdot0.8=\UPSMinutes{}\ \mathrm{min}>30\ \mathrm{min}.
+t_{\mathrm{proj}}=\UPSCurveMin{}\cdot0{,}85\cdot0{,}8=\UPSMinutes{}\ \mathrm{min}>30\ \mathrm{min}.
 \]
-This is curve-based sizing, not a performed autonomy test. The ageing factor does not guarantee the condition of every used battery. Acceptance uses the target load and temperature after full charging and recognition of both EBM modules. A kWh formula alone is not used as runtime evidence.\cite{S-UPS,S-UPS-GUIDE}
+Jest to obliczony dobór na podstawie krzywej, nie wykonana próba autonomii. Współczynnik starzenia nie jest gwarancją zachowania każdej zużytej baterii. Odbiór odbywa się przy docelowym obciążeniu i temperaturze, po pełnym naładowaniu i rozpoznaniu obu EBM. Nie wykorzystuje się samego wzoru kWh jako dowodu czasu pracy.\cite{S-UPS,S-UPS-GUIDE}
 
-\subsection{FAS and IDS batteries}
-CSP-0 contains \textbf{one 12 V / 17 Ah battery}, not two series batteries at 24 V. The panel converter supplies the loop at a higher voltage. Loop devices total \LoopStandbyMA{} mA in standby and \LoopAlarmMA{} mA in alarm. At the assumed lower battery limit of 10.5 V and project minimum converter efficiency 0.8:
+\subsection{Baterie SSP i SSWiN}
+W CSP-0 znajduje się \textbf{jeden akumulator 12 V / 17 Ah}, nie dwa akumulatory szeregowe 24 V. Przetwornica centrali zasila pętlę wyższym napięciem. Łączny prąd elementów pętli wynosi \LoopStandbyMA{} mA w dozorze i \LoopAlarmMA{} mA w alarmie. Dla końca przyjętego zakresu pracy baterii 10,5 V i własnego minimum sprawności przetwornicy 0,8 uwzględniono:
 \[
-I_b=I_{\text{board}}+\frac{24\,I_{\text{loop}}}{10.5\cdot0.8}.
+I_b=I_{\text{płyty}}+\frac{24\,I_{\text{pętli}}}{10{,}5\cdot0{,}8}.
 \]
-Board battery currents of 0.22/0.32 A come from panel data, separately from loop loads. DCP uses the conservative DMP current envelope. FAS battery current is \FireStandby{} A in standby and \FireAlarm{} A in alarm; required capacity is:
+Prądy płyty z baterii 0,22/0,32 A przyjęto z danych centrali, osobno od odbiorów liniowych. Dla urządzenia DCP zastosowano konserwatywną obwiednię prądu DMP. Prąd baterii SSP wynosi \FireStandby{} A w dozorze i \FireAlarm{} A w alarmie; wymaganie pojemności:
 \[
-Q_F=1.25(24 I_{b,s}+0.5 I_{b,a})=\FireAh{}\ \mathrm{Ah}<17\ \mathrm{Ah}.
+Q_F=1{,}25(24 I_{b,d}+0{,}5 I_{b,a})=\FireAh{}\ \mathrm{Ah}<17\ \mathrm{Ah}.
 \]
-The adopted 24 h + 0.5 h is the project's target for a continuously staffed model, not a quotation of a universal EN 54 requirement.\cite{S-FIRE,S-DMP,S-ROP,S-SND}
+Przyjęte 24 h + 0,5 h jest własnym celem dla stale obsadzonego modelu, nie przytoczeniem uniwersalnego wymagania EN 54.\cite{S-FIRE,S-DMP,S-ROP,S-SND}
 
-IDS has a separate 12 V / 17 Ah battery. The budget includes VERSA at 0.135/0.160 A, ETHM at 0.070/0.080 A, keypad at 0.050/0.060 A, six PIRs at 0.010/0.025 A each, sounder up to 0.120 A in alarm, and a project 0.010 A supervision allowance. The resulting currents are \IntrusionStandby{}/\IntrusionAlarm{} A, with
+SSWiN ma odrębny akumulator 12 V / 17 Ah. Bilans obejmuje VERSA 0,135/0,160 A, ETHM 0,070/0,080 A, klawiaturę 0,050/0,060 A, sześć PIR po 0,010/0,025 A, syrenę do 0,120 A w alarmie oraz własną rezerwę 0,010 A na obwody nadzoru. Otrzymano \IntrusionStandby{}/\IntrusionAlarm{} A oraz
 \[
-Q_I=1.25(24 I_s+0.25 I_a)=\IntrusionAh{}\ \mathrm{Ah}<17\ \mathrm{Ah}.
+Q_I=1{,}25(24 I_d+0{,}25 I_a)=\IntrusionAh{}\ \mathrm{Ah}<17\ \mathrm{Ah}.
 \]
-ACS controllers have no additional DC batteries; the same UPS supports them through PoE. Mechanical egress remains after it is exhausted. The former four-hour electrical ACS backup target is not claimed.\cite{S-SSWIN,S-ETHM,S-LCD,S-PIR,S-SIREN}
+Kontrolery KD nie mają dodatkowych baterii DC; podtrzymuje je ten sam UPS przez PoE. Po jego wyczerpaniu pozostaje mechaniczne wyjście. Nie deklaruje się dawnych czterech godzin zasilania elektrycznego KD.\cite{S-SSWIN,S-ETHM,S-LCD,S-PIR,S-SIREN}
 
-\subsection{Power supplies and charging}
-Published maximum FAS charging current is 1.4 A. Runtime estimates conservatively use only 0.8 A, allowing for panel load. Converting 14.4 V charging to the 18 V supply side at 0.8 efficiency and adding circuit loads gives \FireSupplyA{} A against Imax 1.6 A. IDS maximum loads plus factory charging at 0.35 A total \IntrusionSupplyA{} A against 2 A. Charging currents are not added during battery operation.
+\subsection{Zasilacze i ładowanie}
+Maksymalny prąd ładowania SSP z katalogu wynosi 1,4 A. Do obliczenia czasu przyjęto ostrożnie tylko 0,8 A, pozostawiając miejsce na obciążenie centrali. Przeliczenie ładowania 14,4 V na stronę 18 V zasilacza przy sprawności 0,8 i dodanie obwodów daje \FireSupplyA{} A wobec Imax 1,6 A. Dla SSWiN suma maksymalnych odbiorów i fabrycznego ładowania 0,35 A wynosi \IntrusionSupplyA{} A wobec 2 A. Prądów ładowania nie dodaje się do prądu podczas pracy z baterii.
 
-Restoring 80\% of nominal capacity with a 1.2 charging-loss factor is estimated by $t=0.8Q\cdot1.2/I_{\text{charge}}$. This gives FAS \FireRecharge{} h (target up to 24 h) and IDS \IntrusionRecharge{} h (target up to 72 h). The final charging stage depends on temperature and algorithm; these are estimates for testing, not measured times to 100\% charge.
+Dla odtworzenia 80\% nominalnej pojemności i współczynnika strat ładowania 1,2 przyjęto $t=0{,}8Q\cdot1{,}2/I_{\text{ł}}$. Otrzymano SSP \FireRecharge{} h (cel do 24 h), SSWiN \IntrusionRecharge{} h (cel do 72 h). Końcowa faza ładowania zależy od temperatury i algorytmu; są to oszacowania do próby, a nie zmierzony czas pełnego ładowania 100\%.
 
-\subsection{Voltage drop}
-For a two-conductor circuit, warm-copper resistivity is assumed as $\rho=0.0225\ \Omega\,\mathrm{mm}^2/\mathrm{m}$:
+\subsection{Spadki napięć}
+Dla dwużyłowego toru przyjęto rezystywność rozgrzanej miedzi $\rho=0{,}0225\ \Omega\,\mathrm{mm}^2/\mathrm{m}$:
 \[
-R=\frac{2\rho L_{\mathrm{inst}}}{A},\qquad U_{\mathrm{end}}=U_{\min}-IR-\Delta U_{\text{joints}}.
+R=\frac{2\rho L_{\mathrm{inst}}}{A},\qquad U_k=U_{\min}-IR-\Delta U_{\text{złączy}}.
 \]
-The table covers every reader and strike, all PIRs, the keypad, and sounder. The long common G01 cable carries up to \GateCurrent{} A for both readers; \GateSection{} mm$^2$ and a further 0.05 V allowance for short terminal transitions are used. The OUT section input is calculated directly from the common cable end: \GateFirstVoltage{} V. After its further drop and joint losses, the last reader receives \GateReaderVoltage{} V. No independent, more favourable second-section source is assumed. The 11.4 V threshold is a project acceptance criterion for the nominal 12 V circuit, not a new reader certification range.
+Tabela obejmuje każdy czytnik i zaczep, wszystkie PIR, klawiaturę oraz syrenę. Długi wspólny przewód G01 przenosi maksymalnie \GateCurrent{} A obu czytników; zastosowano \GateSection{} mm$^2$ i dodatkowe 0,05 V rezerwy na krótkie przejścia zaciskowe. Napięcie wejściowe odcinka OUT jest wyliczane bezpośrednio z końca wspólnego przewodu: \GateFirstVoltage{} V. Po dalszym spadku i stratach złączy na ostatnim czytniku pozostaje \GateReaderVoltage{} V. Nie ma niezależnej, korzystniejszej granicy napięcia drugiego odcinka. 11,4 V jest własnym kryterium odbioru toru nominalnie 12 V, nie nową deklaracją zakresu certyfikacji czytnika.
 
 \VoltageTable
 
-The FAS loop has \LoopLength{} m installed length including slack. For 1 mm diameter conductors, pair resistance is \LoopResistance{} $\Omega$, below the published 100 $\Omega$. Pessimistically placing all loads at the far end after an open circuit, with a project checking threshold of 20.4 V at the regulated loop output, gives \LoopVoltage{} V, above the devices' required 18 V. The published 200 mA loop limit is also met. The 20.4 V threshold assumes a 10.5 V battery for checking; it is not an undocumented panel specification. Actual regulated-loop voltage in that state must be recorded at acceptance.
+Pętla SSP ma \LoopLength{} m długości instalowanej, łącznie z zapasami. Dla żyły o średnicy 1 mm rezystancja obu żył wynosi \LoopResistance{} $\Omega$, mniej niż katalogowe 100 $\Omega$. Dla pesymistycznego skupienia wszystkich odbiorów na końcu toru po przerwie, przy własnym kontrolnym progu 20,4 V na regulowanym wyjściu pętli, otrzymano \LoopVoltage{} V, więcej niż wymagane przez elementy 18 V. Katalogowy limit pętli 200 mA także nie jest przekroczony. Próg 20,4 V jest założeniem sprawdzenia przy baterii 10,5 V, a nie nieudokumentowanym parametrem katalogowym centrali; rzeczywiste napięcie regulowanej pętli w tym stanie trzeba odnotować podczas odbioru.
 
-Below the adopted thresholds or after backup depletion, continued effective detection and recording are not assumed. The operator closes the site to new users and organises physical supervision and evacuation if local fire functions cannot be maintained. Disconnecting a depleted battery protects it against damage but does not sustain system operation.
+Po zejściu napięcia poniżej przyjętych progów albo po wyczerpaniu rezerwy nie zakłada się dalszej skutecznej detekcji i zapisu. Dyżurny zamyka obiekt dla nowych użytkowników, organizuje fizyczny nadzór i ewakuację, jeżeli lokalnych funkcji pożarowych nie można utrzymać. Odłączenie wyczerpanej baterii chroni ją przed uszkodzeniem, ale nie utrzymuje funkcji systemu.

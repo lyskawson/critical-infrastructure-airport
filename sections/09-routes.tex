@@ -1,25 +1,25 @@
-\section{Installation routes and connections}
-Each connection has two existing device:port endpoints, a cable type, route ID, complete 3D SITE polyline, plan length, vertical length, service slack, and purchase length. For points $P_i=(x_i,y_i,z_i)$:
+\section{Trasy i połączenia instalacyjne}
+Każde połączenie ma dwa istniejące końce urządzenie:port, typ kabla, identyfikator trasy, pełną łamaną 3D w SITE, rzut, pion, zapas montażowy i długość zakupu. Dla odcinka o punktach $P_i=(x_i,y_i,z_i)$:
 \[
-L_h=\sum_i\sqrt{(x_{i+1}-x_i)^2+(y_{i+1}-y_i)^2},\quad
-L_v=\sum_i|z_{i+1}-z_i|,
+L_r=\sum_i\sqrt{(x_{i+1}-x_i)^2+(y_{i+1}-y_i)^2},\quad
+L_p=\sum_i|z_{i+1}-z_i|,
 \]
 \[
-L_{\mathrm{inst}}=L_h+L_v+L_s,\qquad
-L_{\mathrm{buy}}=\left\lceil L_{\mathrm{inst}}(1+f)\right\rceil.
+L_{\mathrm{inst}}=L_r+L_p+L_z,\qquad
+L_{\mathrm{zak}}=\left\lceil L_{\mathrm{inst}}(1+f)\right\rceil.
 \]
-For installation cable, $f=0.10$; end slack is generally 0.4--2 m, with more on the outdoor section; values are recorded individually. Rounding applies to each cut, so the purchase total need not equal the rounded length of the whole group. Factory connections and patch cords included in accessories carry an asterisk and are not bought by the metre again.
+Dla kabla instalacyjnego $f=0{,}10$, a zapas końcowy wynosi zasadniczo 0,4--2 m, z większym zapasem na odcinku zewnętrznym; wartości są indywidualnie zapisane. Zaokrąglenie dotyczy każdego cięcia, więc suma zakupowa nie musi równać się zaokrąglonej długości całej grupy. Połączenia fabryczne oraz patchcordy ujęte w osprzęcie są oznaczone gwiazdką i nie są ponownie kupowane na metry.
 
 \RouteTable
 
-R1/R2 are shared only mechanically: the tray separates IP, ACS, and IDS functions. FAS has separate R3/R4 supports and penetrations; 230 V power uses a separate tray. R5--R8 form an outdoor telecommunications duct tree of \DuctLength{} m, with \DuctPurchase{} m of pipe purchased and three chambers outside the vehicle lane and gate-opening envelope. Ducts are not cables and are not added to cable length. Main-route coordinates define routing corridors; individual cable polylines include every branch and vertical section. These polylines determine length and connection drawings. JC03 moved from $(65,11)$ to $(62,11)$ on existing R5; its 0.4 $\times$ 0.4 m outline ends at $x=62.2$, outside the lane starting at $x=63$. This does not change G01 supply length. The C08 branch now follows R8 from $(63,11)$ to $(63,20)$; its IP and PE cables and quantities were updated.
+R1/R2 są trasami wspólnymi tylko mechanicznie: koryto ma rozdzielone funkcje IP, KD i SSWiN. SSP ma odrębne podpory i przejścia R3/R4; energia 230 V biegnie osobnym korytem. R5--R8 tworzą zewnętrzne drzewo kanalizacji teletechnicznej długości \DuctLength{} m, z zakupem \DuctPurchase{} m rury i trzema studzienkami poza pasem ruchu i obrysem otwarcia bramy. Rury nie są kablami; nie sumuje się ich do długości kabla. Współrzędne tras głównych określają korytarze prowadzenia, a indywidualne łamane kabli uwzględniają wszystkie odejścia i piony. To łamane kabli są podstawą długości i rysunku połączenia. JC03 przesunięto z $(65,11)$ na $(62,11)$ na istniejącym przebiegu R5; obrys 0,4 $\times$ 0,4 m kończy się na $x=62{,}2$, poza pasem od $x=63$. Nie zmienia to długości zasilania G01. Odgałęzienie C08 prowadzi teraz po R8 od $(63,11)$ do $(63,20)$; zaktualizowano przewód IP, PE i ich przedmiar.
 
-OSDP data and reader power use separate cables and connections. RS485 has a 120 $\Omega$ twisted pair; local power uses 2 $\times$ 0.75 mm$^2$, and the long supply for both G01 readers uses 2 $\times$ 6 mm$^2$. Short transitions to a manufacturer-approved conductor size are used at terminals. The G01 bus follows KD-05--IN reader--OUT reader, without a star or long stubs; both ends are terminated. The shield does not replace signal reference and common ground.\cite{S-KD,S-READER}
+Dane OSDP i zasilanie czytników stanowią osobne przewody i osobne połączenia. RS485 ma parę skręcaną 120 $\Omega$, zasilanie lokalne 2 $\times$ 0,75 mm$^2$, a długie zasilanie dwóch czytników G01 2 $\times$ 6 mm$^2$. Przy zacisku stosuje się krótkie przejście na przekrój dopuszczony przez producenta. Magistrala G01 prowadzi KD-05--czytnik IN--czytnik OUT, bez gwiazdy i długich odnóg; terminatory występują na obu końcach. Sygnał i wspólna masa nie są zastępowane ekranem.\cite{S-KD,S-READER}
 
-For PIR, 6 $\times$ 0.5 mm$^2$ cable provides separate AUX power and 2EOL pairs; the spare pair is insulated. Door contacts and relay circuits have their own signal cables. FAS uses addressable 1 $\times$ 2 $\times$ 1.0 mm cable, where 1.0 mm is conductor diameter: cross-section is 0.785 mm$^2$. A 1 mm$^2$ cross-section must not be used in that calculation.
+Dla PIR przewód 6 $\times$ 0,5 mm$^2$ obejmuje oddzielną parę zasilania AUX i parę linii 2EOL; wolna para jest izolowana. Linie kontaktronów i przekaźników mają własne przewody sygnałowe. SSP wykorzystuje adresowalny przewód 1 $\times$ 2 $\times$ 1,0 mm, gdzie 1,0 mm oznacza średnicę żyły: przekrój wynosi 0,785 mm$^2$. Nie wolno w obliczeniu używać dla niego przekroju 1 mm$^2$.
 
-Dedicated FAS supply uses NHXH-J FE180/E90 cable with a compatible E90 support system; other 230 V circuits use separate YDY cables. A cable designation does not establish fire survival of the complete assembly. Actual implementation requires checking substrate--support--cable compatibility and penetration sealing. Testing or certification of the installation is not claimed.
+Wybrano dedykowane zasilanie SSP kablem NHXH-J FE180/E90 z kompatybilnym systemem mocowań E90; pozostałe obwody 230 V mają odrębne YDY. Oznaczenie kabla nie dowodzi zachowania funkcji całego zespołu w pożarze. W rzeczywistej realizacji trzeba sprawdzić system podłoże--uchwyt--kabel i sposób uszczelnienia przejść. Nie deklaruje się przebadania ani certyfikacji instalacji.
 
-\subsection*{Connection and length register}
-An asterisk marks a factory connection or length already included in the patch-cord item. The data register gives every polyline coordinate; the table below supports checking endpoints, length components, and quantities.
+\subsection*{Rejestr połączeń i długości}
+Gwiazdka oznacza połączenie fabryczne albo długość już zawartą w pozycji patchcordów. Pełne współrzędne każdej łamanej podaje rejestr danych; tabela poniżej pozwala sprawdzić końce, podział długości i przedmiar.
 \ConnectionTable

@@ -1,14 +1,14 @@
-\section{CCTV surveillance}
-The design uses \CameraCount{} fixed AXIS P3265-LVE cameras with the 9 mm lens, at 1920 $\times$ 1080 px. The 36--100$^\circ$ horizontal field-of-view range supports the adopted views. Maximum device power is 10.7 W; class 3 PSE allocation is 15.4 W per port. One outdoor-rated model is also used indoors to reduce spare-part variety. It is a reference model with a published datasheet, not a claim of current sales availability. PTZ cameras were not selected because all required directions must be available simultaneously.\cite{S-CAM}
+\section{Monitoring CCTV}
+Zastosowano \CameraCount{} kamer stałych AXIS P3265-LVE w wersji obiektywu 9 mm, 1920 $\times$ 1080 px. Zakres poziomego pola widzenia 36--100$^\circ$ umożliwia przyjęte kadry. Maksymalny pobór urządzenia wynosi 10,7 W; alokacja portu PSE klasy 3 wynosi 15,4 W. Wybrano jeden model z obudową zewnętrzną także do wnętrz, aby ograniczyć liczbę części zamiennych. Jest to referencyjny model z opublikowaną kartą, nie deklaracja bieżącej dostępności sprzedażowej. PTZ nie zastosowano: wymagane kierunki mają być dostępne jednocześnie.\cite{S-CAM}
 
 \CameraTable
 
-C01--C05 use local T0 coordinates; C06--C08 use SITE coordinates. The camera point's third coordinate is mounting height; the target point's third coordinate is the observation-plane height. Azimuth is measured counterclockwise from east. Tilt, distances, image limits, and person-observation segments are also recorded in the register and model.
+Punkty C01--C05 podano lokalnie względem T0; C06--C08 w układzie SITE. Trzeci wymiar punktu kamery oznacza wysokość montażu, a punktu celu wysokość płaszczyzny obserwacji. Azymut liczony jest od osi wschodniej przeciwnie do ruchu wskazówek zegara. Pochylenia, odległości, granice kadru i odcinki obserwacji osoby są również zapisane w rejestrze i modelu.
 
-\subsection*{Optical model and point verification}
-The model assumes rectilinear pinhole projection at 1920 $\times$ 1080, square pixels, and 0$^\circ$ image roll. Barrel distortion correction is enabled. Residual distortion in the calculation is zero, with a reserve of 2\% of the full image dimension on each side, giving allowable normalised coordinates $|x|,|y|\leq0.96$. This is a design assumption, not measured lens calibration. The manufacturer confirms HFOV 36--100$^\circ$, VFOV 20--53$^\circ$, and correction availability; the selected angle pairs follow the adopted projection. All fall within both ranges.\cite{S-CAM}
+\subsection*{Model optyczny i kontrola punktów}
+Przyjęto projekcję prostoliniową otworkową 1920 $\times$ 1080, kwadratowe piksele i obrót obrazu 0$^\circ$. Korekcja dystorsji beczkowej jest włączona. W modelu obliczeniowym resztkowa dystorsja wynosi zero; po każdej stronie pozostawiono rezerwę 2\% całego wymiaru obrazu, czyli dopuszcza się współrzędne znormalizowane $|x|,|y|\leq0{,}96$. Jest to założenie projektowe, nie zmierzona kalibracja obiektywu. Karta producenta potwierdza zakresy HFOV 36--100$^\circ$, VFOV 20--53$^\circ$ i dostępność korekcji, a wybrane pary kątów wynikają z przyjętej projekcji. Wszystkie mieszczą się w obu zakresach.\cite{S-CAM}
 
-For horizontal field $\alpha$, vertical field $\beta$, camera axes $\mathbf f$ (forward), $\mathbf r$ (right), $\mathbf u$ (up), point $P$, and camera $C$:
+Dla poziomego pola $\alpha$, pionowego $\beta$, wektorów osi kamery $\mathbf f$ (przód), $\mathbf r$ (prawo), $\mathbf u$ (góra), punktu $P$ i kamery $C$:
 \[
 \beta=2\arctan\left(\tan\frac{\alpha}{2}\frac{1080}{1920}\right),\qquad
 D=\mathbf f\cdot(P-C)>0,
@@ -17,24 +17,24 @@ D=\mathbf f\cdot(P-C)>0,
 x=\frac{\mathbf r\cdot(P-C)}{D\tan(\alpha/2)},\qquad
 y=\frac{\mathbf u\cdot(P-C)}{D\tan(\beta/2)}.
 \]
-The field is a rectangular pyramid in 3D, additionally clipped by horizontal radial near/far distances and walls. It is not a flat circular sector. The register exports the axes and four corner rays in SITE. Executor B also receives the parameters below and must not independently choose another VFOV or tilt.
+Sektor jest prostokątną piramidą w 3D, dodatkowo ograniczoną poziomą odległością promieniową near/far oraz ścianami. Nie jest płaskim wycinkiem koła. Osie i cztery promienie narożne w SITE podaje eksport rejestru. B otrzymuje także parametry poniżej; nie ustala samodzielnie innego VFOV ani pochylenia.
 
 \OpticsTable
 
-Camera-table image width is $w=2D\tan(\alpha/2)$ on a plane perpendicular to the optical axis through the target; $1920/w$ is density in that plane. For actual openings and person views, a physical transverse 0.6 m segment is projected separately, including oblique perspective. Both height and segment endpoints are checked. The project's D01/D02 and PATH1 target is 250 px/m; overview targets are 80 px/m for D03/D04 and 100 px/m for G01. Overview links an event to video without promising facial identification.
+Szerokość kadru w tabeli kamer to $w=2D\tan(\alpha/2)$ na płaszczyźnie prostopadłej do osi przez punkt celu; $1920/w$ jest gęstością w tej płaszczyźnie. Dla rzeczywistych otworów i ujęć osoby obliczono osobno rzut fizycznego odcinka poprzecznego 0,6 m, uwzględniając skośną perspektywę. Sprawdzane są oba krańce wysokości i odcinków. Własnym celem D01/D02 i PATH1 jest 250 px/m; dla przeglądu D03/D04 przyjęto 80 px/m, a G01 100 px/m. Przegląd służy powiązaniu zdarzenia z obrazem, bez obietnicy identyfikacji twarzy.
 
 \OpticalVerificationTable
 
-Only C01 verifies D01: HFOV was narrowed to 40$^\circ$, tilt set to 8$^\circ$, and far distance to 10.5 m. The check covers the full 1.2 m door opening at heights of 1.2--2.0 m and a horizontal distance of 9.5 m. C02 provides the PATH1 rear view and does not verify D01. C04 covers D02. C05 has a corrected 49$^\circ$ direction, 72$^\circ$ HFOV, and 13 m limit to include the full D03/D04 openings. C08 sees G01 in the plane of the open gate; closed mesh may obscure a person beyond it. Patrol verifies the gate user's card and identity.
+D01 obejmuje wyłącznie C01: zawężono HFOV do 40$^\circ$, pochylenie do 8$^\circ$, a granicę daleką ustawiono na 10,5 m. Kontrola dotyczy całego światła drzwi 1,2 m na wysokości 1,2--2,0 m, w odległości poziomej 9,5 m. C02 jest ujęciem tyłu na PATH1 i nie jest kamerą weryfikacji D01. D02 obejmuje C04. C05 ma skorygowany kierunek 49$^\circ$, HFOV 72$^\circ$ i granicę 13 m, aby objąć pełne światła D03/D04. G01 jest widoczna z C08 w płaszczyźnie otwartej bramy; zamknięta siatka może zasłaniać osobę po drugiej stronie. Weryfikację karty i użytkownika bramy wykonuje patrol.
 
-C01--C04 view the straight PATH1 segment in R102 from the front, rear, and both sides. Indoor views end at room walls; C05 does not see through closed D03/D04. C07 provides a car park overview that vehicles may obscure. C08 covers the designated vehicle lane without number-plate identification. Microphones, toilet surveillance, desks, and neighbouring properties are excluded.\cite{S-AOA,L-GDPR}
+C01--C04 obserwują prosty odcinek PATH1 w R102 z przodu, z tyłu i z obu boków. Kadry kończą się na ścianach pomieszczenia; C05 nie zapewnia obserwacji przez zamknięte D03/D04. Parking C07 daje przegląd zdarzeń, z możliwym zasłonięciem przez pojazdy. C08 obejmuje wydzielony pas dla pojazdów, a nie identyfikuje tablic. Wyłączono mikrofony, obserwację WC, stanowisk pracy i sąsiednich działek.\cite{S-AOA,L-GDPR}
 
-\subsection*{Recording and capacity}
-H.265 at 25 fps is assumed, nominally 4 Mb/s and capped at 6 Mb/s per camera. Retention is sized at the maximum, totalling 48 Mb/s:
+\subsection*{Zapis i pojemność}
+Przyjęto H.265, 25 kl./s, nominalnie 4 Mb/s i ograniczenie maksymalne do 6 Mb/s na kamerę. Bilans retencji wykorzystuje wartość maksymalną, łącznie 48 Mb/s:
 \[
 S=\frac{8\cdot6\cdot10^6}{8}\cdot7\cdot86400
 =\StorageRaw{}\ \mathrm{TB}.
 \]
-A 25\% reserve requires \StorageNeed{} TB. Four 8 TB HAT3300-8T drives in a Synology DS923+, RAID 6, provide \StorageHave{} TB after reserving 10\% for overhead and free space. AXIS Camera Station Pro writes recordings to an SMB3 share; the NAS is not a second VMS. RAID tolerates disk failure but is not an evidence backup. Units are decimal. Playback during array rebuilding must be tested.\cite{S-NAS,S-VMS}
+Z rezerwą 25\% potrzeba \StorageNeed{} TB. Cztery dyski HAT3300-8T po 8 TB w Synology DS923+, RAID 6, dają po odłożeniu 10\% na narzuty i wolne miejsce \StorageHave{} TB. Nagrania zapisuje AXIS Camera Station Pro na udziale SMB3; NAS nie jest drugim VMS. RAID toleruje awarię dysków, lecz nie jest kopią materiału dowodowego. Jednostki są dziesiętne. Wymagana jest próba odtwarzania podczas odbudowy macierzy.\cite{S-NAS,S-VMS}
 
-Each camera has a 128 GB card. With 20\% reserved, the buffer at 6 Mb/s is \SDHours{} h against a 24 h target. Gap recovery must be tested using VMS failover recording. The card helps during transmission loss while power remains available. Switch failure or UPS shutdown also removes PoE and stops local recording.
+Każda kamera ma kartę 128 GB. Po odłożeniu 20\% przy 6 Mb/s bufor wynosi \SDHours{} h wobec celu 24 h. Odtworzenie luki zapisowej trzeba sprawdzić w funkcji failover recording VMS. Karta pomaga przy przerwie transmisji z zachowanym zasilaniem. Awaria przełącznika lub wyłączenie UPS usuwa także PoE i zatrzymuje zapis lokalny.

@@ -1,13 +1,13 @@
-\section{Risks and required behaviour}
-The public, staff, and restricted-access zones organise this model; they are not a formal classification of aviation security restricted areas. A single fire compartment SP0 and Polish occupancy category ZL III are assumed: a low-rise building with no overnight accommodation and no room for more than 50 people who are not regular users. IT is an ordinary locked room, without a separate fire compartment or extinguishing system.
+\section{Ryzyka i wymagane zachowanie}
+Podział publiczny, pracowniczy i ograniczonego dostępu służy organizacji tego modelu; nie jest formalnym podziałem lotniczych stref zastrzeżonych. Przyjęto jedną strefę pożarową SP0 i kategorię ZL III: niski budynek, bez noclegów i bez pomieszczenia dla ponad 50 osób niebędących stałymi użytkownikami. IT jest zwykłym zamykanym pomieszczeniem, bez odrębnej strefy pożarowej i systemu gaszenia.
 
 \begin{tabularx}{\linewidth}{@{}P{32mm}Y Y@{}}
-\toprule Event & Protection and limits & Failure response\\\midrule
-Unauthorised access & Card, PIN for SOC/IT, door state, and associated image. A card does not prove who physically passed through. & Local permissions; an offline controller needs confirmed revocation updates or physical supervision.\\
-Intrusion or hold-up & Two IDS partitions, 2EOL circuits, and a hold-up button; no complete fence detection system. & Local alarm and keypad; patrol replaces unavailable shared monitoring.\\
-Fire & Detection and notification in every room; no delay for video verification. & Dedicated panel battery and mechanical exits; LAN and AI are outside the safety path.\\
-IT or power loss & UPS, local ACS permissions, and camera SD recording while PoE remains available. & Loss of PoE stops video and electronic ACS; free egress remains available.\\
-False analytics alarm & One rule in one camera, assessed using TP/FP/FN and operator workload. & Disabling analytics does not limit the FAS or physical protection of access points.\\\bottomrule
+\toprule Zdarzenie & Ochrona i jej granica & Reakcja przy awarii\\\midrule
+Dostęp bez uprawnienia & Karta, PIN w SOC/IT, stan drzwi, przypisany obraz. Karta nie dowodzi, kto fizycznie przeszedł. & Lokalna lista uprawnień; bez sieci unieważniona karta wymaga potwierdzenia aktualizacji lub dozoru.\\
+Włamanie lub napad & Dwie strefy SSWiN, linie 2EOL i przycisk napadowy; nie projektuje się pełnego dozoru ogrodzenia. & Lokalny alarm i klawiatura; patrol zastępuje niedostępny wspólny podgląd.\\
+Pożar & Wykrywanie i sygnalizacja we wszystkich pomieszczeniach; bez opóźnienia na weryfikację obrazu. & Własna bateria CSP i mechaniczne wyjścia; LAN oraz AI nie uczestniczą w torze bezpieczeństwa.\\
+Utrata IT lub energii & UPS, lokalne listy KD i zapis kamer na kartach przy zachowanym PoE. & Po utracie PoE obraz i KD przestają działać; swobodne wyjście pozostaje.\\
+Błędny alarm analityki & Jedna reguła w jednej kamerze, ocena TP/FP/FN i czasu pracy operatora. & Wyłączenie analityki nie ogranicza SSP ani fizycznej ochrony przejść.\\\bottomrule
 \end{tabularx}
 
-Design acceptance targets are: identified ACS/IDS events at SOC within 5 s on a working network; seven days of recording at the capped bitrate; 30 min of UPS operation for IT/ACS; 24 h standby followed by 30 min FAS alarm, or 24 h followed by 15 min IDS alarm. These are project targets, not requirements quoted from unavailable standards. A single LAN star and one SOC computer remain single points of failure; no reconvergence or server redundancy is claimed.
+Przyjęte cele odbiorowe: zdarzenie KD/SSWiN z identyfikatorem w SOC do 5 s przy sprawnej sieci; siedem dni zapisu przy ograniczeniu bitrate; 30 min pracy IT/KD z UPS; 24 h dozoru i następnie 30 min alarmu SSP, a dla SSWiN 24 h i 15 min alarmu. Są to cele własne, nie przytoczone bez dostępu wymagania norm. Jedna gwiazda LAN i jeden komputer SOC pozostają pojedynczymi punktami awarii; nie deklaruje się rekonwergencji ani redundancji serwera.
