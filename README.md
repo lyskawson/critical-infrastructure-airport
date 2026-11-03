@@ -1,5 +1,7 @@
 # North Airport - Critical Infrastructure Security
 
+![Concept illustration of North Airport](images/airport-cover.png)
+
 An academic security-system design for a fictional airport terminal and staff car park. The project combines CCTV, access control, intrusion and hold-up alarms, fire detection, network design, and backup power in a reproducible LaTeX report.
 
 [Technical report](output/pdf/lotnisko-polnoc.pdf) · [Device and connection register](docs/rejestr-urzadzen.md) · [Overleaf guide](docs/overleaf.md)
