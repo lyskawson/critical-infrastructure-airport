@@ -1,20 +1,22 @@
 PYTHON ?= python3
 
-.PHONY: pdf check figures overleaf clean
+.PHONY: pdf data check figures overleaf clean
 
-pdf: check
+data:
+	$(PYTHON) tools/export_design.py
+
+pdf: data check
 	latexmk -pdf -interaction=nonstopmode -halt-on-error -file-line-error -outdir=build main.tex
 	mkdir -p output/pdf
-	cp build/main.pdf output/pdf/lotnisko-polnoc.pdf
+	cp build/main.pdf output/pdf/north-airport.pdf
 
 check:
 	$(PYTHON) tools/validate_design.py
 
 figures:
 	$(PYTHON) tools/generate_figures.py
-	$(PYTHON) tools/validate_design.py
 
-overleaf:
+overleaf: data check
 	$(PYTHON) tools/bundle_overleaf.py
 
 clean:

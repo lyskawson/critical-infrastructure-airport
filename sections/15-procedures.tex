@@ -1,21 +1,20 @@
-\section{Procedury bezpieczeństwa}
-\lead{Każdy alarm ma właściciela, miejsce, priorytet i zapis przebiegu reakcji.}
-\begingroup\small
-\begin{tabularx}{\linewidth}{@{}P{23mm}Y Y@{}}
-\toprule\textbf{Zdarzenie} & \textbf{Działanie systemu} & \textbf{Działanie odpowiedzialnego}\\\midrule
-Pożar / ROP & SSP uruchamia działania zgodnie ze scenariuszem; SOC pokazuje lokalizację. AI nie jest warunkiem reakcji. & Dyżurny uruchamia powiadomienie właściwych służb zgodnie z instrukcją; personel prowadzi ewakuację. Ochrona zapewnia dostęp ratownikom.\\
-Włamanie & SSWiN zapisuje stan i wysyła alarm; SOC wywołuje kamerę. & Ochrona weryfikuje zdarzenie z bezpiecznego miejsca, kieruje patrol i dokumentuje wynik. Brak obrazu nie jest podstawą do automatycznego odrzucenia alarmu.\\
-Drzwi wymuszone / otwarte & KD zgłasza alarm, rejestruje identyfikator przejścia, kojarzy nagranie. & Operator ocenia przyczynę; patrol sprawdza miejsce; przywrócenie blokady po potwierdzeniu bezpiecznych warunków.\\
-Utrata karty & Zmiana statusu identyfikatora i dystrybucja do kontrolerów. & Administrator KD blokuje kartę, sprawdza synchronizację każdego kontrolera; przy braku łącza wprowadza ochronę zastępczą.\\
-Brak energii & UPS przejmuje IT/CCTV, centrale pracują z baterii; SZR uruchamia agregat. & Dyżurny potwierdza pracę źródła i poziom paliwa. Gdy agregat nie wystartuje, wdraża ograniczenie funkcji i nadzór fizyczny.\\
-Brak LAN / VMS & Zapis kamer na kartach, praca lokalna central; informacja techniczna. & Ochrona przechodzi na lokalne kanały łączności; administrator ustala zakres awarii i przywraca usługi.\\
-Podejrzenie cyberincydentu & Alarmy techniczne i dzienniki pozostają dostępne lokalnie, jeśli to możliwe. & Administrator izoluje objęty segment, zachowuje logi i koordynuje z ochroną. Zmiany nie mogą pozbawić ludzi możliwości wyjścia.\\\bottomrule
-\end{tabularx}
-\endgroup
+\section{Response and restoration procedures}
+\subsection*{Fire or manual call-point activation}
+Trigger: any panel alarm. Responsible: SOC operator; patrol leads evacuation and provides access. FAS alarms without waiting for video assessment. The operator reads the panel address, immediately calls 112, directs people to exits, and arranges assistance. Response is not conditional on smoke appearing in CCTV. PWP disconnects non-fire power, including UPS output, through its physical interface. Restoration: after the incident commander confirms safety, the cause is removed, and controls are checked; reset call points with a key and the panel locally at level 2. Do not reset a fire alarm from the VMS computer.
 
-\subsection*{Przekazanie dyżuru i zamknięcie incydentu}
-Dyżurny sprawdza aktywne alarmy, wyłączenia, stan zasilania, łączność i obsadę. Zgłoszenie incydentu zawiera czas, identyfikator urządzenia, miejsce, podjęte działania, osobę odpowiedzialną i wynik. Eksport nagrania wymaga uprawnienia, odnotowania odbiorcy i zabezpieczenia integralności pliku, np. skrótem SHA-256.
+\subsection*{Intrusion, hold-up, or tamper}
+Trigger: Z1--Z10 while appropriately armed, Z13/Z14 tamper, or Z15 hold-up at any time. Responsible: operator and patrol. The operator reads the KP-I01 input, selects the camera, and directs patrol without exposing them to direct confrontation; emergency services are called if necessary. Missing video is not evidence of a false alarm. Restoration: after physical inspection, cause assessment, circuit repair, and tamper testing; arm only after people leave the partition.
 
-\begin{note}{Nie kasować alarmu tylko dlatego, że zniknął objaw}
-Kasowanie i powrót do normalnej pracy następują po ustaleniu przyczyny i zgodnie z instrukcją danego systemu. Przy uszkodzeniu SSP dyżurny organizuje zastępczy nadzór według uzgodnionej procedury i wzywa serwis; panel integracyjny nie zastępuje sprawnej centrali.
-\end{note}
+\subsection*{ACS, forced door, or lost card}
+Trigger: unauthorised opening, door held open, reader fault, or a reported lost card. Responsible: ACS administrator and operator. The system identifies the access point; patrol checks the door and independent handle operation. The administrator revokes the card and verifies synchronisation of all five controllers. An offline controller requires local updating or substitute supervision. Restoration: confirmed revocation, rejection test for the lost card, acceptance of the correct card/PIN, and free-egress test. Evacuation is not locked to counter lost credentials.
+
+\subsection*{Mains failure and backup depletion}
+Trigger: UPS or panel mains-loss message. Responsible: operator and electrical service. The operator checks backup sources and records outage time; no nonexistent generator is expected to start. If restoration is not expected within 20 min, the operator stops admitting people, secures evidence, and starts a controlled recording/NAS-share shutdown. By 30 min at the latest, or earlier on low battery, the computer and NAS are shut down according to their instructions. PoE loss ends video and electronic access; patrol provides substitute entry while handles remain operational. If FAS availability is threatened, the building is evacuated and supervised. Restoration: stable mains, healthy circuits and RPO, sufficient charge, and recording, permission, and panel tests; after PWP, authorisation to re-energise and a local UPS restart are also required.
+
+\subsection*{LAN, VMS, or NAS loss}
+Trigger: missing device, recording gap, or unavailable interface. Responsible: IT administrator and operator. With PoE intact, cameras use SD and ACS operates locally. The operator uses the physical fire and intrusion panels. Switch failure also removes PoE, so continued SD buffering is not assumed. Restoration: cable, time, stream, and SD-gap recovery checks; NAS playback test. Substitute supervision is not withdrawn merely because a network-port light is on.
+
+\subsection*{Cyber incident and analytics failure}
+Trigger: unauthorised account, configuration change, suspicious traffic, or repeated false AI alarms. Responsible: administrator with operator. Isolate the affected segment, preserve logs and configuration, and temporarily disable AI1 if it overloads security staff. Do not isolate FAS power or mechanical exits. Restoration: established cause, approved configuration restored, keys changed after suspected disclosure, role checks, and scenario retesting. Re-enable AI only after FP/FN reassessment on a separate set.
+
+Every incident record includes time, ID, actions, responsible person, and closure condition. An authorised person exports evidence with an integrity check such as SHA-256; the copy has a separate retention period.

@@ -1,24 +1,40 @@
-\section{Charakterystyka systemów}
-\subsection{Monitoring wizyjny CCTV}
-Zaprojektowano 20 kamer stałopozycyjnych 4 Mpx oraz 4 kamery PTZ. Osiem kamer stałych znajduje się wewnątrz terminalu, a pozostałe 16 kamer na zewnątrz. PTZ służą operatorowi do weryfikacji; podstawowy nadzór punktów zapewniają kamery stałe.
+\section{CCTV surveillance}
+The design uses \CameraCount{} fixed AXIS P3265-LVE cameras with the 9 mm lens, at 1920 $\times$ 1080 px. The 36--100$^\circ$ horizontal field-of-view range supports the adopted views. Maximum device power is 10.7 W; class 3 PSE allocation is 15.4 W per port. One outdoor-rated model is also used indoors to reduce spare-part variety. It is a reference model with a published datasheet, not a claim of current sales availability. PTZ cameras were not selected because all required directions must be available simultaneously.\cite{S-CAM}
 
-\begin{tabularx}{\linewidth}{@{}P{30mm}Y Y@{}}
-\toprule\textbf{Element} & \textbf{Parametry doboru} & \textbf{Zastosowanie}\\\midrule
-20 kamer stałych & 4 Mpx, H.265, WDR, obiektyw dobrany do kadru, ONVIF Profile T; na zewnątrz IP66 i odporność mechaniczna odpowiednia do montażu. & Wejścia, korytarze, bramy, elewacje. Przyjęte 12 W na port PSE.\\
-4 kamery PTZ & Min. Full HD, zoom optyczny, presety, PoE+; maks. 25,5 W na urządzeniu przy budżecie 30 W portu. & Ocena zdarzeń w rejonie hangaru, obiektu technicznego i bram.\\
-VMS i zapis & Licencja 32 kanałów, 24 zajęte; serwer z 4 dyskami po 8 TB w RAID 6; zarządzanie rolami i eksportem. & Zapis ciągły, wyszukiwanie zdarzeń, ślad audytowy.\\
-Bufor lokalny & 24 karty 128 GB typu high endurance; zgodność sprawdzona z kamerą. & Zapis przy utracie sieci; odtworzenie braków tylko przy obsłudze tej funkcji przez VMS i kamerę.\\\bottomrule
-\end{tabularx}
+\CameraTable
 
-\subsection*{Pojemność i ruch -- policzone dla tych samych założeń}
-Przyjęto średnio 4 Mb/s na kamerę, 25 kl./s i zapis ciągły. Bitrate należy potwierdzić w dzień, w nocy i podczas opadów; 4 Mpx i H.265 nie gwarantują stałych 4 Mb/s.
+C01--C05 use local T0 coordinates; C06--C08 use SITE coordinates. The camera point's third coordinate is mounting height; the target point's third coordinate is the observation-plane height. Azimuth is measured counterclockwise from east. Tilt, distances, image limits, and person-observation segments are also recorded in the register and model.
+
+\subsection*{Optical model and point verification}
+The model assumes rectilinear pinhole projection at 1920 $\times$ 1080, square pixels, and 0$^\circ$ image roll. Barrel distortion correction is enabled. Residual distortion in the calculation is zero, with a reserve of 2\% of the full image dimension on each side, giving allowable normalised coordinates $|x|,|y|\leq0.96$. This is a design assumption, not measured lens calibration. The manufacturer confirms HFOV 36--100$^\circ$, VFOV 20--53$^\circ$, and correction availability; the selected angle pairs follow the adopted projection. All fall within both ranges.\cite{S-CAM}
+
+For horizontal field $\alpha$, vertical field $\beta$, camera axes $\mathbf f$ (forward), $\mathbf r$ (right), $\mathbf u$ (up), point $P$, and camera $C$:
 \[
-R=24\cdot4=96\ \mathrm{Mb/s},\qquad
-S=\frac{96\cdot10^6}{8}\cdot7\cdot86400=7{,}26\ \mathrm{TB}.
+\beta=2\arctan\left(\tan\frac{\alpha}{2}\frac{1080}{1920}\right),\qquad
+D=\mathbf f\cdot(P-C)>0,
 \]
-Z zapasem 25\% potrzeba \textbf{9,07 TB}. RAID 6 z 4 dysków po 8 TB daje nominalnie 16 TB, a po odłożeniu 10\% na narzuty i wolne miejsce -- 14,4 TB. Jednostki są dziesiętne. RAID nie zastępuje kopii materiału dowodowego.
+\[
+x=\frac{\mathbf r\cdot(P-C)}{D\tan(\alpha/2)},\qquad
+y=\frac{\mathbf u\cdot(P-C)}{D\tan(\beta/2)}.
+\]
+The field is a rectangular pyramid in 3D, additionally clipped by horizontal radial near/far distances and walls. It is not a flat circular sector. The register exports the axes and four corner rays in SITE. Executor B also receives the parameters below and must not independently choose another VFOV or tilt.
 
-\begin{note}{Kadr dobiera się do zadania}
-Dla wejścia wymagamy czytelnego materiału identyfikacyjnego, dla płyty -- obserwacji zdarzenia. Przykład geometryczny: 2688 pikseli / 10 m szerokości kadru = 269 px/m. Wynik sam nie dowodzi identyfikacji; potrzebna jest próba obrazu twarzy, światła, ruchu i kąta montażu.
-\end{note}
-\src{[3] ONVIF Profile T; [6] aktualny katalog norm CCTV. Pojemności i wymagania urządzeń: obliczenia i założenia własne}
+\OpticsTable
+
+Camera-table image width is $w=2D\tan(\alpha/2)$ on a plane perpendicular to the optical axis through the target; $1920/w$ is density in that plane. For actual openings and person views, a physical transverse 0.6 m segment is projected separately, including oblique perspective. Both height and segment endpoints are checked. The project's D01/D02 and PATH1 target is 250 px/m; overview targets are 80 px/m for D03/D04 and 100 px/m for G01. Overview links an event to video without promising facial identification.
+
+\OpticalVerificationTable
+
+Only C01 verifies D01: HFOV was narrowed to 40$^\circ$, tilt set to 8$^\circ$, and far distance to 10.5 m. The check covers the full 1.2 m door opening at heights of 1.2--2.0 m and a horizontal distance of 9.5 m. C02 provides the PATH1 rear view and does not verify D01. C04 covers D02. C05 has a corrected 49$^\circ$ direction, 72$^\circ$ HFOV, and 13 m limit to include the full D03/D04 openings. C08 sees G01 in the plane of the open gate; closed mesh may obscure a person beyond it. Patrol verifies the gate user's card and identity.
+
+C01--C04 view the straight PATH1 segment in R102 from the front, rear, and both sides. Indoor views end at room walls; C05 does not see through closed D03/D04. C07 provides a car park overview that vehicles may obscure. C08 covers the designated vehicle lane without number-plate identification. Microphones, toilet surveillance, desks, and neighbouring properties are excluded.\cite{S-AOA,L-GDPR}
+
+\subsection*{Recording and capacity}
+H.265 at 25 fps is assumed, nominally 4 Mb/s and capped at 6 Mb/s per camera. Retention is sized at the maximum, totalling 48 Mb/s:
+\[
+S=\frac{8\cdot6\cdot10^6}{8}\cdot7\cdot86400
+=\StorageRaw{}\ \mathrm{TB}.
+\]
+A 25\% reserve requires \StorageNeed{} TB. Four 8 TB HAT3300-8T drives in a Synology DS923+, RAID 6, provide \StorageHave{} TB after reserving 10\% for overhead and free space. AXIS Camera Station Pro writes recordings to an SMB3 share; the NAS is not a second VMS. RAID tolerates disk failure but is not an evidence backup. Units are decimal. Playback during array rebuilding must be tested.\cite{S-NAS,S-VMS}
+
+Each camera has a 128 GB card. With 20\% reserved, the buffer at 6 Mb/s is \SDHours{} h against a 24 h target. Gap recovery must be tested using VMS failover recording. The card helps during transmission loss while power remains available. Switch failure or UPS shutdown also removes PoE and stops local recording.

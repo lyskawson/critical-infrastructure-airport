@@ -1,21 +1,22 @@
-\section{Zabezpieczenie dostawy energii}
-\subsection{Architektura zasilania}
-\fig{power.pdf}{1}{Sieć i agregat przez SZR zasilają rozdział systemów bezpieczeństwa. UPS podtrzymują IT/CCTV; SSP, KD i SSWiN mają osobne zasilacze buforowe i baterie lokalne.}
-\begin{tabularx}{\linewidth}{@{}Y r Y@{}}
-\toprule\textbf{Odbiornik IT/CCTV} & \textbf{Moc [W]} & \textbf{Podstawa bilansu}\\\midrule
-Kamery, po stronie PSE & 360 & 20 $\times$ 12 W + 4 $\times$ 30 W\\
-Przełączniki PoE, własne straty & 120 & 4 $\times$ 30 W, bez mocy kamer\\
-Rdzeń + zapora & 65 & 40 + 25 W\\
-Serwer VMS z dyskami + serwer AI & 450 & 300 + 150 W\\
-Stanowiska SOC + monitory & 240 & 2 $\times$ 70 + 4 $\times$ 25 W\\
-Host administracyjny i integracja & 100 & Rezerwa sprzętowa w N0\\\midrule
-\textbf{Suma} & \textbf{1335} & \textbf{1669 W po dodaniu 25\%}\\\bottomrule
-\end{tabularx}
+\section{Power supply and circuit protection}
+\subsection{Load assignments}
+UPS-0 supplies SW-0, NAS-0, SOC-0, MON-01/02, and FW-0. Cameras, controllers, readers, and strikes are indirect PoE loads and are not added again to switch AC consumption. FAS and IDS have their own battery-backed supplies and are outside the IT UPS. SD cards and disks are internal to their parent devices and are not added again to those power envelopes.
 
-Moc kamer uwzględniono tylko raz. Moc bazowa przełączników obejmuje ich elektronikę i przyjęte straty; po doborze sprzętu należy ją zastąpić wartością z karty i pomiaru. Obciążenia przypisano do lokalnych UPS: N0 -- 1005 W, N1 -- 108 W, N2 -- 96 W, N3 -- 126 W.
+\PowerTable
 
-Przyjęto jeden UPS online 3 kVA / co najmniej 2,7 kW w N0 i trzy UPS 1 kVA / co najmniej 0,9 kW w N1--N3, z bateriami dobranymi do czasu podtrzymania. Sama moc w VA nie określa czasu pracy. Szafy, zasilacze i maszty wymagają uziemienia, połączeń wyrównawczych oraz ochrony przepięciowej dobranej do instalacji.
+The largest published switch AC draw, 478.6 W including the full 384 W PD budget, is used. This conservative envelope exceeds expected consumption for the occupied ports. For NAS, 100 W adapter output and an assumed minimum efficiency of 0.8 give 125 W AC. Similarly, the 90 W PC adapter gives 112.5 W, and the 12 W firewall adapter gives 15 W. These are neither measurements nor published minimum adapter efficiencies; they are explicit design limits for load testing. Monitors are included at 65 W maximum each, rather than typical consumption.\cite{S-SW,S-NAS,S-PC,S-MON,S-FW}
 
-\begin{note}{Pożar i wyłącznik prądu}
-Położenie obwodów SSP względem przeciwpożarowego wyłącznika prądu i zachowanie pozostałych odbiorów wymagają uzgodnionego projektu elektrycznego i scenariusza pożarowego. Wspólny UPS IT nie jest jedynym źródłem podtrzymania SSP.
-\end{note}
+The total is \UPSLoad{} W, or \UPSDesign{} W with 25\% reserve. No separate AI server is added. The fire panel input limit is 0.3 A at 230 V (69 VA), including factory charging. The IDS transformer is 40 VA. Their DC and charging currents are not added again at the supply boundary.
+
+\subsection{AC distribution and fire emergency isolation}
+An existing TN-S 230 V installation with distribution board RSEC and Type 2 surge protection is assumed at the design boundary. The model defines the functional interface of the existing fire emergency power-off switch (PWP) by E01, at local $(4.8,0,1.4)$; a separate volt-free NC contact is brought to RSEC:PWP-NC. Its circuit is electrically isolated from mains circuits.
+
+Q0: dedicated FAS circuit upstream of PWP, B6 1P+N, NHXH-J 3 $\times$ 1.5 mm$^2$ on an E90 system. Q1: UPS downstream of PWP, C16 1P+N, dedicated Type A 30 mA RCD, and YDY 3 $\times$ 2.5 mm$^2$. Q2: IDS downstream of PWP, B6 1P+N and YDY 3 $\times$ 1.5 mm$^2$. Corrected current capacity is assumed to be at least 18 A for the UPS cable and 13 A for other cables. The selected UPS maximum input is 10 A; no other building sockets are supplied from it. RCD selection needs actual aggregate leakage-current checks and testing for unwanted trips.
+
+PWP disconnects the UPS AC input and physically opens its RPO input. Cable PWP-RPO is listed separately. UPS configuration is RPO, active-open state, and 0 s delay; the factory setting without an assigned function would be insufficient. The dedicated contact latches, stays active for over 250 ms, and is not connected to mains voltage. Recovery after RPO requires releasing PWP and starting the UPS locally. Ordinary mains failure does not open RPO, allowing backup operation.\cite{S-UPS-GUIDE}
+
+FAS on Q0 remains supplied and independently has its battery. After Q2 disconnection, IDS may continue on battery in SELV circuits. The UPS does not backfeed the general installation. No generator or automatic transfer switch is provided; scale and the backup target do not justify adding them.
+
+For B6 circuits, the automatic-disconnection check requires $Z_s\leq230/(5\cdot6)=7.67\ \Omega$; for C16 at the $10I_n$ limit, $Z_s\leq1.44\ \Omega$. These are calculation limits for the adopted characteristics, not measured impedances or a complete selectivity assessment. During UPS battery operation, limited short-circuit current also requires testing protection of its output circuits; effectiveness cannot be inferred from the TN-S input condition alone.
+
+The supply boundary, including reserve, UPS efficiency of at least 0.9, a 300 W charging allowance, and FAS/IDS envelopes, is about \BoundaryVA{} VA. The UPS charging allowance is a project limit to verify; it does not replace the published 10 A maximum input. Actual impedances, earthing, RCDs, and protection characteristics require measurement before commissioning.

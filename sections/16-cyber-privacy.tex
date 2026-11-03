@@ -1,18 +1,8 @@
-\section{Cyberbezpieczeństwo i ochrona danych}
-\subsection*{Dostęp do systemów}
-Każdy operator ma imienne konto. Role rozdzielają podgląd, eksport, nadawanie kart i administrację. Konta serwisowe są aktywowane na ograniczony czas, a dostęp zdalny wymaga VPN i MFA. Kamery i centrale nie są publikowane w Internecie; wyłącza się nieużywane usługi i funkcje chmurowe producenta. Połączenia szyfruje się tam, gdzie wspiera to dobrany system.
+\section{Data protection and cybersecurity}
+Seven-day retention follows the assumed incident-reporting cycle and capacity budget, not a universal legal obligation. The data controller justifies necessity; incident evidence has a separate purpose and deletion deadline. Employment use must also consider Article 22$^2$ of the Polish Labour Code, including monitoring purposes, information duties, and privacy in protected rooms. The model has no cameras in toilets, staff welfare rooms, or at SOC/office desks.\cite{L-GDPR,L-KP}
 
-Ruch między VLAN jest domyślnie blokowany. Lista wyjątków obejmuje konkretne źródła, cele i usługi. Urządzenia korzystają ze wspólnego lokalnego źródła czasu. Logi są kopiowane do wydzielonej usługi z kontrolą dostępu; retencja 90 dni jest założeniem roboczym wymagającym uzasadnienia, a nie wymogiem ustawowym [9].
+Before actual commissioning, the controller establishes a GDPR Article 6 basis and assesses the need for a DPIA under Article 35, considering scale, regularity, and public space. Zone signs, full Article 13 information, privacy masks, no audio, and export restrictions are assumed. C08 person detection creates no biometric identifier; facial or emotion recognition is not designed. Cards instead of biometrics reduce special-category data processing.\cite{L-GDPR}
 
-\subsection*{Dane osobowe i retencja}
-Obraz może identyfikować osoby, więc administrator musi określić cel, podstawę prawną, niezbędny obszar obserwacji i okres przechowywania. Przyjęte do bilansu \textbf{7 dni} nie jest wymaganiem prawa. Należy uzasadnić ten okres i skrócić go, jeśli cel można osiągnąć krócej. Wyodrębniony materiał incydentu ma oddzielną, udokumentowaną podstawę i termin usunięcia [5].
+Every person has an individual account. Roles separate viewing, export, card issuance, and administration. Unused ports are disabled; cameras and controllers have no Internet access. Administrative access is temporary and logged; the local computer has disk encryption and session locking. Firewall rules allow only described services between specified devices; disabled UPnP, P2P, and cloud features prevent undeclared channels. HTTPS, SMB3, and OSDP Secure Channel are used according to device support. A VLAN alone is not assumed to provide confidentiality.\cite{S-VMS,S-KD,S-FW}
 
-Przed wdrożeniem przewidziano ocenę skutków dla ochrony danych dla monitoringu dużej strefy publicznej, konsultację IOD oraz uwzględnienie właściwych przepisów sektorowych i prawa pracy. W koncepcji przyjęto oznaczenie stref monitorowanych, pełną informację dla osób, maskowanie obszarów zbędnych i brak rejestracji dźwięku. Nie projektuje się kamer w toaletach ani pomieszczeniach wymagających szczególnej prywatności [5].
-
-\subsection*{Kopie i aktualizacje}
-Konfiguracje central, przełączników, VMS i KD kopiuje się po każdej zatwierdzonej zmianie. Raz na kwartał wykonuje się próbę odtworzenia kopii w odizolowanym środowisku. Aktualizacje najpierw przechodzą test zgodności, a następnie są wdrażane w uzgodnionym oknie z możliwością powrotu do poprzedniej wersji. Dla SSP zakres zmian określa producent i uprawniony serwis.
-
-\begin{note}{Co trafia do publicznego repozytorium}
-Wyłącznie fikcyjna geometria, przykładowe identyfikatory, treść akademicka i źródła rysunków. Rzeczywistych konfiguracji, haseł, kluczy, nagrań i planów ochrony nie należy dodawać przy późniejszej adaptacji projektu do realnego obiektu.
-\end{note}
-\src{[5] EROD -- monitoring i dane osobowe; [9] CISA -- segmentacja i ograniczanie dostępu}
+Configuration is backed up after an approved change and stored on the administrator's encrypted medium outside the recording array. Keys and passwords are excluded from the model and repository. Updates require card, reader, and VMS compatibility testing and a restoration path. Fire-system software is not updated from an IT operator account. The project's 90-day log retention supports incident analysis and requires justification like other retention periods.

@@ -1,37 +1,37 @@
-# Overleaf — dwa sposoby pracy
+# Overleaf - two workflows
 
-Główny plik: **main.tex**. Kompilator: **pdfLaTeX**. Projekt działa z typowym TeX Live, bez zewnętrznych programów do rysunków i bez shell escape.
+Main file: **main.tex**. Compiler: **pdfLaTeX**. The project compiles with a typical TeX Live installation, without external drawing programs or shell escape.
 
-## A. Import repozytorium z GitHuba
+## A. Import from GitHub
 
-Wymaga funkcji GitHub Synchronization premium lub uprawnienia instytucjonalnego.
+Requires premium GitHub Synchronization or an institutional entitlement.
 
-1. Połącz konto GitHub z kontem Overleaf w ustawieniach konta.
-2. W Overleaf wybierz **New Project → Import from GitHub**.
-3. Wybierz repozytorium **infrastruktura-krytyczna-lotnisko**.
-4. Ustaw main.tex jako główny plik i pdfLaTeX jako kompilator.
-5. Kompiluj i udostępnij projekt członkom zespołu zgodnie z limitami swojego planu.
+1. Connect GitHub and Overleaf in account settings.
+2. In Overleaf, choose **New Project → Import from GitHub**.
+3. Select **critical-infrastructure-airport**.
+4. Set main.tex as the main file and pdfLaTeX as compiler.
+5. Compile and share with teammates within your plan limits.
 
-Synchronizacja nie jest samoczynnym współdzieleniem plików w czasie rzeczywistym między GitHubem i Overleafem. W menu synchronizacji pobieraj zmiany z GitHub i wysyłaj zatwierdzone zmiany z Overleafa. Przed zmianą narzędzia zsynchronizuj projekt, żeby ograniczyć konflikty.
+Synchronisation is not automatic real-time sharing between GitHub and Overleaf. Use the synchronisation menu to pull GitHub changes and push approved Overleaf changes. Synchronise before switching tools to reduce conflicts.
 
-Według dokumentacji Overleaf można utworzyć nowy projekt z istniejącego repo albo nowe repo z projektu; nie łączy się wprost dwóch już istniejących i niezależnych projektów.
+Overleaf documentation describes creating a project from an existing repository or a new repository from a project; it does not directly connect two already existing independent projects.
 
-## B. Import ZIP
+## B. ZIP import
 
-Ten wariant nie wymaga funkcji synchronizacji Git.
+This option does not require Git synchronisation.
 
-1. Pobierz lotnisko-overleaf.zip przygotowany przez make overleaf albo z artefaktów kompilacji na GitHubie.
-2. W Overleaf wybierz **New Project → Upload Project** i wskaż ZIP.
-3. Sprawdź main.tex i pdfLaTeX.
-4. Edytuj metadata.tex, a potem pliki w sections/.
+1. Obtain airport-overleaf.zip from `make overleaf` or GitHub build artifacts.
+2. In Overleaf, choose **New Project → Upload Project** and select the ZIP.
+3. Check main.tex and pdfLaTeX.
+4. Edit metadata.tex, then files in sections/.
 
-Zmiany wykonane w tym wariancie nie trafiają automatycznie na GitHub. Wyeksportuj źródła z Overleafa i uzgodnij ich włączenie do repo; unikaj równoległego edytowania tych samych rozdziałów w dwóch miejscach.
+Changes in this workflow do not automatically reach GitHub. Export Overleaf sources and coordinate their integration; avoid editing the same chapters simultaneously in two places.
 
-## Bezpośredni Git Overleafa
+## Direct Overleaf Git
 
-To odrębna funkcja premium. Po utworzeniu projektu Overleaf udostępnia własny adres zdalnego repozytorium i uwierzytelnianie tokenem. Można dodać go jako drugi remote lokalnego repo, używając dokładnego adresu podanego przez Overleaf. Sam publiczny GitHub nie włącza tej funkcji.
+This is a separate premium feature. After project creation, Overleaf provides its own remote URL and token authentication. It can be added as a second local remote using the exact URL Overleaf supplies. A public GitHub repository alone does not enable this feature.
 
-Sprawdzono 19.10.2026:
+Verified 19 October 2026:
 
 - [Git integration and GitHub synchronization](https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization)
 - [GitHub synchronization](https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization/github-synchronization)

@@ -1,103 +1,55 @@
-# Infrastruktura krytyczna — systemy bezpieczeństwa lotniska
+# North Airport - Critical Infrastructure Security
 
-Zespołowy projekt akademicki w LaTeX-u: CCTV, kontrola dostępu, SSWiN i SSP (SAP) dla **fikcyjnej strefy terminalowo-technicznej „Lotniska Północ”**.
+An academic security-system design for a fictional airport terminal and staff car park. The project combines CCTV, access control, intrusion and hold-up alarms, fire detection, network design, and backup power in a reproducible LaTeX report.
 
-**[Otwórz PDF](output/pdf/lotnisko-polnoc.pdf)** · [Instrukcja Overleafa](docs/overleaf.md) · [Podział pracy i prezentacja](docs/praca-zespolowa.md)
+[Technical report](output/pdf/north-airport.pdf) · [Device and connection register](docs/device-register.md) · [Overleaf guide](docs/overleaf.md)
 
-![Ilustracja koncepcyjna lotniska wygenerowana przez AI](images/airport-cover.png)
+## Scope
 
-Pełna wersja robocza koncepcji, z opisem technicznym, obliczeniami, zestawieniem materiałów, procedurami i źródłami. Dane uczelni i autorów należy uzupełnić w **metadata.tex**. Projekt nie jest dokumentacją wykonawczą ani opisem zabezpieczeń rzeczywistego lotniska.
+The model covers an 80 × 60 m site with a 24 × 16 m terminal, seven rooms, and ten parking spaces. It includes eight fixed cameras, four controlled doors, a manually operated card-controlled vehicle gate, one intrusion panel, and one fire panel. A single video-analytics scenario detects a person crossing a line in the vehicle lane.
 
-## Proponowany spis treści — już zastosowany w PDF
+Geometry, device specifications, cable routes, material quantities, and calculation inputs are defined in `data/design.json`. The report includes storage and bandwidth budgets, PoE allocation, battery sizing, voltage drop, UPS runtime, and incident-response procedures. The design is an academic model; its dimensions and operating targets are stated assumptions rather than site measurements.
 
-1. Cel, zakres i założenia.
-2. Strefy ochrony i wymagania.
-3. Charakterystyka systemów: CCTV, KD i SSWiN, SSP/SAP.
-4. Schemat ideowy i integracja.
-5. Sieć transmisyjna i technologie.
-6. Projekt trasowy i lokalizacja urządzeń: teren, trasy, terminal.
-7. Zastosowanie ML i AI.
-8. Zabezpieczenie dostawy energii: UPS, baterie DC, agregat i SZR.
-9. Zestawienie materiałów podstawowych.
-10. Procedury bezpieczeństwa.
-11. Cyberbezpieczeństwo i ochrona danych.
-12. Odbiór, utrzymanie i podział prac.
-13. Źródła i podstawa opracowania.
+## Build
 
-Układ realizuje wszystkie osiem elementów wskazanych przez prowadzącego. Liczba stron wynika z treści; tygodniowy harmonogram nie jest sztucznie wpisany w dokument.
+Requires Python 3 and TeX Live or MacTeX with `latexmk`, pdfLaTeX, `longtable`, and `xurl`. Data export and validation use only the Python standard library.
 
-## Co jest w środku
-
-- 24 kamery: 20 stałych i 4 PTZ, z bilansem zapisu na 7 dni.
-- 12 drzwi i 2 bramy KD, 16 czytników, 8 kontrolerów dwukanałowych.
-- 4 lokalne centrale SSWiN i 4 lokalne centrale SSP.
-- Plan obszaru 600 × 400 m i 1520 m tras pierścienia światłowodowego.
-- 6 edytowalnych rysunków wektorowych: architektura, teren, trasy, terminal, AI i zasilanie.
-- Bilans mocy, pojemności dysków, UPS i baterii, tabela reakcji na incydenty oraz plan prób odbiorowych.
-
-Wartości są założeniami dydaktycznymi. Nie deklarujemy rzeczywistych wyników AI, pomiarów, wymaganej prawem retencji ani potwierdzonej zgodności wykonawczej. W dokumencie wskazano kwestie do dalszego uzgodnienia.
-
-## Kompilacja
-
-Na Overleafie: główny plik **main.tex**, kompilator **pdfLaTeX**, kodowanie UTF-8. Bibliografia jest w źródłach; nie wymaga BibTeX ani Biber. Nie jest potrzebny shell escape.
-
-Lokalnie, z TeX Live / MacTeX i latexmk:
-
-~~~sh
+```sh
 make pdf
-~~~
+```
 
-Wynik: output/pdf/lotnisko-polnoc.pdf. Rysunki PDF są dołączone do repo, więc Python/ReportLab nie jest potrzebny do samej kompilacji.
+The report is written to `output/pdf/north-airport.pdf`; the compilation log is `build/main.log`.
 
-Po zmianie geometrii:
+```sh
+make data
+make check
+python3 tools/validate_design.py --self-test
+```
 
-~~~sh
-python3 -m pip install -r requirements-figures.txt
-make figures
-make pdf
-~~~
+`make data` regenerates tables and the device register. `make check` verifies model consistency and export freshness. The self-test checks that intentionally invalid variants are rejected without changing the source model.
 
-Generator korzysta z Arial na macOS lub DejaVu Sans na Linuksie. Można wskazać własne fonty przez PROJECT_FONT_REGULAR i PROJECT_FONT_BOLD. Pliki fontów nie są dystrybuowane w repo.
+## Overleaf
 
-Pakiet do ręcznego importu do Overleafa:
-
-~~~sh
+```sh
 make overleaf
-~~~
+```
 
-Wynik: output/lotnisko-overleaf.zip, z main.tex w katalogu głównym archiwum. ZIP jest pomijany przez Git, aby nie duplikować obrazów; można go wygenerować lokalnie albo pobrać z artefaktów udanej kompilacji w GitHub Actions.
+Upload `output/airport-overleaf.zip` as an Overleaf project, using `main.tex` and pdfLaTeX. The archive includes the report sources, model, generated tables, and supporting tools. See [the Overleaf guide](docs/overleaf.md) for import and synchronisation options.
 
-## Praca przez GitHub
+## Repository structure
 
-Każdy push i pull request uruchamia kompilację i sprawdzenie danych w GitHub Actions. Aktualny wynik jest dostępny w artefakcie **lotnisko-pdf-i-overleaf**. Automat nie aktualizuje sam pliku PDF w repo — po zmianach lokalnych uruchom make pdf i dołącz również PDF do commita.
-
-Proponowany przepływ: mała zmiana → własna gałąź → pull request → przegląd przez drugą osobę → scalenie. [Instrukcja współpracy](docs/praca-zespolowa.md) podaje pakiety prac bez narzucania terminów tygodniowych.
-
-**Overleaf Git i synchronizacja GitHub wymagają dostępu premium/instytucjonalnego.** Zwykły import ZIP nie wymaga tych funkcji i nie tworzy automatycznej synchronizacji. [Oficjalna dokumentacja Overleaf](https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization).
-
-## Pliki do edycji
-
-| Plik / katalog | Co zmieniać |
+| Path | Contents |
 |---|---|
-| metadata.tex | Uczelnia, autorzy, grupa, prowadzący, data i wersja |
-| main.tex | Kolejność rozdziałów |
-| sections/ | Treść merytoryczna |
-| preamble.tex | Kolory, typografia, marginesy i nagłówki |
-| data/design.json | Geometria tras, liczby urządzeń i dane bilansu |
-| tools/generate_figures.py | Edytowalne źródła sześciu rysunków |
-| figures/ | Gotowe wektorowe PDF-y włączane do dokumentu |
-| tools/validate_design.py | Kontrola sum, geometrii, portów, PoE i pojemności |
-| docs/rejestr-urzadzen.md | Rejestr zespołów urządzeń, generowany razem z rysunkami |
-| docs/ai-assets.md | Pochodzenie i pełny prompt ilustracji AI |
+| `data/design.json` | Site geometry, devices, ports, connections, power sources, materials, and source references |
+| `sections/` | Technical descriptions, calculations, procedures, and references |
+| `generated/` | LaTeX tables and bibliography generated from the model |
+| `tools/design_geometry.py` | Camera projection and vehicle-envelope calculations |
+| `tools/export_design.py` | Calculations and deterministic document exports |
+| `tools/validate_design.py` | Geometry, connectivity, capacity, power, and materials checks |
+| `docs/` | Register, design documentation, and development records |
+| `figures/` | Archived vector drawings of the earlier site concept, excluded from the current report |
+| `output/` | Compiled report and Overleaf archive |
 
-Zmiana JSON nie zmienia automatycznie liczb w tekście — po każdej zmianie przejrzyj właściwe rozdziały i zestawienie. Walidator kontroluje wybrane zależności liczbowe, nie zastępuje przeglądu merytorycznego.
+## Licence
 
-## Przed oddaniem
-
-- Uzupełnić stronę tytułową i przyjąć wspólnie zakres fikcyjnego obiektu.
-- Zweryfikować treść, obliczenia oraz aktualność źródeł z prowadzącym.
-- Rozstrzygnąć, czy prowadzący oczekuje mapy rzeczywistej lokalizacji lub konkretnych modeli urządzeń.
-- Doprecyzować plan pożarowy, rzeczywiste rzuty i macierz sterowań, jeśli wymaga tego zakres zajęć.
-- Skompilować PDF i przeczytać wszystkie strony po ostatnich zmianach.
-
-Autorskie źródła udostępniono na licencji MIT; materiały zewnętrzne są wyłącznie cytowane. Obraz AI opisano oddzielnie w docs/ai-assets.md.
+[MIT](LICENSE). Illustration provenance and AI-use information are documented in [AI assets](docs/ai-assets.md).

@@ -11,6 +11,8 @@ from reportlab.lib.colors import HexColor, Color, white
 
 ROOT = Path(__file__).resolve().parents[1]
 D = json.loads((ROOT / "data/design.json").read_text())
+if D.get("schema_version", 1) >= 2:
+    raise SystemExit("Version 1 generator is disabled for model A. B rebuilds the drawings; register: make data.")
 OUT = ROOT / "figures"
 OUT.mkdir(exist_ok=True)
 font_pairs = [
@@ -48,7 +50,7 @@ def multiline(c,x,y,lines,size=18,color=NAVY,bold=False,align="center",leading=N
 def page(name,w,h,kicker):
     c=canvas.Canvas(str(OUT/name),pagesize=(w,h),pageCompression=1,invariant=1)
     c.setTitle(kicker)
-    c.setAuthor("Projekt dydaktyczny – Lotnisko Północ")
+    c.setAuthor("Academic project - North Airport")
     label(c,24,h-30,kicker,17,TEAL,True)
     return c
 
@@ -74,25 +76,25 @@ def line(c,pts,color=TEAL,width=3,dash=None,arrow=False):
         c.setFillColor(color); c.drawPath(p,fill=1,stroke=0)
 
 def architecture():
-    c=page("architecture.pdf",1000,600,"01 / ARCHITEKTURA FUNKCJONALNA")
+    c=page("architecture.pdf",1000,600,"01 / FUNCTIONAL ARCHITECTURE")
     for x in (155,500,845):
         line(c,[(x,466),(x,430),(500,430),(500,405)],BLUE,arrow=True)
     for x in (155,500,845):
         line(c,[(500,335),(500,302),(x,302),(x,280)],BLUE,arrow=True)
     line(c,[(235,125),(285,125)],FIRE,arrow=True)
     line(c,[(615,125),(690,125),(690,245),(735,245)],FIRE,dash=[8,5],arrow=True)
-    box(c,35,466,240,76,["CCTV / 24 kamery","H.265 • PoE+"],BLUE)
-    box(c,380,466,240,76,["KD / 14 punktów","8 kontrolerów"],BLUE)
-    box(c,725,466,240,76,["SSWiN / 4 centrale","IP + kanał LTE"],BLUE)
-    box(c,220,335,560,70,["WYDZIELONY LAN / VLAN + ZAPORA","N0–N1–N2–N3–N0 • OS2 • RSTP"],BLUE,size=19)
-    box(c,35,210,240,70,["VMS + zapis","4 × 8 TB / RAID 6"],BLUE)
-    box(c,380,210,240,70,["AI / 8 strumieni","lokalna analityka"],BLUE)
-    box(c,735,210,230,70,["SOC / 2 stanowiska","integracja zdarzeń"],BLUE)
-    box(c,35,78,200,94,["4 lokalne CSP","czujki / ROP","sygnalizacja"],FIRE,HexColor("#FBF0F0"),17)
-    box(c,285,78,330,94,["OSOBNA SIEĆ SSP","magistrala producenta","lokalne baterie i sterowania"],FIRE,HexColor("#FBF0F0"),17)
-    label(c,706,113,"bramka SSP",16,FIRE)
-    label(c,706,89,"tylko odczyt zdarzeń",16,FIRE)
-    label(c,35,30,"LAN, VMS i AI nie są warunkiem działania lokalnej sygnalizacji pożarowej.",17,MUTED)
+    box(c,35,466,240,76,["CCTV / 24 cameras","H.265 • PoE+"],BLUE)
+    box(c,380,466,240,76,["ACS / 14 points","8 controllers"],BLUE)
+    box(c,725,466,240,76,["IDS / 4 panels","IP + LTE channel"],BLUE)
+    box(c,220,335,560,70,["SEGREGATED LAN / VLAN + FIREWALL","N0-N1-N2-N3-N0 • OS2 • RSTP"],BLUE,size=19)
+    box(c,35,210,240,70,["VMS + recording","4 × 8 TB / RAID 6"],BLUE)
+    box(c,380,210,240,70,["AI / 8 streams","local analytics"],BLUE)
+    box(c,735,210,230,70,["SOC / 2 stations","event integration"],BLUE)
+    box(c,35,78,200,94,["4 local FAS panels","detectors / MCPs","notification"],FIRE,HexColor("#FBF0F0"),17)
+    box(c,285,78,330,94,["SEPARATE FAS NETWORK","manufacturer bus","local batteries and controls"],FIRE,HexColor("#FBF0F0"),17)
+    label(c,706,113,"FAS gateway",16,FIRE)
+    label(c,706,89,"read-only events",16,FIRE)
+    label(c,35,30,"Local fire alarms operate independently of LAN, VMS, and AI.",17,MUTED)
     c.save()
 
 def sitebase(c,route=False):
@@ -109,17 +111,17 @@ def sitebase(c,route=False):
     line(c,[xy(0,0),xy(600,0),xy(600,400),xy(0,400),xy(0,0)],NAVY,2)
     if not route:
         c.setFillColor(HexColor("#E5EDEF")); c.rect(*xy(160,160),340*scale,145*scale,fill=1,stroke=0)
-        label(c,*xy(330,225),"REJON PŁYTY POSTOJOWEJ",18,MUTED,True,align="center")
-        label(c,*xy(330,206),"wybrane kierunki obserwacji",15,MUTED,align="center")
+        label(c,*xy(330,225),"APRON AREA",18,MUTED,True,align="center")
+        label(c,*xy(330,206),"selected viewing directions",15,MUTED,align="center")
         c.setFillColor(HexColor("#E5EDEF")); c.rect(*xy(180,45),180*scale,30*scale,fill=1,stroke=0)
-        label(c,*xy(270,55),"PARKING / STREFA A",15,MUTED,align="center")
+        label(c,*xy(270,55),"CAR PARK / ZONE A",15,MUTED,align="center")
     for n in D["nodes"]:
         x,y,w,h=n["rect"]
         c.setFillColor(HexColor("#BDCEDA")); c.setStrokeColor(NAVY)
         c.rect(*xy(x,y),w*scale,h*scale,fill=1,stroke=1)
     line(c,[(947,535),(947,595)],NAVY,2,arrow=True)
     label(c,947,614,"N",19,NAVY,True,align="center")
-    label(c,947,506,"umowna",12,MUTED,align="center")
+    label(c,947,506,"nominal",12,MUTED,align="center")
     line(c,[xy(0,-35),xy(100,-35)],NAVY,3)
     for x in (0,50,100): line(c,[xy(x,-38),xy(x,-32)],NAVY,1)
     label(c,*xy(110,-39),"100 m",14,MUTED)
@@ -128,13 +130,13 @@ def sitebase(c,route=False):
     return xy
 
 def site():
-    c=page("site-plan.pdf",1000,710,"02 / PLAN ZAGOSPODAROWANIA – OBIEKT FIKCYJNY")
+    c=page("site-plan.pdf",1000,710,"02 / SITE PLAN - FICTIONAL SITE")
     xy=sitebase(c)
     calls=[
-        ("N0",25,175,["TERMINAL / SOC","C01–C08 wewn. • C09–C10 zewn.","D01–D06 • CSP-0 • SSWiN-0"]),
-        ("N1",160,290,["HANGAR","C11–C15 • D07–D09","CSP-1 • SSWiN-1"]),
-        ("N2",365,312,["TECHNICZNY","C16–C19 • D10–D11","CSP-2 • SSWiN-2"]),
-        ("N3",420,114,["PORTIERNIA / BRAMY","C20–C24 • D12 • G01–G02","CSP-3 • SSWiN-3"])
+        ("N0",25,175,["TERMINAL / SOC","C01-C08 indoors • C09-C10 outdoors","D01-D06 • CSP-0 • SSWiN-0"]),
+        ("N1",160,290,["HANGAR","C11-C15 • D07-D09","CSP-1 • SSWiN-1"]),
+        ("N2",365,312,["TECHNICAL","C16-C19 • D10-D11","CSP-2 • SSWiN-2"]),
+        ("N3",420,114,["GATEHOUSE / GATES","C20-C24 • D12 • G01-G02","CSP-3 • SSWiN-3"])
     ]
     # Label callouts use open ground; exact node coordinates remain visible as circles.
     for nid,lx,ly,lines in calls:
@@ -151,11 +153,11 @@ def site():
     for x,t in [(500,"G01"),(550,"G02")]:
         px,py=xy(x,0); line(c,[(px-12,py),(px+12,py)],GREEN,5)
         label(c,px,py-43,t,13,GREEN,True,align="center")
-    label(c,75,662,"24 ha / terminal • hangar • techniczny • portiernia",17,MUTED)
+    label(c,75,662,"24 ha / terminal • hangar • technical • gatehouse",17,MUTED)
     c.save()
 
 def routes():
-    c=page("routes.pdf",1000,710,"03 / TRASY ŚWIATŁOWODOWE – GEOMETRIA KONCEPCYJNA")
+    c=page("routes.pdf",1000,710,"03 / FIBRE ROUTES - CONCEPT GEOMETRY")
     xy=sitebase(c,True)
     cols=[TEAL,BLUE,AMBER,FIRE]
     for r,col in zip(D["routes"],cols):
@@ -173,20 +175,20 @@ def routes():
     for x,y in chambers:
         px,py=xy(x,y); c.setStrokeColor(NAVY); c.setLineWidth(1.5)
         c.rect(px-12,py-12,24,24,fill=0,stroke=1)
-    label(c,75,660,"OS2 12J: 2 włókna LAN + 2 SSP + 8 rezerwy / odcinki R1–R4",17,MUTED)
+    label(c,75,660,"OS2 12-core: 2 LAN + 2 FAS + 8 spare fibres / sections R1-R4",17,MUTED)
     c.save()
 
 def terminal():
-    c=page("terminal.pdf",1000,595,"04 / TERMINAL – RZUT FUNKCJONALNY 80 × 40 m")
+    c=page("terminal.pdf",1000,595,"04 / TERMINAL - FUNCTIONAL PLAN 80 × 40 m")
     ox,oy,s=90,160,10
     def xy(x,y): return ox+x*s,oy+y*s
     rooms=[
-        (0,0,30,25,"A / HAL PUBLICZNY",HexColor("#F0F5F6"),(15,12)),
-        (0,25,30,15,"B / PERSONEL",HexColor("#EAF3EC"),(15,31)),
-        (30,0,50,15,"A / WEJŚCIE I KOMUNIKACJA",HexColor("#F0F5F6"),(55,7)),
+        (0,0,30,25,"A / PUBLIC HALL",HexColor("#F0F5F6"),(15,12)),
+        (0,25,30,15,"B / STAFF",HexColor("#EAF3EC"),(15,31)),
+        (30,0,50,15,"A / ENTRANCE AND CIRCULATION",HexColor("#F0F5F6"),(55,7)),
         (30,15,20,10,"D / SOC",HexColor("#DDE9F2"),(40,21)),
-        (30,25,20,15,"B / ZAPLECZE",HexColor("#EAF3EC"),(40,31)),
-        (50,15,30,25,"C / OPERACYJNA",HexColor("#FBF2E3"),(65,27))
+        (30,25,20,15,"B / BACK OF HOUSE",HexColor("#EAF3EC"),(40,31)),
+        (50,15,30,25,"C / OPERATIONS",HexColor("#FBF2E3"),(65,27))
     ]
     for x,y,w,h,title,color,txy in rooms:
         c.setFillColor(color); c.setStrokeColor(NAVY); c.setLineWidth(2)
@@ -217,49 +219,49 @@ def terminal():
     label(c,*xy(40,-5),"80 m",17,NAVY,align="center")
     line(c,[xy(-3,0),xy(-3,40)],NAVY,1.1)
     label(c,25,350,"40 m",17,NAVY)
-    label(c,90,72,"● kamera      ■ punkt KD      • orientacyjna detekcja SSP (48 miejsc)",18,MUTED)
-    label(c,90,38,"Linia niebieska: trasa IP / czerwona: ideowy obwód SSP. Układ wymaga projektu branżowego.",16,MUTED)
+    label(c,90,72,"● camera      ■ ACS point      • indicative fire detection (48 points)",18,MUTED)
+    label(c,90,38,"Blue: IP route / red: FAS circuit concept. Discipline-specific design required.",16,MUTED)
     c.save()
 
 def ai_flow():
-    c=page("ai-flow.pdf",1000,240,"05 / AI WSPOMAGA DECYZJĘ OPERATORA")
+    c=page("ai-flow.pdf",1000,240,"05 / AI SUPPORTS OPERATOR DECISIONS")
     xs=[25,280,535,790]
-    titles=[["OBRAZ","8 wybranych kamer"],["MODEL ML","obiekty + śledzenie"],["REGUŁA STREFY","kandydat na alarm"],["OPERATOR","ocena + reakcja"]]
+    titles=[["VIDEO","8 selected cameras"],["ML MODEL","objects + tracking"],["ZONE RULE","alarm candidate"],["OPERATOR","review + response"]]
     for i in range(3):
         line(c,[(xs[i]+185,132),(xs[i+1],132)],TEAL,3,arrow=True)
     for x,tt in zip(xs,titles): box(c,x,90,185,85,tt,size=17)
-    label(c,25,35,"Pilotaż i pomiar TP / FP / FN • analiza lokalna • niezależność od sterowań SSP",18,MUTED)
+    label(c,25,35,"Pilot and TP / FP / FN measurement • local analysis • independent of FAS controls",18,MUTED)
     c.save()
 
 def power():
-    c=page("power.pdf",1000,440,"06 / ZASILANIE I PODTRZYMANIE")
+    c=page("power.pdf",1000,440,"06 / POWER AND BACKUP")
     line(c,[(245,337),(350,337)],AMBER,arrow=True)
     line(c,[(245,232),(300,232),(300,320),(350,320)],AMBER,arrow=True)
     line(c,[(550,328),(655,328)],AMBER,arrow=True)
     line(c,[(775,292),(775,245),(445,245),(445,192)],AMBER,arrow=True)
     line(c,[(775,245),(775,192)],AMBER,arrow=True)
-    box(c,25,300,220,76,["SIEĆ 230/400 V"],AMBER,size=19)
-    box(c,25,194,220,76,["AGREGAT","10 kVA / 8 kW"],AMBER,size=19)
-    box(c,350,292,200,84,["SZR","cel: do 60 s"],AMBER,size=19)
-    box(c,655,292,280,84,["ROZDZIAŁ ZASILANIA","obwody bezpieczeństwa"],AMBER,size=18)
-    box(c,85,100,430,92,["UPS N0: 3 kVA + 3 × 1 kVA N1–N3","cel: 30 min","IT / CCTV / SOC"],BLUE,size=17)
-    box(c,560,100,405,92,["OSOBNE ZASILACZE BUFOROWE","SSP / KD / SSWiN","lokalne baterie DC"],FIRE,HexColor("#FBF0F0"),17)
-    label(c,25,45,"Dobór obwodów ppoż. i położenie względem PWP według uzgodnionego projektu.",17,MUTED)
+    box(c,25,300,220,76,["MAINS 230/400 V"],AMBER,size=19)
+    box(c,25,194,220,76,["GENERATOR","10 kVA / 8 kW"],AMBER,size=19)
+    box(c,350,292,200,84,["ATS","target: up to 60 s"],AMBER,size=19)
+    box(c,655,292,280,84,["POWER DISTRIBUTION","security circuits"],AMBER,size=18)
+    box(c,85,100,430,92,["UPS N0: 3 kVA + 3 × 1 kVA N1-N3","target: 30 min","IT / CCTV / SOC"],BLUE,size=17)
+    box(c,560,100,405,92,["SEPARATE BACKUP SUPPLIES","FAS / ACS / IDS","local DC batteries"],FIRE,HexColor("#FBF0F0"),17)
+    label(c,25,45,"Fire circuits and emergency-isolation arrangement follow the approved design.",17,MUTED)
     c.save()
 
 def register():
-    lines=["# Rejestr zespołów urządzeń","","Obiekt fikcyjny. Współrzędne lokalne w metrach; nie są punktami geodezyjnymi.","","| Węzeł | (x,y) | Kamery | Drzwi / bramy | SSP | SSWiN |","|---|---|---|---|---|---|"]
+    lines=["# Device assembly register", "", "Fictional site. Local coordinates are in metres, not surveyed points.", "", "| Node | (x,y) | Cameras | Doors / gates | FAS | IDS |", "|---|---|---|---|---|---|---|"]
     camera=door=1
     for n in D["nodes"]:
         count=n["fixed"]+n["ptz"]
-        cams=f'C{camera:02}–C{camera+count-1:02}'
-        doors=f'D{door:02}–D{door+n["doors"]-1:02}'
-        if n["gates"]: doors+="; G01–G02"
-        lines.append(f'| {n["id"]}: {n["name"]} | {n["xy"]} | {cams} | {doors} | {n["fire_detectors"]} czujek, {n["rop"]} ROP | {n["pir"]} PIR, {n["contacts"]} kontaktronów |')
+        cams=f'C{camera:02}-C{camera+count-1:02}'
+        doors=f'D{door:02}-D{door+n["doors"]-1:02}'
+        if n["gates"]: doors+="; G01-G02"
+        lines.append(f'| {n["id"]}: {n["name"]} | {n["xy"]} | {cams} | {doors} | {n["fire_detectors"]} detectors, {n["rop"]} MCPs | {n["pir"]} PIRs, {n["contacts"]} contacts |')
         camera+=count; door+=n["doors"]
-    lines+=["","W terminalu kamery C01–C08 pokazano osobno na rzucie. C09–C10 obejmują wejście i elewację od płyty. W pozostałych zespołach kamery stałe obejmują elewacje i przejścia; PTZ służą do weryfikacji otoczenia. Dokładne punkty, wysokości i kadry ustala próba terenowa.","","Identyfikatory SSP, KD i SSWiN muszą zostać przypisane do rzeczywistych pomieszczeń po zatwierdzeniu rzutów. Liczb z tego rejestru nie należy traktować jako zweryfikowanego pokrycia detekcją.",""]
-    (ROOT/"docs/rejestr-urzadzen.md").write_text("\n".join(lines))
+    lines += ["", "Terminal cameras C01-C08 are shown individually. C09-C10 cover the entrance and apron facade. Other groups use fixed cameras for facades and access points; PTZ provides surrounding-area verification. Exact positions, heights, and views require field testing.", "", "FAS, ACS, and IDS identifiers must be assigned to actual rooms after plans are accepted. Counts in this legacy register are not verified detection coverage.", ""]
+    (ROOT/"docs/device-register.md").write_text("\n".join(lines))
 
 if __name__=="__main__":
     for fn in (architecture,site,routes,terminal,ai_flow,power,register): fn()
-    print("Wygenerowano 6 rysunków wektorowych PDF i rejestr zespołów.")
+    print("Generated 6 vector PDF drawings and the assembly register.")

@@ -1,9 +1,29 @@
 \documentclass[a4paper,11pt]{article}
 \input{preamble}
 \input{metadata}
+\usepackage{longtable,xurl}
+\input{generated/design-data}
+\fancyhead[R]{\small\color{teal}AIRPORT / \ModelRevision}
 \begin{document}
-\input{sections/00-cover}
-\input{sections/00-contents}
+\hypersetup{pageanchor=false}
+% Legacy cover and contents contain obsolete geometry and drawings; retained for C.
+\begin{titlepage}
+\color{black}
+\begin{center}
+{\Large Security Systems Design\\ for the Fictional North Airport\par}
+\vspace{8mm}
+CCTV, ACS, IDS, FAS\par
+\vspace{5mm}
+Technical model \ModelRevision{}\par
+\end{center}
+\vfill
+\projectUniversity\par
+\projectAuthors\par
+\projectInstructor\par
+24 October 2026\par
+\end{titlepage}
+\hypersetup{pageanchor=true}
+\tableofcontents
 \clearpage\input{sections/01-assumptions}
 \clearpage\input{sections/02-risk}
 \clearpage\input{sections/03-cctv}

@@ -1,22 +1,23 @@
-\section{Sieć transmisyjna i technologie}
-Zaprojektowano fizyczny pierścień światłowodowy OS2 12J: N0--N1--N2--N3--N0. Każdy odcinek wykorzystuje jedną parę włókien dla LAN i osobną parę dla magistrali SSP, jeżeli zatwierdza to producent. Pozostałe osiem włókien stanowi rezerwę. Wspólny kabel oznacza wspólne ryzyko uszkodzenia obu par.
+\section{Network and transmission budgets}
+The selected TP-Link SG3428MP v6.30 has 24 RJ45 1 Gb/s ports, PoE+ up to 30 W per port, and a 384 W budget. P01--P08 serve C01--C08, P09--P13 controllers KD-01--05, P14 NAS, P15 SOC, P16 the firewall, and P17 ETHM. The remaining seven RJ45 ports and all SFP ports are unused. No SFP modules or fibre are installed; an optical budget and ring reconvergence do not apply to this topology.\cite{S-SW}
 
-LAN obejmuje jeden rdzeń zarządzalny w N0 i trzy przełączniki terenowe w pierścieniu. Czwarty przełącznik PoE obsługuje terminal i jest dołączony lokalnie do rdzenia. RSTP blokuje logiczną pętlę. Każde z czterech łączy 1 Gb/s wymaga dwóch modułów SFP 1000BASE-LX -- razem osiem. Serwer VMS łączy się z rdzeniem przez 10GBASE-T.
-
-\begin{tabularx}{\linewidth}{@{}P{29mm}P{34mm}Y@{}}
-\toprule\textbf{Segment} & \textbf{Urządzenia} & \textbf{Dopuszczony ruch}\\\midrule
-VLAN 10 CCTV & 24 kamery & Strumienie do VMS/AI, czas i zarządzanie z wydzielonego hosta.\\
-VLAN 20 KD & 8 kontrolerów & Komunikacja z serwerem KD i odbiór zdarzeń; bez dostępu kamer.\\
-VLAN 30 SSWiN & 4 centrale & Zdarzenia do integracji i centrum odbiorczego według konfiguracji.\\
-VLAN 40 serwery & VMS, AI, integracja & Dostęp usługowy według listy dozwolonych połączeń.\\
-VLAN 50 nadzór & 2 stanowiska SOC & Klient VMS i panel zdarzeń; brak rutynowej administracji.\\
-VLAN 99 zarządzanie & Urządzenia sieciowe & Osobny host administracyjny, MFA na bramie, dzienniki.\\\bottomrule
+\begin{tabularx}{\linewidth}{@{}P{23mm}P{41mm}Y@{}}
+\toprule VLAN & Devices & Communication limits\\\midrule
+10 & Cameras C01--C08 & Streams and events to SOC; NTP from SOC; administration from a dedicated session.\\
+20 & KD-01--KD-05 & HTTPS and Secure Entry events to SOC; no direct camera-to-controller communication.\\
+30 & IP-I01 / ETHM & Local DLOADX maintenance only, from an authorised SOC account. No routine Internet control.\\
+40 & NAS-0 and SOC-0 & SMB3 recording, local client, role and export controls.\\
+99 & Management & Switch and ER605 interfaces; administrator access during maintenance.\\\bottomrule
 \end{tabularx}
 
-VLAN sam nie zapewnia ochrony. Ruch między segmentami filtruje zapora; domyślnie jest zabroniony. Sieć zabezpieczeń nie służy pasażerom ani systemom biurowym. Zdalny serwis odbywa się przez VPN i host administracyjny z czasowo przyznanym uprawnieniem [9].
+ER605 filters inter-VLAN traffic with default deny. The switch does not route between these segments. The firewall port is a VLAN trunk and the WAN port remains disconnected. No public access or cloud services is a configuration assumption, not a property of VLANs alone. Rules allow only declared device pairs and manufacturer services.\cite{S-FW,S-VMS}
 
-\subsection*{Bilans portów, PoE i pasma}
-Każdy z czterech przełączników dostępowych ma 24 porty RJ45 PoE+ i budżet co najmniej 240 W. Obciążenia kamer w N0/N1/N2/N3 wynoszą odpowiednio \textbf{120/78/66/96 W}; rezerwa 25\% nadal mieści się w budżecie. Dodatkowe porty zajmują kontrolery, centrale i stacje, zależnie od węzła.
+\subsection*{PoE ports and copper}
+Maximum PD power is \PoePD{} W. Full class allocation is assumed: $8\cdot15.4+5\cdot30=\PoePSE{}$ W; adding 25\% gives \PoeMargin{} W, below 384 W. PD power is not equated with switch AC power. Reader and lock power is included in the controller's adopted 25.5 W limit and is not added to PoE twice. G01 has two readers at 0.25 A maximum peak current each: 0.50 A equals the A1210 reader-output limit; that output serves no other loads. Other controllers each supply one reader and a 0.28 A strike.\cite{S-KD,S-READER}
 
-Zapis 96 Mb/s + osiem strumieni AI 32 Mb/s + podglądy SOC 32 Mb/s = 160 Mb/s; z zapasem 25\% -- \textbf{200 Mb/s}. Uplink 1 Gb/s wystarcza dla przyjętego ruchu, lecz wynik trzeba zweryfikować pod obciążeniem i po przerwaniu pierścienia. Miedź kat. 6A: docelowo do 90 m toru stałego i do 100 m kanału z przewodami przyłączeniowymi.
-\src{[9] CISA -- segmentacja. Topologia, VLAN i wielkości ruchu: projekt własny}
+Each link has an individual length. The longest channel, including a conservative 5 m patch-cord allowance, is \CopperMax{} m against the 100 m target; permanent links are shorter than 90 m. Outdoor cables have PE jackets and four DEHNpatch protectors: one at building entry and one at each of C07/C08. Class E protectors permit 1 Gb/s; Category 6A cable alone does not establish Class EA performance for the whole channel. Shields, protectors, and the metal G01 point have explicit PE bonding. This does not replace a lightning-protection design.\cite{S-SPD}
+
+\subsection*{Bandwidth and failures}
+Recording uses at most 48 Mb/s. Simultaneous NAS writing and reading use 96 Mb/s; the SOC port envelope includes 48 Mb/s reception, 96 Mb/s NAS exchange, and 10 Mb/s of other services. With 25\% headroom this is \NetworkLoad{} Mb/s, below 1 Gb/s. Each camera's 100 Mb/s port also carries a secondary viewing stream; two full 6 Mb/s streams do not exhaust it. C08 analytics needs no extra stream to a separate AI server.
+
+A single cable break disconnects its device. There is no alternate route for a lost uplink; switch failure removes transmission and PoE. During data-only link failure with power intact, cameras use SD and ACS uses local permissions. The fire panel and mechanical exits remain operational in all these cases. Bandwidth checks during RAID rebuilding and SD recording recovery are acceptance tests to be performed, not completed performance measurements.

@@ -1,21 +1,42 @@
-\subsection{Bilans podtrzymania i źródło rezerwowe}
-\textbf{UPS -- cel 30 min.} Dla sprawności 0,90 i współczynnika zapasu 1,25 minimalna oszacowana energia nominalna baterii wynosi:
+\section{Autonomy, batteries, and voltage drop}
+\subsection{UPS sizing from the manufacturer curve}
+The Eaton 5PX1500IRT2UG2 UPS is rated 1500 VA / 1500 W and uses two 5PXEBM48RT2UG2 battery modules. The \UPSDesign{} W envelope is within its output rating. The next higher published load point for this exact configuration is used: \UPSCurveW{} W and \UPSCurveMin{} min. No favourable interpolation is applied. With the manufacturer's $-15\%$ tolerance and the project's 0.8 ageing factor:
 \[
-E=\frac{1{,}335\ \mathrm{kW}\cdot0{,}5\ \mathrm{h}}{0{,}90}\cdot1{,}25
-=0{,}927\ \mathrm{kWh}.
+t_{\mathrm{design}}=\UPSCurveMin{}\cdot0.85\cdot0.8=\UPSMinutes{}\ \mathrm{min}>30\ \mathrm{min}.
 \]
-Rozdział na węzły daje 0,698 / 0,075 / 0,067 / 0,088 kWh. Do koncepcji przyjęto co najmniej 1,0 kWh dla N0 i po 0,15 kWh dla N1--N3. To bilans energii, nie potwierdzony czas pracy konkretnego UPS. Odbiór wymaga krzywych producenta, sprawdzenia temperatury, starzenia, prądu rozładowania i próby obciążeniowej.
+This is curve-based sizing, not a performed autonomy test. The ageing factor does not guarantee the condition of every used battery. Acceptance uses the target load and temperature after full charging and recognition of both EBM modules. A kWh formula alone is not used as runtime evidence.\cite{S-UPS,S-UPS-GUIDE}
 
-\begin{tabularx}{\linewidth}{@{}P{24mm}Y Y@{}}
-\toprule\textbf{System DC} & \textbf{Założenie dla jednej jednostki} & \textbf{Dobór wstępny}\\\midrule
-SSP, 4 centrale & 24 V; 0,35 A dozór przez 24 h i 1,5 A alarm przez 0,5 h. $Q=1{,}25(0{,}35\cdot24+1{,}5\cdot0{,}5)=11{,}44$ Ah. & Każda: 2 $\times$ 12 V / 17 Ah szeregowo = 24 V / 17 Ah. Łącznie 8 akumulatorów.\\
-SSWiN, 4 centrale & 12 V; 0,25 A przez 24 h i 1 A przez 0,25 h. $Q=7{,}81$ Ah po dodaniu 25\%. & Każda: 12 V / 17 Ah; łącznie 4 akumulatory.\\
-KD, 8 zasilaczy & 12 V; 1,2 A przez 4 h i 2 A przez 0,25 h. $Q=6{,}63$ Ah po dodaniu 25\%. & Każdy: 12 V / 9 Ah; łącznie 8 akumulatorów.\\\bottomrule
-\end{tabularx}
+\subsection{FAS and IDS batteries}
+CSP-0 contains \textbf{one 12 V / 17 Ah battery}, not two series batteries at 24 V. The panel converter supplies the loop at a higher voltage. Loop devices total \LoopStandbyMA{} mA in standby and \LoopAlarmMA{} mA in alarm. At the assumed lower battery limit of 10.5 V and project minimum converter efficiency 0.8:
+\[
+I_b=I_{\text{board}}+\frac{24\,I_{\text{loop}}}{10.5\cdot0.8}.
+\]
+Board battery currents of 0.22/0.32 A come from panel data, separately from loop loads. DCP uses the conservative DMP current envelope. FAS battery current is \FireStandby{} A in standby and \FireAlarm{} A in alarm; required capacity is:
+\[
+Q_F=1.25(24 I_{b,s}+0.5 I_{b,a})=\FireAh{}\ \mathrm{Ah}<17\ \mathrm{Ah}.
+\]
+The adopted 24 h + 0.5 h is the project's target for a continuously staffed model, not a quotation of a universal EN 54 requirement.\cite{S-FIRE,S-DMP,S-ROP,S-SND}
 
-Podane czasy i prądy są założeniami koncepcyjnymi, nie uniwersalnymi wymaganiami norm. Wymagany czas dozoru, rezerwę, ładowanie i pojemność trzeba potwierdzić dla danego systemu i warunków obsługi. Sprawdzić również spadki napięć przy najniższym napięciu baterii. Połączenie szeregowe zwiększa napięcie, a nie pojemność w Ah.
+IDS has a separate 12 V / 17 Ah battery. The budget includes VERSA at 0.135/0.160 A, ETHM at 0.070/0.080 A, keypad at 0.050/0.060 A, six PIRs at 0.010/0.025 A each, sounder up to 0.120 A in alarm, and a project 0.010 A supervision allowance. The resulting currents are \IntrusionStandby{}/\IntrusionAlarm{} A, with
+\[
+Q_I=1.25(24 I_s+0.25 I_a)=\IntrusionAh{}\ \mathrm{Ah}<17\ \mathrm{Ah}.
+\]
+ACS controllers have no additional DC batteries; the same UPS supports them through PoE. Mechanical egress remains after it is exhausted. The former four-hour electrical ACS backup target is not claimed.\cite{S-SSWIN,S-ETHM,S-LCD,S-PIR,S-SIREN}
 
-\subsection*{Agregat i SZR}
-Założono agregat 10 kVA / 8 kW, pracujący wyłącznie na potrzeby tej strefy bezpieczeństwa. Bilans: IT/CCTV 1,335 kW + rezerwa 0,4 kW na zasilacze DC i ładowanie + 0,6 kW istniejącego oświetlenia obsługi. Po dodaniu 25\% otrzymujemy 2,92 kW, tj. 3,65 kVA przy $\cos\varphi=0{,}8$. Dobór wymaga jeszcze sprawdzenia prądów rozruchowych i zgodności z UPS.
+\subsection{Power supplies and charging}
+Published maximum FAS charging current is 1.4 A. Runtime estimates conservatively use only 0.8 A, allowing for panel load. Converting 14.4 V charging to the 18 V supply side at 0.8 efficiency and adding circuit loads gives \FireSupplyA{} A against Imax 1.6 A. IDS maximum loads plus factory charging at 0.35 A total \IntrusionSupplyA{} A against 2 A. Charging currents are not added during battery operation.
 
-Cel rozruchu i przełączenia: do 60 s, bez ręcznej interwencji, do potwierdzenia próbą SZR. Zakładana autonomia paliwowa: 8 h przy obciążeniu obliczeniowym; zbiornik dobiera się dopiero z krzywej zużycia producenta. Agregat nie zasila całego lotniska ani systemów nawigacyjnych.
+Restoring 80\% of nominal capacity with a 1.2 charging-loss factor is estimated by $t=0.8Q\cdot1.2/I_{\text{charge}}$. This gives FAS \FireRecharge{} h (target up to 24 h) and IDS \IntrusionRecharge{} h (target up to 72 h). The final charging stage depends on temperature and algorithm; these are estimates for testing, not measured times to 100\% charge.
+
+\subsection{Voltage drop}
+For a two-conductor circuit, warm-copper resistivity is assumed as $\rho=0.0225\ \Omega\,\mathrm{mm}^2/\mathrm{m}$:
+\[
+R=\frac{2\rho L_{\mathrm{inst}}}{A},\qquad U_{\mathrm{end}}=U_{\min}-IR-\Delta U_{\text{joints}}.
+\]
+The table covers every reader and strike, all PIRs, the keypad, and sounder. The long common G01 cable carries up to \GateCurrent{} A for both readers; \GateSection{} mm$^2$ and a further 0.05 V allowance for short terminal transitions are used. The OUT section input is calculated directly from the common cable end: \GateFirstVoltage{} V. After its further drop and joint losses, the last reader receives \GateReaderVoltage{} V. No independent, more favourable second-section source is assumed. The 11.4 V threshold is a project acceptance criterion for the nominal 12 V circuit, not a new reader certification range.
+
+\VoltageTable
+
+The FAS loop has \LoopLength{} m installed length including slack. For 1 mm diameter conductors, pair resistance is \LoopResistance{} $\Omega$, below the published 100 $\Omega$. Pessimistically placing all loads at the far end after an open circuit, with a project checking threshold of 20.4 V at the regulated loop output, gives \LoopVoltage{} V, above the devices' required 18 V. The published 200 mA loop limit is also met. The 20.4 V threshold assumes a 10.5 V battery for checking; it is not an undocumented panel specification. Actual regulated-loop voltage in that state must be recorded at acceptance.
+
+Below the adopted thresholds or after backup depletion, continued effective detection and recording are not assumed. The operator closes the site to new users and organises physical supervision and evacuation if local fire functions cannot be maintained. Disconnecting a depleted battery protects it against damage but does not sustain system operation.

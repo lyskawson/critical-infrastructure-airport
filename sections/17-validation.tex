@@ -1,26 +1,20 @@
-\section{Odbiór, utrzymanie i podział prac}
-\begingroup\small
-\begin{tabularx}{\linewidth}{@{}P{24mm}Y Y@{}}
-\toprule\textbf{Próba} & \textbf{Kryterium} & \textbf{Dowód odbioru}\\\midrule
-CCTV dzień/noc & Kadr odpowiada zadaniu; czytelny ruch, brak istotnych zasłonięć i olśnień. & Próbki nagrań ze scenariuszy i zatwierdzona lista kadrów.\\
-Zapis i odtworzenie & 24 kanały, wymagany czas retencji, kontrolowany eksport i bufor kart. & Raport obciążenia, próba odtworzenia i integralności eksportu.\\
-KD i SSWiN & Prawidłowa akceptacja/odmowa, alarm otwarcia, sabotaż i praca bez LAN; W-01. & Macierz uprawnień i protokół z czasem obsługi.\\
-SSP i ewakuacja & Próba wszystkich elementów i sterowań, potwierdzenie scenariusza, wyjście bez LAN. & Protokół branżowy; pomiary sygnalizacji; zgody i dokumenty urządzeń.\\
-LAN i okablowanie & Certyfikacja miedzi, pomiary włókien, odtworzenie po przerwaniu R1--R4; W-02. & Raporty pomiarów i czasy rekonwergencji dla każdego odcinka.\\
-Zasilanie & 30 min UPS przy obciążeniu, zanik sieci, start agregatu i test baterii DC. & Rejestr mocy, napięć i czasu; próba SZR.\\
-Awaria integracji & Brak VMS/AI/LAN nie wstrzymuje lokalnych funkcji SSP; W-03. & Scenariusz awaryjny i podpisy branż odpowiedzialnych.\\
-AI i dane & Raport TP/FP/FN, czas p95, obciążenie operatora, maski i role. & Niezależny zestaw testowy i raport bez deklaracji niezmierzonych wyników.\\\bottomrule
+\section{Design checks and acceptance plan}
+Automated checks cover unique IDs and references, coordinate frames, room outlines, device locations, port endpoints, cable polylines and lengths, L1 order, addresses, isolators, IDS inputs, ACS channels, image angles and density, geometric coverage at the adopted radii, and walks to call points through openings. Budgets cover PoE, copper, bandwidth, recording, buffers, AC loads, batteries, charging, and voltage drop. Register and table freshness is checked against exact data exports, not merely PDF existence.
+
+These checks do not establish construction or legal compliance. Project radii do not replace complete FAS placement rules. Optics explicitly assume an ideal model with a border reserve, without measured calibration; not all smoke behaviour, sound propagation, or moving occlusion is calculated. No table parameter is presented as a field-test result.
+
+R1 extends checks to the full clear openings of all claimed ACS verification points, vertical framing of the AI line and region, and defined PATH1 body parts. The previous 15 negative tests are retained; five targeted cases were added: an occupied space blocking entry, D01 beyond the frame limit, AI-line feet below the image, PATH1 upper-body clipping, and an independently inflated downstream-reader source voltage. Each new case must be rejected for the intended reason, not an unrelated dependency error.
+
+\begin{tabularx}{\linewidth}{@{}P{28mm}Y Y@{}}
+\toprule Test & Acceptance criterion & Required evidence\\\midrule
+CCTV and PATH1 & Required C01--C04 directions, target detail, no permanent occlusion; day/night, luggage, wheelchair, and groups. & Eight views with target-width measurements, passage videos, and limitations.\\
+Recording and LAN & 7 days at 6 Mb/s cap, SD-gap recovery with PoE intact, reading during RAID rebuilding. & Bitrate, capacity, recording dates, link-loss, and exported-playback report.\\
+ACS / IDS & Acceptance and rejection, SOC/IT PIN, every DPS/REX and Z1--Z15, tamper, local operation. & Individual tests and revoked-card synchronisation; egress without LAN, server, or power.\\
+FAS & Every F, ROP, and SF, OUT1/OUT8, open/shorted loop, restoration, and low battery. & Actual channels, currents, loop voltage, and audibility in every room.\\
+Power & At least 30 min UPS at design load; DC batteries and recharge; PWP disconnects AC and UPS. & Time, power, and voltage records; RPO in every mode; disconnection, RCD, and PE measurements.\\
+AI1 & TP/FP/FN, p95, and operator-workload targets from the analytics section. & Dataset and conditions, denominators, delays, and limitations; no invented results.\\\bottomrule
 \end{tabularx}
-\endgroup
 
-\subsection*{Utrzymanie}
-Codziennie: przegląd alarmów, zapisu i zasilania przez dyżurnego. Co miesiąc: proponowana próba wybranego scenariusza i kontrola kopii. Kwartalnie: proponowana próba odtworzenia i analiza jakości alarmów. Terminy branżowych przeglądów wynikają z właściwych przepisów i instrukcji producentów; dla urządzeń ppoż. rozporządzenie przewiduje przeglądy nie rzadziej niż raz w roku [2].
+Site-dependent tasks remain before implementation acceptance: ground and installation measurement, views, audibility and accessibility tests, detector tests with appropriate smoke/heat tools, electrical-shock protection, autonomous power, and approval by the competent people. This does not alter model counts, addresses, channels, or routes. A failed test requires an explicit model correction and recalculation of dependencies.
 
-\subsection*{Propozycja pracy zespołowej -- według pakietów}
-\begin{enumerate}
-\item \textbf{Osoba A:} obiekt, ryzyka, geometria i projekt trasowy.
-\item \textbf{Osoba B:} CCTV, KD i SSWiN; rejestr urządzeń.
-\item \textbf{Osoba C:} SSP, scenariusze reakcji i zasilanie.
-\item \textbf{Osoba D:} sieć, AI, zestawienie i redakcja PDF. Przy innym składzie pakiety można łączyć.
-\end{enumerate}
-Na prezentacji warto przejść przez jeden alarm od urządzenia do reakcji operatora, następnie pokazać tę samą sytuację przy braku LAN i energii. Taka narracja łączy schematy, obliczenia i procedury.
+The operator checks alarms, disablements, recording, and power daily. Inspection intervals follow device instructions and regulations: at least annually for fire-protection equipment, or sooner where instructions require it. Every intervention affecting the panel, battery, egress path, or key profile ends with a test of the relevant function.\cite{L-FIRE}

@@ -1,23 +1,33 @@
-\subsection{System sygnalizacji pożarowej SSP (SAP)}
-Każdy budynek otrzymuje lokalną centralę SSP z własnym zasilaczem i baterią. Centrale łączy wydzielona, kompatybilna magistrala światłowodowa producenta. Działa ona na osobnej parze włókien, bez przełączników LAN. Awaria integracji z SOC nie zatrzymuje lokalnego wykrywania ani sygnalizacji.
+\section{Fire alarm system}
+\subsection{Device family and layout}
+CSP-0 is a SATEL ACSP-402 with its factory APS-318 power supply, in the continuously staffed SOC. The design uses \FireDetectorCount{} detectors: ten DMP-400 smoke/heat units and one A1R DCP-400 heat detector in the toilet, plus \RopCount{} ROP-400/PL manual call points and \FireSounderCount{} SPP-400 sounders. All addressable devices belong to the ACSP family, have isolators on both sides, and are loop-powered. DB-400 bases are included in detector assemblies. There is no panel network or fibre interface.\cite{S-FIRE,S-DMP,S-ROP,S-SND}
 
-\begin{tabularx}{\linewidth}{@{}P{35mm}rrrrY@{}}
-\toprule\textbf{Budynek} & \textbf{Czujki} & \textbf{ROP} & \textbf{Sygn.} & \textbf{I/O} & \textbf{Izolatory}\\\midrule
-Terminal / CSP-0 & 48 & 6 & 6 & 2 & 2\\
-Hangar / CSP-1 & 20 & 2 & 2 & 2 & 2\\
-Techniczny / CSP-2 & 8 & 2 & 2 & 2 & 2\\
-Portiernia / CSP-3 & 4 & 2 & 2 & 2 & 2\\\midrule
-\textbf{Razem} & \textbf{80} & \textbf{12} & \textbf{12} & \textbf{8} & \textbf{8}\\\bottomrule
+For the flat 3 m ceiling, the project assumes a 5 m geometric checking radius for smoke detection and 4 m for toilet heat detection. These are neither manufacturer specifications nor quotations from the full placement standard. Every room corner and a 0.5 m checking grid fall within the assigned detector's radius. The 16 $\times$ 10 m hall is divided into four 8 $\times$ 5 m areas; the farthest corner is 4.72 m away. Two such areas cover the 8 $\times$ 10 m passage. Other rooms have farthest-corner distances of 3.61--4.24 m; the toilet heat detector's maximum is 3.61 m.
+
+The IT DMP is over the clear aisle in front of the cabinet, and the store DMP over the central aisle between shelves. There are no voids requiring separate detectors. No air supply outlets are assumed near detector points; changes to ventilation or ceiling partitions alter the model rather than merely the drawing. A heat detector was selected for the toilet because water vapour may occur; no shower or hot-air process is assumed. Heat detection may respond later than smoke detection.
+
+\FirePointTable
+
+\subsection{Loop, addresses, and notification}
+L1 is a closed loop CSP-0:L1A--devices in address order 1--22--CSP-0:L1B; the exact FL1-01--FL1-23 cable order is in the connection schedule. These are not branches of an indicative grid. Twenty-two of 128 addresses are used, all with isolators. The second loop remains disabled, without purchased spare points. Outgoing and return paths use separate supports; the SOC return follows the north side, while the first outgoing section heads towards the hall. A single open circuit permits supply from the other side; a short circuit isolates the section between adjacent isolators. Resistance to any two faults or loss of the panel itself is not claimed.\cite{S-FIRE,S-FIRE-USER}
+
+Manual call points are by E01, E02, and E03 at 1.4 m. The shortest walk through actual door openings is up to about 19.5 m against the project's 30 m target; distances are not measured through walls. Each enclosed room has one sounder and the hall has two. Background noise up to 55 dBA and a target of at least 65 dBA or 5 dB above background at occupied points with doors closed are assumed. These are not measurement results. The model provides acoustic notification and does not claim EN 54-23 visual coverage. A designated employee assists anyone unable to hear the signal. Acceptance includes accessibility assessment and a test of this procedure.
+
+\subsection{Cause-and-effect matrix and outputs}
+Single-stage alarm operation is assumed: any detector or manual call point triggers an evacuation alarm without waiting for AI or SOC confirmation. Smoke control, dampers, lifts, extinguishing, and common mechanical ventilation are not designed. Outputs are not added for installations absent from the model.
+
+\begin{tabularx}{\linewidth}{@{}P{29mm}P{38mm}Y@{}}
+\toprule Trigger / condition & Actual channel & Effect, supervision, and restoration\\\midrule
+F01--F11, immediate alarm & L1: addresses 3, 8, 10, 14, 16, 18, 20, 22 (SF-01--08); OUT1. & All sounders; panel display; information to IDS Z11. Loop polling and isolators, INFO-FIRE 2EOL circuit. Local level 2 reset after checking the cause and operator approval.\\
+ROP-01--03, activation & The same eight addresses and OUT1. & Immediate alarm. Reset the call point with a key first, then the panel after safety is confirmed.\\
+Open circuit, short circuit, missing device, power/battery fault & OUT8, relay energised in the healthy state. & Information to Z12 and local panel indication. Panel power loss also signals fault; 2EOL distinguishes open/short circuit. Restore after repair and supervision checks.\\
+Fire with ACS locked & No electrical release output. & Inside handles D01--D04 and hardware E01--E03 open mechanically. Physical check after the event; no LAN dependency.\\
+LAN/VMS/AI unavailable & No IT control of FAS. & Local alarm and panel operation continue. Restore IT after repair; this does not automatically reset the fire alarm.\\\bottomrule
 \end{tabularx}
 
-\textbf{Dobór detekcji.} W terminalu rozważa się punktowe czujki dymu lub wielosensorowe; w hangarze rodzaj detekcji trzeba dobrać do wysokości, wentylacji, pyłu i spalin. Liczba 20 czujek w hangarze jest rezerwą ilościową do koncepcji, a nie potwierdzonym pokryciem. Czujki zasysające lub liniowe mogą zmienić zestawienie.
+These functions use eight addressable sounders and two physical panel information contacts: OUT1 and OUT8. No MIO modules are purchased because no adopted function requires them. Unused factory outputs are not counted as installed controls. IDS information circuits are not an alarm transmission path to the Polish State Fire Service (PSP).\cite{S-FIRE,S-FIRE-USER}
 
-\textbf{Pętle i sygnalizacja.} Przewidziano po jednej pętli adresowalnej na budynek oraz centralę z rezerwą co najmniej jednej pętli. Orientacyjne długości pętli lokalnych: 600, 300, 150 i 100 m. Izolatory ograniczają obszar uszkodzenia zwarciowego; ich rzeczywiste rozmieszczenie wynika z architektury systemu. Liczbę sygnalizatorów należy potwierdzić pomiarem słyszalności i wymaganiami dostępności.
+\subsection{Voice alarm and fire-service notification}
+The assumed occupancy of the entire fictional airport is limited to 150 at a time. This does not exceed the more-than-500-person port threshold in Section 28(1)(19) and Section 29(1)(8) of the regulation. The model also meets none of the other adopted triggers in those lists: it is low-rise, single-storey, without overnight, medical, or archive use, an underground garage, or a large retail or assembly venue. FAS is adopted voluntarily for the project scope; a voice alarm system is not installed. This conclusion concerns the defined small airport, not every airport or an arbitrarily isolated part of a large terminal.\cite{L-FIRE}
 
-\textbf{Sterowania.} Osiem modułów I/O to rezerwa funkcjonalna; liczba i rodzaj kanałów wymagają macierzy sterowań. Nie zadeklarowano w ten sposób kompletnego sterowania wszystkimi 12 drzwiami. Nadzór i zwolnienie wyjść wymagają zgodnych interfejsów, dodatkowych wyjść i odpowiednich zasilaczy, jeśli wyniknie to z doboru zamknięć.
-
-\begin{note}{Zasada nadrzędna}
-Alarm pożarowy i ewakuacja wynikają z uzgodnionego scenariusza i funkcji SSP. Weryfikacja obrazu przez ochronę ani wynik AI nie mogą być warunkiem uruchomienia wymaganych działań. Panel SOC otrzymuje wyłącznie informacje o zdarzeniach SSP.
-\end{note}
-Zakres nie rozstrzyga obowiązku DSO ani transmisji do PSP dla rzeczywistego obiektu. Należy ustalić je według jego parametrów i przepisów; zwykłe sygnalizatory nie zastępują wymaganego DSO. Sposób monitorowania alarmów pożarowych wymaga odrębnego uzgodnienia.
-\src{[2] rozporządzenie ppoż. wraz ze zmianami; [8] PN-EN 54-4 -- zakres zasilaczy. Nie deklaruje się zgodności wykonawczej całego systemu}
+The amendments in Journal of Laws 2024, item 1716 (including signage and standalone detectors), and 2026, item 1276 (shelter-point signs, effective 30 September 2026), were reviewed; they do not change these thresholds. Article 5 of the Fire Protection Act links mandatory PSP connection to mandatory FAS provision; the 2026 amendment, item 815, concerns Article 14fa(3). Automatic PSP transmission is not adopted for this model. Following an alarm, the operator immediately calls 112 and starts evacuation. Neither the telephone nor ETHM is claimed as a fire alarm transmission system. Increased airport occupancy or a change of use requires reassessment.\cite{L-2024,L-2026,L-ACT,L-ACT-2026}

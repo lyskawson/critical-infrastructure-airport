@@ -1,25 +1,32 @@
-\subsection{Kontrola dostępu i SSWiN}
-\textbf{KD: 14 punktów} obejmuje 12 drzwi i 2 bramy. Drzwi mają po jednym czytniku od strony wejścia, a bramy po dwa czytniki (wjazd/wyjazd): łącznie 16. Osiem kontrolerów dwukanałowych daje 16 kanałów, z czego 14 jest wykorzystanych. Uprawnienia i harmonogramy przechowuje kontroler lokalny.
+\section{Access control and intrusion alarms}
+\subsection{Authentication choice}
+A PIN alone can be shared, and entering it slows passage. A card allows individual permission revocation, but a lost or loaned card does not establish the holder's identity. A cryptographic card is therefore used, with an additional PIN for SOC and IT. Biometrics might reduce credential sharing, but this small site's objective can be met through a less intrusive measure. The necessity of biometric processing has not been established.
 
-\begin{tabularx}{\linewidth}{@{}P{33mm}Y@{}}
-\toprule\textbf{Funkcja KD} & \textbf{Przyjęte rozwiązanie}\\\midrule
-Identyfikator & Karta z uwierzytelnianiem kryptograficznym; w strefie D dodatkowo PIN. Nie opierać dostępu wyłącznie na numerze UID.\\
-Czytnik -- kontroler & OSDP Secure Channel po RS-485; unikalne klucze, nadzór połączenia, wyłączony tryb instalacyjny po uruchomieniu [4].\\
-Wyposażenie drzwi & 12 zamków, 12 czujników stanu, 12 przycisków wyjścia i 12 miejscowych elementów awaryjnego zwolnienia blokady, jeśli wymaga tego dany typ zamknięcia.\\
-Wyjście i pożar & Mechaniczne swobodne wyjście od wewnątrz. Dla zamknięć wymagających odblokowania: niezależny, nadzorowany tor SSP zgodny ze scenariuszem; samo API nie wystarcza.\\
-Brama & Dwa interfejsy do sterowników bram; sygnały otwarcia i stanu. Fotokomórki, napęd i bezpieczny ruch dobiera odrębna branża.\\\bottomrule
+Article 22$^{1b}$ of the Polish Labour Code permits biometrics, among other cases, where necessary for access to particularly important information or rooms requiring special protection. This does not automatically authorise its use for every airport employee. GDPR Article 9 conditions, proportionality, and data protection would also require assessment. The 2026 consolidated text was considered, replacing the 2025 text mentioned in the notes. Biometrics are not installed.\cite{L-KP,L-GDPR}
+
+The selected reader is HID Signo 40K with HID Seos 5006 cards and an SIO/AES-128 profile. The reader authenticates the card cryptographically and sends the resulting identifier to the controller through OSDP Secure Channel. These protect distinct links: card--reader and reader--controller. Configuration disables UID/CSN-only reading, legacy technologies, and fallback to unencrypted OSDP. Supply includes a personalised HID Elite key profile; actual keys are outside public documentation. Support for the DESFire name alone would not demonstrate cryptographic reading of the card application.\cite{S-READER,S-CARD,S-KD}
+
+\subsection{Access points and failure states}
+There are \AccessCount{} ACS points: \DoorCount{} doors and manual gate G01, with \ReaderCount{} readers and five AXIS A1210 controllers, one channel per point. Gate readers use addresses 0 and 1 on one bus; other readers use address 0 on separate buses. The G01 controller is in the heated IT cabinet because the A1210 operating range starts at 0$^\circ$C.\cite{S-KD}
+
+\begin{tabularx}{\linewidth}{@{}P{16mm}P{41mm}Y@{}}
+\toprule Point & Sides and equipment & Verification and egress\\\midrule
+D01 & Forecourt A01 / R102; KD-01, RD-D01-IN, LK/DC/RX-D01. & Card from outside; the inside handle mechanically retracts the latch.\\
+D02 & Hall R101 / R102; KD-02, RD-D02-IN, LK/DC/RX-D02. & Card from the hall; free handle-operated egress from R102 to the hall.\\
+D03 & Hall R101 / SOC R103; KD-03, RD-D03-IN, LK/DC/RX-D03. & Card and PIN; mechanical egress to the hall.\\
+D04 & Hall R101 / IT R104; KD-04, RD-D04-IN, LK/DC/RX-D04. & Card and PIN; mechanical egress to the hall.\\
+G01 & Approach / car park; KD-05, RD-G01-IN/OUT, DC-G01, gate MECH-G01. & Card verification in both directions and patrol decision. Leaves and lock are operated manually, without a motor or electric strike. Pedestrians bypass the gate.\\\bottomrule
 \end{tabularx}
 
-\textbf{SSWiN: 4 centrale lokalne}, każda o pojemności co najmniej 32 wejść, obejmują 24 czujki ruchu PIR/dual i 16 dodatkowych kontaktronów otworów. Kontaktrony SSWiN są odrębne od 12 czujników KD i nie mogą być liczone ponownie jako te same elementy. Po jednym manipulatorze i sygnalizatorze na budynek.
+Each DPS, including DC-G01, is supervised using Serial first connection with two 1 k$\Omega$ resistors at the contact.\cite{S-KD-WIRING}
 
-\begin{tabularx}{\linewidth}{@{}P{24mm}rrrrY@{}}
-\toprule\textbf{Węzeł} & \textbf{Drzwi} & \textbf{Bramy} & \textbf{PIR} & \textbf{Kontakt.} & \textbf{Kontrolery KD}\\\midrule
-N0 terminal & 6 & 0 & 12 & 8 & 3 (6 kanałów)\\
-N1 hangar & 3 & 0 & 6 & 4 & 2 (4 kanały)\\
-N2 techniczny & 2 & 0 & 4 & 2 & 1 (2 kanały)\\
-N3 portiernia & 1 & 2 & 2 & 2 & 2 (4 kanały)\\\midrule
-\textbf{Razem} & \textbf{12} & \textbf{2} & \textbf{24} & \textbf{16} & \textbf{8 (16 kanałów)}\\\bottomrule
-\end{tabularx}
+D01--D04 use an effeff 118.13 A71 electric strike, pulsed at 12 V (0.28 A), and a separate mechanical lock with an inside handle. Loss of power prevents entry but does not disable the handle. Egress follows handle--latch retraction--leaf opening, with no relay, reader, card, PIN, or server in that path. RX only records handle use. There is no additional bolt or electromagnetic lock. These doors are not assumed to be fire separations. E01--E03 have mechanical panic hardware without ACS. No electrical FAS release path is designed because egress is not electrically locked.\cite{S-LOCK}
 
-Alarm, sabotaż, uszkodzenie i rozbrojenie są odrębnymi zdarzeniami. Nadzorowane linie wejściowe dobiera się do central i urządzeń. Transmisja IP/LTE każdej centrali jest kanałem do centrum odbiorczego ochrony, po zawarciu usługi i próbie obu torów; nie jest to tor transmisji alarmu pożarowego.
-\src{[4] SIA OSDP; [7] zakres PN-EN 50131-1. Dobór stopnia zabezpieczenia po analizie ryzyka i doborze kompletu urządzeń}
+On LAN failure, each A1210 uses local permissions and event storage; published capacity is up to 250\,000 events. Revocation of a lost card is ineffective on an offline controller until its update is confirmed. With PoE lost, entry remains locked and mechanical egress available. In a fire this state requires no VMS command; patrol opens G01 for responders with a key. Access duration is 5 s and door-held-open alarm 30 s, with an accessibility profile of 15 s / 60 s. Remote locking functions do not alter handle mechanics.\cite{S-KD,S-VMS}
+
+\subsection{IDS inputs and partitions}
+One VERSA 15 with ETHM-1 Plus, a VERSA-LCDM-WH keypad, SPW-100, and PNK-1 hold-up button serves \PirCount{} SLIM-PIR detectors. I01/I02 detect movement in the hall after closing, I03 the staff entrance, I04 IT, I05 the office, and I06 the store. Store shelving and cabinet N0 are recorded as obstacles; detection concerns the aisles between them. Coverage behind every shelf is not claimed. A standard lens and conservative 90$^\circ$ sector with up to 15 m range are assumed.\cite{S-PIR,S-SSWIN}
+
+Z1--Z6 are motion detectors; Z7--Z10 are separate IC-E01, IC-E02, IC-E03, and IC-D01 door contacts; Z11 is panel fire; Z12 panel fault; Z13 sounder tamper; Z14 panel-enclosure tamper; Z15 hold-up. All 15 inputs are assigned. The 2EOL/NC circuits use two 1.1 k$\Omega$ resistors at the device; PIR detectors include these. Tamper and hold-up are supervised continuously. ACS contact DC-D01 and intrusion contact IC-D01 are separate physical devices, rather than one contact counted twice.
+
+IZ1 covers the perimeter and circulation after the terminal is vacated (entry 30 s, exit 60 s); IZ2 covers IT, office, and store (instant entry alarm, exit 30 s). An authorised operator arms after checking the rooms. ACS does not automatically arm a partition containing people. ETHM provides a local DLOADX service interface; KP-I01 displays operator information; no external monitoring or LTE service is contracted. Without LAN, the local keypad, sounder, and patrol remain.\cite{S-ETHM,S-LCD,S-SIREN}

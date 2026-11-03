@@ -1,11 +1,14 @@
-\subsection{Przykład rozmieszczenia w terminalu}
-\fig{terminal.pdf}{1}{Rzut funkcjonalny terminalu 80 $\times$ 40 m. Kamery C01--C08, przejścia D01--D06, SOC i przykładowe trasy lokalne. Małe czerwone punkty pokazują 48 orientacyjnych miejsc detekcji SSP.}
-Rzut przedstawia orientacyjne funkcje pomieszczeń, a nie rozstrzygnięty projekt architektoniczny. Sześć przejść kontrolowanych łączy strefę publiczną, pracowniczą, operacyjną i techniczną. Na wyjściach przejście od strony ewakuacji ma być możliwe bez karty, serwera i sieci.
+\section{Person observation during passage}
+PATH1 aims to obtain several views of a person, rather than a biometric scan or reconstruction of their entire surface. The route follows $x=20$ m from D01 at $y=0$ to $y=9$ m in R102. The open strip is 1.8 m wide, without turnstiles or screens. Direct egress is through D01 or E03; observation requires neither stopping nor an extra evacuation segment.
 
-Przyjęty przedmiar miedzi kat. 6A to \textbf{1800 m} łącznie z zapasami dla kamer i urządzeń IP. Przedmiar przewodów KD/SSWiN to \textbf{2200 m}, dobieranych oddzielnie do zasilania, RS-485 i linii nadzorowanych. Nie jest to jedna uniwersalna żyła dla wszystkich funkcji.
+The required view is the upper body: shoulders, upper torso, and head in the absolute height range 1.2--2.0 m. Visibility of feet or the entire person is not assumed in these four views. The plan envelope is 0.6 $\times$ 0.6 m; its centre may deviate $\pm0.6$ m from the route axis while staying in the 1.8 m clear strip. Equivalent views are not claimed for people whose heads are below 1.2 m. A missing view does not prevent authorised access or egress.
 
-Dla pętli SSP: 600+300+150+100 = 1150 m; po dodaniu 20\% i zaokrągleniu przyjęto \textbf{1400 m}. Osobno przewidziano \textbf{400 m} na sygnalizację i sterowania, z podziałem obwodów według dobranego systemu. Typy kabli, wymagany czas zachowania funkcji i system mocowań ustala projekt ppoż.; nie wolno sprowadzać doboru do samego koloru powłoki.
+\PathViewTable
 
-\begin{note}{Następny poziom szczegółowości}
-Po otrzymaniu rzeczywistych rzutów należy ustalić pomieszczenia, przeszkody, wysokości sufitów, drogi ewakuacji i wentylację. Następnie przeliczyć czujki, kadry, długości każdego obwodu, spadki napięć oraz macierz sterowań. Schematy w tym opracowaniu można edytować i wygenerować ponownie ze źródeł repozytorium.
-\end{note}
+C01 looks from the north at the front of a northbound person; C02 looks from the south at the rear; C03 from the west at the left profile; C04 from the east at the right profile. All four observation segments share $y=4.2$--5.5 m. Minimum px/m values include segment endpoints, centre deviation, envelope depth, and both height levels. Image coordinates are normalised; every result is within $\pm0.96$ and the near/far limits.
+
+A straight 9 m route was compared with an 11 m bent route through $(20,4)$, $(22,4)$, and $(22,9)$. A turn changes body orientation but, without extra cameras, does not provide the rear and both profiles. Screens at a turn would obscure part of the view, while lateral movement would hinder passing and wheelchair movement. Four fixed cameras obtain the required directions on the straight route, so that layout was selected.
+
+Geometry checks use the rectangular 3D field, HFOV/VFOV, heights, tilt, and radial limits. Envelope corners are calculated at both segment ends and at steps up to 0.1 m inside R102. No walls or cabinets lie between these cameras and the passage axis. The D02 leaf and furnishings remain outside $x=19.1$--20.9 m. Shelving and the IT cabinet in other rooms are also recorded to avoid drawing views through walls or furniture.
+
+Other people, carried luggage, or a turned head may obscure the image; route shape alone does not prove visibility from every side. The assumed 3 s operational spacing theoretically corresponds to 1200 people/h, but sizing uses only 240 people/h against demand of 120 people/h. These are capacity assumptions for testing, not observed traffic results. Tests include groups, luggage, shorter people, wheelchairs, and both directions; an unavailable view does not block egress.

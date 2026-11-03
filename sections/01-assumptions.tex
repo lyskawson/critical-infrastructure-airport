@@ -1,23 +1,15 @@
-\section{Cel, zakres i założenia}
-\lead{Cztery współpracujące systemy, jedna sytuacja operacyjna, lokalna zdolność działania podczas awarii.}
-Projekt obejmuje monitoring wizyjny CCTV, kontrolę dostępu KD, system sygnalizacji włamania i napadu SSWiN oraz system sygnalizacji pożarowej SSP, określany w temacie także jako SAP. Integracja w centrum nadzoru SOC ma ułatwić ocenę zdarzenia i koordynację reakcji.
+\section{Scope and site model}
+This report covers CCTV, access control (ACS), intrusion and hold-up alarms (IDS), and the fire alarm system (FAS) in a fictional small terminal at North Airport. The adopted model is \ModelRevision{}, with data identifier \texttt{\ModelHash{}}. All dimensions, staffing levels, environmental conditions, and cable paths are design assumptions. No site measurements or physical tests have been performed. The airport name does not imply formal designation as critical infrastructure.
 
-Wybrano fikcyjną strefę terminalowo-techniczną lotniska, aby udostępnić opracowanie publicznie i zachować pełną kontrolę nad założeniami. Odniesienie do infrastruktury krytycznej wynika z funkcji transportowej i potrzeby ciągłości usług. Nie przesądza o formalnym zakwalifikowaniu obiektu do IK [1].
+The study area measures 80 $\times$ 60 m (0.48 ha). Terminal T0 has a 24 $\times$ 16 m footprint, one storey, and a height of 4.2 m. Room coordinates refer to wall centre lines; internal walls are 0.15 m thick and external walls 0.25 m. The nominal footprint is 384 m$^2$, rather than a measured usable floor area. A flat ceiling at 3.0 m is assumed, with no suspended ceiling, raised-floor void, downstand beams, or ceiling partitions. Shelving and the IT cabinet are up to 2.0 m high.
 
-\begin{tabularx}{\linewidth}{@{}P{42mm}Y@{}}
-\toprule\textbf{Parametr} & \textbf{Założenie koncepcyjne}\\\midrule
-Obszar opracowania & 600 $\times$ 400 m = 24 ha; lokalny układ współrzędnych, bez geolokalizacji.\\
-Budynki & Terminal 80 $\times$ 40 m; hangar 40 $\times$ 30 m; obiekt techniczny 20 $\times$ 15 m; portiernia 10 $\times$ 8 m.\\
-Ruch i obsada & Do 300 osób jednocześnie w terminalu; ochrona obecna całodobowo; dwa stanowiska SOC.\\
-Węzły & N0: terminal i SOC; N1: hangar; N2: techniczny; N3: portiernia i dwie bramy.\\
-Skala systemu & 24 kamery; 12 drzwi i 2 bramy KD; 24 czujki ruchu i 16 kontaktronów SSWiN; 80 czujek pożarowych.\\
-Kontynuacja pracy & LAN z pierścieniem światłowodowym; UPS 30 min; agregat; niezależne baterie central i zasilaczy KD.\\\bottomrule
-\end{tabularx}
+The assumed occupancy is up to 60 people in the terminal, including up to 40 in the public hall and up to 20 employees, with no more than 150 people present throughout the fictional airport. Security consists of two people per shift: a SOC operator and a patrol officer. The operator uses one computer with two monitors; the patrol officer also supervises the manual vehicle entrance. Indoor temperature is 15--30$^\circ$C, with 20--75\% non-condensing humidity; the outdoor design range is $-25$ to $40^\circ$C. There are no kitchens, showers, exhaust fumes, dust-producing processes, or explosive atmospheres.
 
-\subsection*{Granice projektu}
-Zakres obejmuje wybrane wejścia, budynki, bramy i rejon płyty postojowej. Nie obejmuje całego obwodu lotniska, pasa startowego, nawigacji, kontroli ruchu lotniczego, ochrony antydronowej ani stref paliwowych. Obsługę bram ograniczono do interfejsu KD; napędy i urządzenia bezpieczeństwa ruchu wymagają odrębnego projektu.
+\ModelRooms
 
-\begin{note}{Co wymaga rozwinięcia przed realizacją}
-Brak mapy geodezyjnej, rzeczywistych rzutów, scenariusza pożarowego i kart urządzeń. Lokalizacje, długości i liczby czujek są koncepcją, a nie dokumentacją wykonawczą. Rozwiązania ppoż., zasilanie, ewakuację i wymagania ochrony lotnictwa trzeba uzgodnić w rzeczywistym procesie projektowym.
-\end{note}
-\src{[1] RCB -- pojęcie infrastruktury krytycznej; pozostałe parametry: założenia własne}
+\subsection*{Protection boundaries}
+The FAS covers all seven terminal rooms. ACS restricts the staff entrance, access from the hall to the staff passage, and entry to SOC and IT. IDS covers the entrance perimeter and movement after closing, plus three separately armed back-of-house rooms. SOC is continuously staffed, so it has a hold-up button rather than a motion detector armed during a shift. The accessible toilet has no camera or motion detector; a heat detector provides fire detection. CCTV covers the specified views of entrances, the passage, hall, car park, and vehicle lane, rather than the entire site.
+
+Car park A02 has \ParkingCount{} spaces, including an accessible space. G01 is a manually opened double-leaf gate with a 4 m clear opening, card access control, and patrol verification. Pedestrians use a separate open 1.5 m route outside the gate-leaf envelope. Five vehicle arrivals per hour and two minutes of handling per vehicle are assumed; manual operation occupies about 17\% of the patrol officer's hour. A powered gate would require separate movement safeguards and power provision, so that option was not adopted.
+
+The design excludes a hangar, runway, complete perimeter, fuel facilities, navigation systems, and counter-drone measures. A single airside access point towards the runway was considered. The adopted terminal model does not serve such traffic, so no second gate or remote node was added. Operational area A04 is context only. Car park access control does not constitute runway protection.

@@ -1,11 +1,21 @@
-\section{Projekt trasowy i lokalizacja urządzeń}
-\subsection{Plan strefy terminalowo-technicznej}
-\fig{site-plan.pdf}{1}{Plan modelowego obszaru 600 $\times$ 400 m. Układ lokalny w metrach, północ umowna. Obrysy budynków odwzorowują przyjęte wymiary; oznaczenia urządzeń pokazują zespoły lokalne.}
-\begin{tabularx}{\linewidth}{@{}P{25mm}P{38mm}Y@{}}
-\toprule\textbf{Węzeł / (x,y)} & \textbf{Kamery} & \textbf{Pozostałe urządzenia}\\\midrule
-N0 / (280,120) & C01--C08 wewn.; C09--C10 zewn. & SOC, rdzeń, VMS, AI, CSP-0; D01--D06; SSWiN-0.\\
-N1 / (100,260) & C11--C14 stałe, C15 PTZ & CSP-1, D07--D09, SSWiN-1, szafa i UPS.\\
-N2 / (470,240) & C16--C18 stałe, C19 PTZ & CSP-2, D10--D11, SSWiN-2, agregat w wydzielonym miejscu obok budynku.\\
-N3 / (520,40) & C20--C22 stałe, C23--C24 PTZ & CSP-3, D12, G01--G02, SSWiN-3, szafa i UPS.\\\bottomrule
-\end{tabularx}
-Zespoły kamer zewnętrznych obejmują elewacje, bramy i wybrane kierunki obserwacji, a nie całą powierzchnię terenu. Dokładny punkt montażu, wysokość i kierunek kadru ustala się po próbie terenowej. Kamery nie są połączone długimi odcinkami miedzi do odległej szafy; w razie przekroczenia 90 m potrzebny jest dodatkowy punkt dystrybucyjny i aktualizacja materiałów.
+\section{Site geometry and locations}
+The SITE origin is the southwest corner of the 80 $\times$ 60 m rectangle. Axis $x$ points to nominal east, $y$ north, and $z$ above ground or floor level. The floor is assumed level with the ground. Local frame T0 starts at SITE $(20,25,0)$, without rotation:
+\[
+x_{\mathrm{SITE}}=20+x_{\mathrm{T0}},\quad
+ y_{\mathrm{SITE}}=25+y_{\mathrm{T0}},\quad z_{\mathrm{SITE}}=z_{\mathrm{T0}}.
+\]
+
+T0 occupies SITE $(20,25)$--$(44,41)$. Forecourt A01 occupies $(20,15)$--$(44,25)$, car park A02 $(48,20)$--$(74,50)$, and the vehicle lane and C08 position in A03 $(63,10)$--$(69,20)$; A04 $(0,52)$--$(80,60)$ is operational context only. Coordinates for every parking space, the aisle, accessible space, and pedestrian route are in the model. External doors are explicit; the former plan showing only internal doors is excluded.
+
+\OpeningTable
+
+Gate G01 is at SITE $(65,10)$ with two manual leaves and an opening zone $x=63$--67, $y=10$--12 m. The vehicle lane is 4 m wide and joins the aisle at $y=25$--38. P04 and P05, which obstructed it, were removed; \ParkingCount{} spaces remain with their IDs and accessible P01 retained. The clear corridor runs at $x=63$--67 up to $y=28$. The existing car park fence connects the gate sides to the A02 boundaries; its polyline and open pedestrian gap are in the model. This is not a design for the entire airport fence. The 1.5 m pedestrian route follows the west edge of the car park to the open gap at $(48,30)$, then through $(46.5,30)$, $(46.5,23.5)$, and $(40,23.5)$ to D01. It does not cross the G01 vehicle lane. E03 and E02 lead to open areas A05/A06 east and west of the terminal. Step-free entrances, thresholds up to 0.02 m, and a 1.5 m turning space are assumed.
+
+\subsection*{Vehicle passage with occupied parking spaces}
+The project vehicle is an assumed 4.5 $\times$ 1.8 m car: wheelbase 2.7 m, overhangs 0.9 m each, minimum rear-axle path radius 5 m, and maximum steering angle 30$^\circ$. Speed is limited to 5 km/h. The rear axle follows $(65,5)$ to $(65,28)$, a quarter circle centred at $(59,28)$ with radius 6 m to $(59,34)$, then a line to $(55,34)$. Steering angle is $\arctan(2.7/6)=24.23^\circ$.
+
+The body envelope with a 0.2 m margin was checked at 368 poses in each direction; rear-axle steps are at most 0.1 m. The 0.15 m bound on corner displacement between samples is smaller than the margin. All remaining space outlines were treated as occupied obstacles. The envelope stays within the clear corridor or aisle and does not intersect spaces, the pedestrian strip, chambers, or the C08 base. Entry requires G01 leaves to be fully open and secured. This checks the adopted vehicle and path model; it is not a field test or an analysis of trucks or parking in every space.
+
+Cabinet N0 is in R104 at local $(6.8,14.8)$, with obstacle OB-RACK and a clear service aisle to the east. The panel in R103 has its operating point at $(1,11)$ and height 1.5 m; KP-I01 is beside it at $(2.2,11)$ and the SOC workstation at $(3,13)$. Outdoor devices are C06 on the facade, C07 on a 4 m pole, and C08 on a 3 m pole at $(63,20)$; its base is outside the lane at $(62.8,20)$ and its bracket offsets the optical centre 0.2 m towards the inside of the lane. Actual mounting coordinates, rather than assembly symbols, appear in the camera table and register.
+
+The former site, terminal, architecture, AI, and power drawings are excluded from this version because they show the previous four-building model. Geometry and tables are intermediate documentation for rebuilding current vector drawings; the archived illustration is not presented as a current plan.
