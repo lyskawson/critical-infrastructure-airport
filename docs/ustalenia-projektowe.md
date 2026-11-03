@@ -1,8 +1,25 @@
 # Ustalenia projektowe
 
+## Aktualny kierunek — 3 listopada 2026
+
+Nowsze ustalenia użytkownika mają pierwszeństwo przed historycznym podziałem A/B/C i szczegółowością modelu poniżej. Opracowanie ma być koncepcją technologiczną: przemyślane rozwiązania i ich współpraca, schematy, uzasadnienie wyboru, podstawowe obliczenia oraz krótkie scenariusze. Nie jest celem pełna dokumentacja wykonawcza.
+
+- Rozwinąć analizę obecności i zachowania w określonych strefach, wyszukiwanie oznaczonej osoby i użycie atrybutów ubioru; rozróżnić detekcję, regułę czasu/ruchu, wyszukiwanie nagrań oraz śledzenie na żywo. Nietypowy ubiór nie oznacza automatycznie zagrożenia.
+- Objąć koncepcją wybrany fragment ogrodzenia i dostęp w kierunku pasa, z planem wirtualnych linii, progów i reakcji. Nie utożsamiać tego z kompletnym systemem bezpieczeństwa ruchu lotniczego.
+- Dodać jeden punkt kontroli bagażu podręcznego: CT, rozpoznawanie wybranych przedmiotów i kontrola dodatkowa ETD. Rozdzielić obrazowanie od badania śladów substancji.
+- Użytkownik wybrał **strony 1–12 obecnego, 36-stronicowego PDF-u**, liczone fizycznie od strony tytułowej. Jego zakres to tytuł, spis treści i rozdziały 1–5 (założenia, ryzyka, CCTV, KD/SSWiN, SSP). Osoba 2 otrzymuje obecne strony 13–24 / rozdziały 6–12, a osoba 3 strony 25–36 / rozdziały 13–18. Ten wybór zastępuje wcześniejszą propozycję podziału tematycznego. Granice pozostają przypisane do tych fragmentów, nawet jeśli zmieni się paginacja. Szczegółowy zakres i źródła: `docs/praca-zespolowa.md`.
+- Orkiestrator użytkownika redaguje styl wyłącznie powyższego zakresu 1–12 / rozdziałów 1–5. Szczegółowa analityka osób oraz ochrona terenu/pasa pozostają w części II, a kontrola bagażu w III. Dla II/III ustala zakres i zależności, a autorzy sami poprawiają swoją treść. Nie wprowadzać przez zmianę globalnej preambuły redakcji całego PDF-u ani rozszerzać uprawnień wskutek przesunięcia numerów stron.
+- Projekt/PDF pozostają po polsku. Angielskie pozostają README, nazwa repozytorium `critical-infrastructure-airport` i katalog `airport-project`.
+
+Bieżący PDF oraz `data/design.json` nadal opisują R1. Na tym kroku zmieniono wyłącznie ustalenia i plan pracy, bez przebudowy rozdziałów, geometrii, bilansów lub stylu PDF-u. Zanim rozszerzenia trafią do dokumentu, trzeba uzgodnić wspólny plan funkcjonalny z miejscem kontroli bagażu i obszarem przy pasie. Stare bilanse nie obejmują nowych urządzeń. Kolizja G01 pozostaje otwarta, jeżeli zachowamy ten wjazd; nie jest powodem do ponownego drobiazgowego projektowania całego obiektu.
+
+Nie uruchamiać automatycznie agentów ani nowych czatów. Nie wykonywać commitów, pushy ani publikacji. Historyczne prompty i odbiory zachować; dawny prompt R2 nie jest aktualnym zleceniem do uruchomienia przed ustaleniem nowego zakresu.
+
+## Historyczny stan modelu R1 i odbiory
+
 Pakiet A, model **A-2026-10-24-R1**, baza HEAD `8112694`. Dane techniczne przygotowano do przeglądu i wykonania rysunków B; nie jest to zatwierdzenie wykonawcze. Praca bez agentów, nowych czatów, commitów, pushy i publikacji. Nie znaleziono właściwego AGENTS.md w repo ani sprawdzonych katalogach nadrzędnych. Audyt i prompty wejściowe pozostają bez zmian.
 
-## Aktualny odbiór orkiestratora 26.10.2026
+## Odbiór orkiestratora 26.10.2026 — historia R1
 
 **R1: A2, A3 i A4 zamknięte w przyjętym modelu obliczeniowym. A1 ma jedną pozostałą kolizję do poprawienia przed B.** Usunięcie P04/P05 i przeniesienie JC03 przyjęto. Czytniki RD-G01-IN `[64.5,9,1.1]` i RD-G01-OUT `[64.5,11,1.1]` nadal leżą wewnątrz obwiedni samochodu jadącego po x=65; ich mocowań nie uwzględnia sprawdzenie manewru. A ma uzgodnić fizyczne mocowanie czytników z torem pojazdu i przeliczyć bezpośrednie zależności. Drobny opis `areas.A03.scope` również zachował poprzednie położenie C08 x=68 zamiast aktualnego (63,20).
 
