@@ -16,6 +16,6 @@ Nie potwierdza się wyłączności ani ochrony prawnoautorskiej obrazu wygenerow
 
 ## Rysunki techniczne i tekst
 
-Sześć schematów w figures/ jest rysowanych deterministycznie z kodu tools/generate_figures.py i danych data/design.json. Mają edytowalne źródła; podpisy nie są tekstem wygenerowanym w bitmapie.
+Rysunki w figures/ powstają ze źródeł TikZ w figures/src (`make figures`). Mają edytowalne źródła, a podpisy nie są tekstem wygenerowanym w bitmapie.
 
 AI wspomogła przygotowanie tekstu, obliczeń i kodu. Zespół powinien sprawdzić treść, źródła i wymagania przed oddaniem oraz dostosować opis wykorzystania AI do zasad uczelni.

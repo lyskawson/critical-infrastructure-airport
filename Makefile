@@ -14,7 +14,10 @@ check:
 	$(PYTHON) tools/validate_design.py
 
 figures:
-	$(PYTHON) tools/generate_figures.py
+	cd figures/src && for f in fig-*.tex; do \
+		latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=../../build/figures "$$f" && \
+		cp "../../build/figures/$${f%.tex}.pdf" .. || exit 1; \
+	done
 
 overleaf: data check
 	$(PYTHON) tools/bundle_overleaf.py

@@ -1,21 +1,65 @@
-\section{Geometria terenu i lokalizacje}
-Układ SITE ma początek w południowo-zachodnim narożniku prostokąta 80 $\times$ 60 m. Oś $x$ wskazuje umowny wschód, $y$ północ, $z$ wysokość nad poziomem terenu lub posadzki. Poziom posadzki przyjęto równy terenowi. Lokalny układ T0 ma początek w punkcie SITE $(20,25,0)$, bez obrotu:
+\section{Plan lotniska, strefy i lokalizacje}
+\lead{Rozdziały 6 do 12 korzystają z jednego planu terenu i terminalu. Kamery, trasy kablowe i linie analityki mają współrzędne w tym samym układzie.}
+
+Układ SITE ma początek w południowo-zachodnim narożniku opracowanego obszaru 700 $\times$ 272 m. Oś $x$ wskazuje umowny wschód, $y$ północ, jednostką jest metr. Terminal ma lokalny układ T bez obrotu:
 \[
-x_{\mathrm{SITE}}=20+x_{\mathrm{T0}},\quad
- y_{\mathrm{SITE}}=25+y_{\mathrm{T0}},\quad z_{\mathrm{SITE}}=z_{\mathrm{T0}}.
+x_{\mathrm{SITE}}=180+x_{\mathrm{T}},\qquad y_{\mathrm{SITE}}=20+y_{\mathrm{T}}.
 \]
+Kierunek kamery to kąt od osi wschodniej mierzony przeciwnie do ruchu wskazówek zegara. Wysokości montażu kamer terenowych podaje rozdział 9, a KT03 rozdział 10.
 
-Obrys T0 to SITE $(20,25)$--$(44,41)$. Plac wejściowy A01 zajmuje $(20,15)$--$(44,25)$, parking A02 $(48,20)$--$(74,50)$, pas wjazdowy i stanowisko C08 w A03 $(63,10)$--$(69,20)$, a A04 $(0,52)$--$(80,60)$ jest wyłącznie kontekstem operacyjnym. Współrzędne wszystkich miejsc parkingowych, pasa manewrowego, dostępnego miejsca i dojścia pieszego są zapisane w modelu. Drzwi zewnętrzne istnieją jawnie; dawny rzut z samymi drzwiami wewnętrznymi został wyłączony.
+\fig{fig-site}{1}{Plan sytuacyjny: strefy, ogrodzenie OG1 z bramą B1, linie analityki L1, L2 i L3 oraz położenie urządzeń terenowych.}
 
-\OpeningTable
+\subsection*{Teren}
+Terminal o wymiarach 60 $\times$ 30 m stoi przy drodze dojazdowej. Od strony airside przylega do niego płyta postojowa ok. 150 $\times$ 80 m, połączona drogą kołowania z pasem startowym. Pas ma 45 m szerokości i jest pokazany jako fragment, bo jego długość nie wpływa na projekt.
 
-Brama G01 znajduje się w SITE $(65,10)$, ma dwa ręczne skrzydła i strefę otwarcia $x=63$--67, $y=10$--12 m. Pas dla pojazdów ma 4 m szerokości i łączy się z alejką $y=25$--38. Usunięto P04 i P05, które go przecinały; pozostaje \ParkingCount{} miejsc z zachowanymi ID i dostępnym P01. Wolny korytarz ma $x=63$--67 aż do $y=28$. Istniejące ogrodzenie parkingu łączy boki bramy z granicami A02; jego łamana i otwarta przerwa piesza są w modelu. Nie jest to projekt całego ogrodzenia lotniska. Dojście piesze ma szerokość 1,5 m, prowadzi zachodnim brzegiem parkingu do otwartej przerwy $(48,30)$ i dalej przez $(46{,}5,30)$, $(46{,}5,23{,}5)$, $(40,23{,}5)$ do D01. Nie przecina pasa wjazdowego G01. Wyjścia E03 i E02 prowadzą na otwarte place A05/A06 po wschodniej i zachodniej stronie terminalu. Założono wejścia bez stopnia, progi do 0,02 m i miejsce obrotu 1,5 m.
+Ogrodzenie OG1 ma 300 m i biegnie wzdłuż $y=50$ od wschodniej ściany terminalu ($x=240$) do $x=540$. Dalsze odcinki ogrodzenia istnieją, ale nie są przedmiotem opracowania. Brama służbowa B1 leży w OG1 na drodze serwisowej, ok. 120 m od wschodniej ściany terminalu. Ma bramę przesuwną na całej szerokości drogi (10 m) i furtkę obok niej. Szafa polowa SP1 stoi przy B1, a SP2 przy wschodnim końcu OG1. Rdzeń sieci N0 jest w pomieszczeniu IT terminalu.
 
-\subsection*{Sprawdzenie przejazdu przy zajętych miejscach}
-Pojazd obliczeniowy to własny model samochodu 4,5 $\times$ 1,8 m: rozstaw osi 2,7 m, zwisy po 0,9 m, minimalny promień toru tylnej osi 5 m i maksymalny kąt skrętu 30$^\circ$. Przyjęto prędkość do 5 km/h. Tor tylnej osi biegnie od $(65,5)$ do $(65,28)$, następnie po ćwiartce okręgu o środku $(59,28)$ i promieniu 6 m do $(59,34)$, dalej do $(55,34)$. Kąt skrętu wynosi $\arctan(2{,}7/6)=24{,}23^\circ$.
+L1, L2 i L3 to linie analityki wyznaczone na planie i w obrazie kamer, a nie oznakowanie lotniskowe. L1 biegnie 10 m przed OG1 po stronie landside, L2 pokrywa się z OG1, a L3 leży 30 m za ogrodzeniem i oznacza wejście do strefy operacyjnej. Ich użycie opisuje rozdział 11.
 
-Sprawdzono obwiednię nadwozia z marginesem 0,2 m przy każdym z 368 położeń w każdym kierunku; krok tylnej osi wynosi najwyżej 0,1 m. Granica przemieszczenia narożnika między próbkami 0,15 m jest mniejsza od marginesu. Wszystkie pozostałe obrysy stanowisk traktowano jako zajęte przeszkody. Obwiednia pozostaje w wolnym korytarzu lub alejce, nie przecina stanowisk, pasa pieszego, studzienek ani podstawy C08. Wjazd wymaga pełnego otwarcia i ustalenia skrzydeł G01. Jest to kontrola modelu przyjętego pojazdu i toru; nie jest próbą terenową ani analizą ciężarówek czy parkowania w każdym stanowisku.
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}lYY@{}}
+\toprule
+Strefa & Obszar & Kto przebywa \\
+\midrule
+Z-LS landside & droga dojazdowa, plac przed terminalem, hol ogólnodostępny, teren przed OG1 & podróżni, osoby towarzyszące, kierowcy \\
+Z-KB kontrola & punkt kontroli PK1 w terminalu & podróżni w trakcie kontroli, personel kontroli \\
+Z-AS airside & hol po kontroli, pas 30 m za OG1 do linii L3 & podróżni po kontroli, personel z identyfikatorem \\
+Z-OP operacyjna & płyta postojowa, droga kołowania, pas startowy & personel operacyjny, pojazdy z przepustką \\
+\bottomrule
+\end{tabularx}
+\end{center}
 
-Szafa N0 znajduje się w R104 przy $(6{,}8,14{,}8)$ lokalnie, z obrysem przeszkody OB-RACK i wolnym przejściem serwisowym od strony wschodniej. CSP w R103 ma punkt obsługi $(1,11)$ na wysokości 1,5 m; KP-I01 jest obok na $(2{,}2,11)$, a stanowisko SOC przy $(3,13)$. Urządzenia zewnętrzne to C06 na elewacji, C07 na słupie 4 m oraz C08 na słupie 3 m przy $(63,20)$; podstawa słupa leży poza pasem przy $(62{,}8,20)$, a uchwyt odsuwa środek optyczny o 0,2 m do strony wnętrza pasa. Ich rzeczywiste współrzędne montażu, a nie symbole zespołów, znajdują się w tabeli kamer i rejestrze.
+\subsection*{Terminal}
+Hol ogólnodostępny Z-LS zajmuje 40 $\times$ 12 m przy elewacji południowej. Nad nim leży pas PK1 o głębokości 8 m, a dalej hol po kontroli Z-AS o głębokości 10 m z wyjściem na płytę. Wschodnie skrzydło 20 $\times$ 30 m mieści wejście pracowników, SOC, pomieszczenie IT z N0, korytarz techniczny i zaplecze. Drzwi techniczne DT1 prowadzą z holu Z-AS do korytarza technicznego.
 
-W tej wersji nie włącza się dawnych rysunków planu, terminalu, architektury, AI ani zasilania: przedstawiają poprzedni model czterech budynków. Dane geometryczne i tabele są dokumentacją pośrednią do odtworzenia aktualnych rysunków wektorowych; nie przedstawia się archiwalnej ilustracji jako aktualnego rzutu.
+Podróżny wchodzi z placu do holu Z-LS, przechodzi do PK1, a po kontroli opuszcza ją przejściem PATH1 do holu Z-AS. PATH1 ma 2 m szerokości i jest ograniczone balustradami na długości 5 m. Ruch przez PK1 jest jednokierunkowy, dlatego ruch z holu Z-AS w stronę PK1 jest zdarzeniem (scenariusz S2). Z holu Z-AS podróżni wychodzą na płytę postojową.
+
+Część II podaje tylko obrys PK1 i miejsca styku z resztą terminalu: wejście z holu Z-LS i wyjście PATH1. Linia kontroli CT, stanowisko ETD i kontrola dodatkowa są zaznaczone orientacyjnie. Ich rozmieszczenie i kamery nad stanowiskami należą do części III.
+
+\fig{fig-terminal}{0.92}{Terminal: strefy, ruch przed kontrolą i po niej, przejście PATH1, drzwi DT1 oraz kamery KT01 do KT08 z kierunkiem obserwacji.}
+
+\subsection*{Lokalizacje kamer}
+Kamery terminalu podano w układzie T, a kamery terenowe w SITE. Tabela określa położenie i główny kierunek. Parametry obrazu i obliczenia gęstości pikseli są w rozdziałach 10 i 11.
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}llrrY@{}}
+\toprule
+ID & Układ & $x$, $y$ [m] & Kier. [$^\circ$] & Cel obserwacji \\
+\midrule
+KT01 & T & 0,5; 0,5 & 38 & hol Z-LS i wejścia od placu \\
+KT02 & T & 39,5; 0,5 & 142 & hol Z-LS i wejście do PK1 \\
+KT03 & T & 24,0; 29,6 & 270 & PATH1 od przodu, linia kierunkowa S2 \\
+KT04 & T & 21,6; 20,6 & 80 & PATH1 od tyłu \\
+KT05 & T & 18,8; 25,2 & 0 & PATH1 od zachodu \\
+KT06 & T & 29,2; 25,2 & 180 & PATH1 od wschodu \\
+KT07 & T & 33,5; 21,0 & 32 & DT1 i strefa S1 \\
+KT08 & T & 0,5; 29,5 & 325 & hol Z-AS i wyjście na płytę \\
+KP01 & SITE & 244; 54 & 0 & OG1 wzdłuż ogrodzenia na wschód \\
+KP02 & SITE & 536; 54 & 180 & OG1 wzdłuż ogrodzenia na zachód \\
+KP03 & SITE & 368; 62 & 90 & przejazd przez B1 i linia L3 \\
+PTZ1 & SITE & 370; 54 & 0 & preset domowy wzdłuż OG1 na wschód \\
+\bottomrule
+\end{tabularx}
+\end{center}

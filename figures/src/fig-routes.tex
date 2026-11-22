@@ -1,0 +1,114 @@
+\documentclass[tikz,border=1mm]{standalone}
+\input{style}
+\input{site}
+\tikzset{
+  trench/.style={draw=amber!35,line width=6pt,line cap=round,line join=round},
+  fiber/.style={draw=navy,line width=2pt,line join=round,postaction={draw=white,line width=0.7pt}},
+  copper/.style={draw=teal,line width=1pt,line join=round},
+  tray/.style={draw=muted!45,line width=2.4pt,line join=round},
+  manhole/.style={rectangle,fill=white,draw=navy,line width=0.5pt,inner sep=0pt,minimum size=4pt},
+  rid/.style={font=\sffamily\scriptsize\bfseries,text=navy,fill=white,inner sep=1pt,rounded corners=1pt},
+}
+\begin{document}
+\begin{tikzpicture}
+  % vertical scale doubled so the 4 m offset between trench and fence stays visible
+  \begin{scope}[x=0.044cm,y=0.088cm,shift={(-205,-33)}]
+    \begin{scope}
+      \clip (205,33) rectangle (545,68);
+      \path[zls] (205,33) rectangle (545,50);
+      \path[zas] (205,50) rectangle (545,68);
+      \path[paved] (355,33) rectangle (365,68);
+      \path[tech] (205,33) rectangle (240,50);
+    \end{scope}
+    \draw[wall] (205,50) -- (240,50) -- (240,33);
+    \draw[fence] (240,50) -- (355,50);
+    \draw[fence] (369,50) -- (540,50);
+    \draw[navy,line width=1.6pt] (355,50) -- (365,50);
+
+    \draw[trench] (237.5,50) -- (237.5,54) -- (524,54) -- (524,60);
+    \draw[fiber] (237.5,36) -- (237.5,54) -- (524,54) -- (524,60);
+    \draw[fiber] (376,54) -- (376,57);
+    \draw[copper] (370,57) -- (370,54.6);
+    \draw[copper] (376,57) -- (368,57) -- (368,62);
+    \draw[copper] (377,57) -- (377,47) -- (353,47);
+    \draw[copper] (524,60) -- (536,60) -- (536,54);
+
+    \foreach \x in {237.5,350,380,524} {\node[manhole] at (\x,54) {};}
+    \node[cabinet] at (237.5,36) {};
+    \node[camdot] at (244,54) {};
+    \node[camdot] at (536,54) {};
+    \node[camdot] at (368,62) {};
+    \node[ptzdot] at (370,54) {};
+    \node[cabinet] at (376,57) {};
+    \node[cabinet] at (524,60) {};
+    \node[rectangle,fill=amber,draw=navy,line width=0.4pt,inner sep=0pt,minimum size=3pt] at (353,47) {};
+
+    \node[tag,anchor=east] at (236,36) {N0};
+    \node[zonelabel,anchor=north west] at (207,48.5) {Terminal};
+    \node[tag,anchor=north] at (244,52.6) {KP01};
+    \node[tag,anchor=south] at (536,55) {KP02};
+    \node[tag,anchor=south] at (368,63.2) {KP03};
+    \node[tag,anchor=east] at (350,59.5) {PTZ1};
+    \draw[navy!60,line width=0.3pt] (350,59.5) -- (369,54.8);
+    \node[tag,anchor=west] at (378,58.5) {SP1};
+    \node[tag,anchor=east] at (522,61) {SP2};
+    \node[tag,anchor=north] at (353,46) {czytnik B1};
+    \node[tag,anchor=south] at (360,34) {B1};
+    \node[font=\sffamily\scriptsize,anchor=west] at (420,50.8) {OG1};
+    \node[zonelabel,anchor=west] at (420,34) {Z-LS};
+    \node[zonelabel,anchor=west] at (420,64) {Z-AS};
+
+    \node[rid] at (300,54) {T1, T2, T3};
+    \node[rid] at (450,54) {T2, T3};
+    \node[rid,anchor=south west] at (238.5,40) {T4};
+    \node[rid] at (388,62) {T6};
+    \node[rid] at (530,64) {T7};
+    \node[font=\sffamily\scriptsize,text=muted,anchor=south] at (285,56.5) {rów kablowy 4 m za OG1};
+    \node[font=\sffamily\scriptsize\bfseries,anchor=south west] at (205,69) {a) teren przy OG1 (skala pionowa dwukrotnie większa)};
+  \end{scope}
+
+  \begin{scope}[shift={(0cm,-6.6cm)},x=0.17cm,y=0.17cm]
+    \path[zlsin] (0,0) rectangle (40,12);
+    \path[zkb] (0,12) rectangle (40,20);
+    \path[zasin] (0,20) rectangle (40,30);
+    \path[tech] (40,0) rectangle (60,30);
+    \path[fill=navy!12] (50,10) rectangle (60,18);
+    \draw[partition] (0,12) -- (40,12) (0,20) -- (40,20) (40,0) -- (40,30);
+    \draw[wall] (0,0) rectangle (60,30);
+
+    \draw[tray] (57.5,16) -- (57.5,11) -- (0.5,11);
+    \draw[tray] (57.5,16) -- (57.5,21) -- (0.5,21);
+    \foreach \x/\y/\yt in {39.5/0.5/11, 24/29.6/21, 21.6/20.6/21, 18.8/25.2/21,
+        29.2/25.2/21, 33.5/21/21, 0.5/29.5/21} {
+      \draw[copper,teal!60] (\x,\yt) -- (\x,\y);
+      \node[camdot] at (\x,\y) {};}
+    \draw[copper,line width=1.6pt] (57.5,16) -- (57.5,11) -- (0.5,11) -- (0.5,0.5);
+    \node[camdot] at (0.5,0.5) {};
+    \draw[fiber] (57.5,16) -- (57.5,30);
+    \node[cabinet] at (57.5,16) {};
+
+    \node[tag,anchor=south west] at (1,0.8) {KT01};
+    \node[tag,anchor=north west] at (1,29.2) {KT08};
+    \node[rid,anchor=south] at (20,11.4) {T5: N0 do KT01};
+    \node[tag,anchor=west] at (58.2,16) {N0};
+    \node[font=\sffamily\scriptsize,text=muted,align=center] at (55,4.5) {IT, SOC,\\zaplecze};
+    \node[zonelabel] at (30,5) {Hol Z-LS};
+    \node[zonelabel] at (8,16) {PK1};
+    \node[zonelabel] at (10,26) {Hol Z-AS};
+    \node[font=\sffamily\scriptsize,text=muted,anchor=south east] at (57,30.4) {do rowu kablowego};
+    \node[font=\sffamily\scriptsize\bfseries,anchor=south west] at (0,32.5) {b) terminal, koryta pod stropem};
+  \end{scope}
+
+  \legendtable{11.0,-1.3}{%
+    \begin{tabular}{@{}cl@{}}
+      \symline{fiber} & światłowód SM (T1, T2) \\
+      \symline{copper} & miedź kat.~6A \\
+      \symline{trench} & rów kablowy z rurami \\
+      \symline{tray} & koryto w terminalu \\
+      \symdot{manhole} & studzienka \\
+      \symdot{cabinet} & N0, szafa polowa \\
+    \end{tabular}\\[4pt]
+    {\color{muted}T3: kabel 230 V do SP1 i SP2}\\
+    {\color{muted}w osobnej rurze tego samego rowu}}
+\end{tikzpicture}
+\end{document}

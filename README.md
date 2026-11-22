@@ -10,6 +10,8 @@ An academic security-system design for a fictional airport terminal and staff ca
 
 The model covers an 80 × 60 m site with a 24 × 16 m terminal, seven rooms, and ten parking spaces. It includes eight fixed cameras, four controlled doors, a manually operated card-controlled vehicle gate, one intrusion panel, and one fire panel. A single video-analytics scenario detects a person crossing a line in the vehicle lane.
 
+Part II (chapters 6 to 12, branch `part-2`) uses a new airport layout: terminal, apron, 300 m fence section with a service gate, twelve cameras, fibre to two field cabinets and five analytics scenarios. Its plan and the handoff notes for parts I and III are in `docs/plan-czesc-ii.md`, `docs/przekazanie-czesc-i.md` and `docs/przekazanie-czesc-iii.md`.
+
 Geometry, device specifications, cable routes, material quantities, and calculation inputs are defined in `data/design.json`. The report includes storage and bandwidth budgets, PoE allocation, battery sizing, voltage drop, UPS runtime, and incident-response procedures. The design is an academic model; its dimensions and operating targets are stated assumptions rather than site measurements.
 
 ## Build
@@ -26,6 +28,12 @@ The report is written to `output/pdf/lotnisko-polnoc.pdf`; the compilation log i
 make data
 make check
 python3 tools/validate_design.py --self-test
+```
+
+Figures are TikZ sources in `figures/src/` (shared `style.tex` and `site.tex`) compiled to `figures/*.pdf`, which are kept in the repository:
+
+```sh
+make figures
 ```
 
 `make data` regenerates tables and the device register. `make check` verifies model consistency and export freshness. The self-test checks that intentionally invalid variants are rejected without changing the source model.

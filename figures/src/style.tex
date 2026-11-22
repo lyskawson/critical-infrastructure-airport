@@ -1,0 +1,78 @@
+\usepackage{iftex}
+% pdfLaTeX matches the report build; XeTeX covers local tectonic builds without TeX Live
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage{tgheros}
+  \renewcommand{\familydefault}{\sfdefault}
+\else
+  \usepackage{fontspec}
+  \setsansfont{texgyreheros}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
+  \renewcommand{\familydefault}{\sfdefault}
+\fi
+\usetikzlibrary{arrows.meta,calc,decorations.markings,patterns,positioning,shapes.geometric,fit,backgrounds}
+\definecolor{navy}{HTML}{132D46}
+\definecolor{teal}{HTML}{087F8C}
+\definecolor{amber}{HTML}{BE7A17}
+\definecolor{mist}{HTML}{EDF4F6}
+\definecolor{muted}{HTML}{526575}
+\definecolor{fire}{HTML}{B94646}
+\tikzset{
+  every node/.style={font=\sffamily\scriptsize,text=navy},
+  zls/.style={fill=amber!9},
+  zlsin/.style={fill=amber!22},
+  zkb/.style={fill=fire!16},
+  zas/.style={fill=teal!13},
+  zasin/.style={fill=teal!24},
+  zop/.style={fill=navy!7},
+  tech/.style={fill=muted!16},
+  road/.style={fill=muted!38},
+  paved/.style={fill=muted!24},
+  runway/.style={fill=navy!62},
+  wall/.style={draw=navy,line width=0.9pt},
+  partition/.style={draw=navy,line width=0.5pt},
+  fence/.style={draw=navy,line width=0.8pt,postaction={decorate,decoration={markings,
+    mark=between positions 0 and 1 step 2.2mm with {
+      \draw[navy,line width=0.4pt] (-0.7pt,-0.7pt)--(0.7pt,0.7pt) (-0.7pt,0.7pt)--(0.7pt,-0.7pt);}}}},
+  fencefar/.style={draw=muted,line width=0.6pt,dash pattern=on 3pt off 2pt},
+  lineL1/.style={draw=amber,line width=1pt,dash pattern=on 4pt off 2pt},
+  lineL2/.style={draw=fire,line width=1.4pt},
+  lineL3/.style={draw=fire,line width=1pt,dash pattern=on 5pt off 1.5pt on 1pt off 1.5pt},
+  fovvis/.style={fill=teal,fill opacity=0.18,draw=teal,draw opacity=0.5,line width=0.3pt},
+  fovthermal/.style={fill=fire,fill opacity=0.14,draw=fire,draw opacity=0.5,line width=0.3pt},
+  fovptz/.style={fill=amber,fill opacity=0.15,draw=amber,draw opacity=0.6,line width=0.3pt,dash pattern=on 2pt off 1pt},
+  camdot/.style={circle,fill=navy,draw=white,line width=0.4pt,inner sep=0pt,minimum size=4pt},
+  ptzdot/.style={circle,fill=amber,draw=navy,line width=0.5pt,inner sep=0pt,minimum size=5pt},
+  cabinet/.style={rectangle,fill=teal,draw=navy,line width=0.4pt,inner sep=0pt,minimum size=4.5pt},
+  flowbefore/.style={draw=amber,line width=1.3pt,-{Stealth[length=5pt]}},
+  flowafter/.style={draw=teal,line width=1.3pt,-{Stealth[length=5pt]}},
+  tag/.style={font=\sffamily\scriptsize\bfseries,text=navy,inner sep=1pt},
+  zonelabel/.style={font=\sffamily\scriptsize\bfseries,text=navy!80,inner sep=1pt,align=center},
+  camwedge/.style={fill=teal,fill opacity=0.45,draw=teal,line width=0.3pt},
+  obsarea/.style={draw=teal,line width=0.6pt,dash pattern=on 2pt off 1.2pt,fill=teal,fill opacity=0.08},
+  legendbox/.style={draw=navy!30,fill=white,rounded corners=1pt,inner sep=4pt},
+}
+% #1 x, #2 y, #3 heading deg, #4 field of view deg, #5 range, #6 style
+\newcommand{\fov}[6]{%
+  \path[#6] (#1,#2) -- ++({#3-#4/2}:#5)
+    arc[start angle={#3-#4/2},delta angle=#4,radius=#5] -- cycle;}
+% #1 x, #2 y, #3 length in m, #4 tick label step in m
+\newcommand{\scalebar}[4]{%
+  \begin{scope}[shift={(#1,#2)}]
+    \fill[navy] (0,0) rectangle (#3/2,1.2pt);
+    \draw[navy,line width=0.4pt] (0,0) rectangle (#3,1.2pt);
+    \foreach \t in {0,#4,...,#3} {\node[below,inner sep=1pt,font=\sffamily\tiny] at (\t,0) {\t};}
+    \node[right,font=\sffamily\tiny] at (#3,0.6pt) {m};
+  \end{scope}}
+\newcommand{\northarrow}[2]{%
+  \begin{scope}[shift={(#1,#2)}]
+    \fill[navy] (0,0) -- (-2.2pt,-1.5pt) -- (0,7pt) -- cycle;
+    \draw[navy,line width=0.4pt] (0,0) -- (2.2pt,-1.5pt) -- (0,7pt);
+    \node[above,inner sep=1pt,font=\sffamily\tiny\bfseries] at (0,7pt) {N};
+  \end{scope}}
+% legend symbols sit in a tabular, so columns size to their text and never overlap
+\newcommand{\symswatch}[1]{\tikz[baseline=-0.6ex]\path[#1] (0,-2.6pt) rectangle (10pt,2.6pt);}
+\newcommand{\symline}[1]{\tikz[baseline=-0.6ex]\draw[#1] (0,0) -- (14pt,0);}
+\newcommand{\symdot}[1]{\tikz[baseline=-0.6ex]\node[#1] {};}
+\newcommand{\legendtable}[2]{%
+  \node[anchor=north west,inner sep=0pt,font=\sffamily\scriptsize,align=left] at (#1)
+    {\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.25}#2};}

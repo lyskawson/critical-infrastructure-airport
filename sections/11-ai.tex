@@ -1,19 +1,132 @@
-\section{Jeden przypadek analityki ML/AI}
-Przyjęto AI1: wykrycie osoby przekraczającej linię w kierunku parkingu w pasie pojazdów. C08 znajduje się w SITE $(63,20,3)$ przy północno-zachodnim narożniku pasa, od strony jego wnętrza. Ustawienie wynosi: azymut 292$^\circ$, pochylenie 25$^\circ$, HFOV 72$^\circ$, VFOV około 44,46$^\circ$, obraz 1920 $\times$ 1080 bez obrotu i cyfrowego przycięcia. Włączono WDR i korekcję dystorsji; obowiązuje projekcja i rezerwa brzegowa określona w rozdziale CCTV.\cite{S-CAM,S-AOA}
+\section{Analityka ML/AI: scenariusze S1 do S5}
+\lead{Pięć scenariuszy analityki obejmuje terminal, ogrodzenie OG1 i bramę B1. Analiza działa w kamerach, a SOC dostaje gotowe zdarzenia z obrazem do oceny.}
 
-Linia zdarzenia biegnie od $(63{,}3,15{,}5)$ do $(66{,}7,15{,}5)$, z kierunkiem południe--północ. Obszar punktów detekcji przy stopach ma $x=63{,}3$--66,7 oraz $y=12{,}5$--16,5. Skrajne pasy po 0,3 m przy siatce są poza deklaracją AI; pozostają pod nadzorem patrolu. Obszar kontekstowy całego pasa $x=63$--67, $y=10$--20 nie jest obszarem analizy. Odrębne dojście piesze leży poza nim. Zdarzenie oznacza ruch osoby w określonym miejscu, bez oceny intencji, uprawnienia ani tożsamości.
+Zdarzenie oznacza ruch obiektu w określonym miejscu i czasie. Nie jest oceną zamiaru, uprawnienia ani tożsamości osoby. O reakcji zawsze decyduje operator SOC po obejrzeniu obrazu. Analityka nie steruje drzwiami, bramą B1 ani SSP, a jej awaria nie wyłącza żadnego innego systemu.
 
-Punkt detekcji człowieka w Object Analytics jest przy stopach. Dlatego sprawdzono $z=0$, a także obwiednię całej osoby do wysokości 2 m, po 0,3 m w każdą stronę w rzucie. Kontrola obejmuje oba końce i całą linię oraz narożniki i siatkę 0,25 m obszaru. Obwiednia i promienie od kamery pozostają wewnątrz wypukłego pasa $x=63$--67, $y=10$--20: nie przecinają bocznej siatki ani zamkniętej G01 na $y=10$; dolna krawędź obwiedni na $y=12{,}2$ omija także otwarte skrzydła kończące się na $y=12$. Pojazd lub inna osoba nadal mogą czasowo zasłonić cel.\cite{S-AOA}
+\fig{fig-ml-pipeline}{1}{Przetwarzanie od obrazu do decyzji operatora. Detekcja, śledzenie i reguły działają w kamerze, VMS zbiera zdarzenia w SOC. Pod każdym etapem typowe źródło błędu.}
 
-Dla minimalnej wysokości osoby 1,4 m najmniejsza obliczona wysokość obrazu wynosi \AIHeightPx{} px wobec zalecanych 8\% wysokości obrazu, czyli 86,4 px. Obiekt idący z prędkością do 1,5 m/s ma przed linią 3 m widocznego toru, a więc co najmniej 2 s obecności w scenie. To projektowe ograniczenie scenariusza; nie obiecuje się tej samej skuteczności dla biegu ani osób niższych. W eksporcie zapisano wielokąt stóp również we współrzędnych obrazu do ustawienia reguły.\cite{S-AOA}
+Detekcję i klasyfikację człowieka lub pojazdu wykonuje procesor DLPU kamery. Reguły Object Analytics działają w kamerach terminalu i KP03, a Perimeter Defender w kamerach termowizyjnych KP01 i KP02. Zdarzenie trafia do AXIS Camera Station Pro w SOC razem z metadanymi i znacznikiem nagrania. Projekt nie przewiduje serwera analityki. Producent nie podaje gwarantowanej częstości inferencji, dlatego liczba klatek strumienia nie jest liczbą analiz na sekundę. Opóźnienie zdarzenia mierzy się przy odbiorze.\cite{S-AOA,S-AOA2,S-PD}
 
-AXIS Object Analytics klasyfikuje człowieka i śledzi przekroczenie linii na DLPU kamery C08 (ARTPEC-8). Wejście wideo ma 25 kl./s, analiza działa ciągle w kamerze. Producent nie publikuje gwarantowanej częstości inferencji dla tej sceny, dlatego nie utożsamia się 25 kl./s z 25 analizami/s. Rzeczywiste opóźnienie zdarzenia i spadki obciążenia mierzy się podczas odbioru. Nie przewidziano drugiego serwera AI ani ośmiu strumieni analitycznych.\cite{S-CAM,S-AOA}
+\subsection*{Karty scenariuszy}
+Każda karta podaje miejsce, źródło obrazu, warunek zdarzenia, informację dla operatora, reakcję i ograniczenie. Współrzędne terminalu są w układzie T, terenu w SITE (rozdział 8). Progi czasowe i linie są ustawieniem początkowym do strojenia przy odbiorze.
 
-Zdarzenie natywne Axis trafia do reguły VMS na SOC-0, wywołuje kadr C08 i oznacza klip 10 s przed / 20 s po zdarzeniu. Dyżurny potwierdza obsługę i wzywa patrol po ocenie obrazu. Dla powtarzającego się obiektu przyjmuje się scalenie zdarzeń w okresie 10 s. Analityka nie steruje drzwiami, bramą ani SSP. Brak obrazu nie powoduje automatycznego odwołania alarmu innego systemu.
+\begin{note}{S1. Pozostawanie przy drzwiach technicznych DT1}
+\small
+\begin{tabularx}{\linewidth}{@{}P{2.6cm}Y@{}}
+Miejsce & hol Z-AS przy DT1, obszar 3,5 $\times$ 4,6 m ($x$ od 36,5 do 40, $y$ od 22,4 do 27) \\
+Obserwacja & KT07, Object Analytics, scenariusz Time in area, klasa człowiek \\
+Warunek & ta sama osoba przebywa w obszarze dłużej niż 120 s \\
+Operator & zdarzenie średnie, kadr KT07, stan DT1 i ostatnie wpisy KD \\
+Reakcja & ocena obrazu, w razie wątpliwości podejście patrolu lub personelu \\
+Ograniczenie & licznik zeruje się, gdy punkt detekcji opuści obszar, więc zasłonięcie przez innych podróżnych przerywa pomiar. Personel czekający przy DT1 wywołuje zdarzenie, dlatego reguła działa poza godzinami obsługi zaplecza. Producent nie zaleca czasu w obszarze ponad 30 s jako wyzwalacza nagrania, więc KT07 nagrywa ciągle, a S1 tylko oznacza fragment nagrania. \\
+\end{tabularx}
+\end{note}
 
-Odbiór przewiduje co najmniej 100 scenariuszy dodatnich, 100 ujemnych i 40 kamerogodzin, w różnych dniach i warunkach oświetlenia. Zbiór strojenia oddziela się od testowego według dni. Niezależny obserwator oznacza przekroczenie i czas; przypadki nieocenialne opisuje się osobno, nie usuwa z raportu bez wyjaśnienia.
+\begin{note}{S2. Ruch pod prąd z holu Z-AS do PK1}
+\small
+\begin{tabularx}{\linewidth}{@{}P{2.6cm}Y@{}}
+Miejsce & przejście PATH1, linia w poprzek przejścia od $x=22{,}6$ do $x=25{,}4$ na $y=23{,}6$ \\
+Obserwacja & KT03 od strony holu Z-AS, scenariusz Line crossing z kierunkiem wyzwalania od holu ku PK1 \\
+Warunek & punkt detekcji człowieka przecina linię w kierunku PK1 \\
+Operator & zdarzenie wysokie, kadry KT03 i KT04, klip od 10 s przed do 20 s po zdarzeniu \\
+Reakcja & powiadomienie kierownika zmiany PK1, który decyduje o zatrzymaniu i ponownej kontroli \\
+Ograniczenie & personel PK1 przechodzi pod prąd, więc identyfikator personelu nie zwalnia z oceny obrazu. Przy tłoku stopy bywają zasłonięte, a osoba cofająca się o krok może przeciąć linię. KT04 i KT05 pomagają w ocenie, ale nie biorą udziału w regule. \\
+\end{tabularx}
+\end{note}
+
+\begin{note}{S3. Wyszukiwanie osoby w nagraniach}
+\small
+\begin{tabularx}{\linewidth}{@{}P{2.6cm}Y@{}}
+Miejsce & nagrania KT01 do KT08 \\
+Obserwacja & AXIS Camera Station Pro, Smart search 2: klasa obiektu, kolor ubrania, podobieństwo wizualne do wskazanej osoby \\
+Warunek & zlecenie operatora po zdarzeniu, na przykład po zgłoszeniu pozostawionego bagażu, z zakresem czasu i kamer \\
+Operator & lista klipów z miniaturami, uporządkowana według podobieństwa \\
+Reakcja & ręczna weryfikacja wyników, odtworzenie trasy osoby na planie, eksport materiału według procedury \\
+Ograniczenie & działa tylko na nagraniach i nie śledzi osoby na żywo między kamerami. Nie używa biometrii, więc dwie osoby w podobnym ubraniu dają podobne wyniki. Warunki obrazu dla PATH1 omawia rozdział 10. \\
+\end{tabularx}
+\end{note}
+
+\begin{note}{S4. Naruszenie ogrodzenia OG1}
+\small
+\begin{tabularx}{\linewidth}{@{}P{2.6cm}Y@{}}
+Miejsce & OG1 na długości 300 m, linie L1 i L2 \\
+Obserwacja & KP01 i KP02 (termowizja, Perimeter Defender), weryfikacja obrazem PTZ1 \\
+Warunek & człowiek lub pojazd przekracza L1 (ostrzeżenie) albo L2 (alarm) \\
+Operator & ostrzeżenie jako zdarzenie niskie, alarm jako wysoki z położeniem na mapie i obrazem PTZ1 \\
+Reakcja & według rysunku S4 w dalszej części rozdziału \\
+Ograniczenie & przy 1,5 px obraz pozwala wykryć obiekt, ale nie go rozpoznać. Zwierzęta, gęsta mgła i ulewny deszcz zmieniają kontrast termiczny. Przejęcie obiektu przez PTZ1 z KP02 wymaga sprawdzenia przy odbiorze. \\
+\end{tabularx}
+\end{note}
+
+\begin{note}{S5. Nieuprawniony ruch przez bramę B1}
+\small
+\begin{tabularx}{\linewidth}{@{}P{2.6cm}Y@{}}
+Miejsce & droga serwisowa za B1, linia L3 30 m za OG1 \\
+Obserwacja & KP03, Object Analytics: Line crossing na L3 w kierunku Z-OP oraz Tailgating detection \\
+Warunek & przekroczenie L3, gdy B1 jest zamknięta, albo drugi obiekt na L3 krótko po pierwszym przy jednym przyznanym dostępie \\
+Operator & zdarzenie wysokie, kadr KP03 i wpis KD z czytnika B1 \\
+Reakcja & porównanie z logiem KD, kontakt z kierowcą przez patrol, przy braku uprawnienia S4 od kroku weryfikacji \\
+Ograniczenie & stan bramy jako warunek reguły wymaga połączenia KD z VMS, które trzeba sprawdzić przy odbiorze. Pojazd z przyczepą lub pieszy obok pojazdu mogą wywołać zdarzenie tailgating. \\
+\end{tabularx}
+\end{note}
+
+\subsection*{Pokrycie ogrodzenia OG1}
+KP01 i KP02 stoją na końcach OG1, 4 m za ogrodzeniem po stronie Z-AS, i patrzą wzdłuż niego ku sobie. Każda kamera obejmuje całą długość ogrodzenia, więc każdy punkt OG1 widzą dwie kamery. Liczbę pikseli na wymiarze krytycznym człowieka 0,75 m liczy się z ogniskowej $f$, odległości $D$ i rozmiaru piksela $p = 17\ \mu\mathrm{m}$:
+\[
+n = \frac{0{,}75\, f}{D\, p}.
+\]
+Dla obiektywu 10 mm na końcu OG1 ($D = 300$ m) daje to 1,47 px, czyli mniej niż próg wykrycia 1,5 px. Obiektyw 19 mm daje 2,79 px na 300 m i 5,59 px na 150 m. Wybrano 19 mm. Rozpoznanie (6 px) sięga 140 m od każdej kamery, więc odcinek od 144 do 156 m OG1 ma tylko wykrycie i tam obraz uzupełnia PTZ1.\cite{S-Q1972}
+
+\fig{fig-chart-pixels}{0.82}{Piksele na wymiarze krytycznym 0,75 m w funkcji odległości dla kamery termowizyjnej 640 $\times$ 480 z obiektywem 10 mm i 19 mm.}
+
+Pole widzenia 31$^\circ$ zaczyna obejmować ogrodzenie ok. 14 m przed kamerą, bo kamera stoi 4 m od niego. Odcinki od 0 do 18 m i od 282 do 300 m widzi więc tylko kamera z przeciwnego końca. KP03 obserwuje przejazd przez B1 i linię L3, a nie ogrodzenie.
+
+% minipage keeps the caption on the same page as the tall figure
+\noindent\begin{minipage}{\linewidth}
+\fig{fig-perimeter}{1}{Pas OG1: rozmieszczenie KP01, KP02, KP03, PTZ1 i szaf polowych oraz pokrycie ogrodzenia według poziomu szczegółu. Radar pokazano tylko jako wariant porównawczy.}
+\end{minipage}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}lllY@{}}
+\toprule
+Urządzenie & Zasięg dla człowieka & Pole & Uwagi \\
+\midrule
+Q1972-E, 10 mm & wykrycie 291 m, rozpoznanie 73 m & 63$^\circ$ & za mało pikseli na końcu OG1 \\
+Q1972-E, 19 mm & wykrycie 559 m, rozpoznanie 140 m & 31$^\circ$ & wybrany, PoE klasa 3, maks. 12,95 W \\
+D2210-VE (radar) & od 5 do 60 m & 95$^\circ$ & 6 szt. na OG1, każdy wymaga zasilania i trasy, PoE klasa 4 \\
+Q6355-LE (PTZ) & zależny od zbliżenia & obrotowa & weryfikacja i prowadzenie, nie detekcja, PoE klasa 6, maks. 51 W \\
+\bottomrule
+\end{tabularx}
+\end{center}
+Radar wykrywa ruch niezależnie od oświetlenia, ale przy zasięgu 60 m wymaga sześciu punktów zasilania wzdłuż OG1 zamiast dwóch. Dwie kamery termowizyjne dają też obraz do oceny w SOC. Radar pozostaje wariantem.\cite{S-D2210,S-Q6355}
+
+\subsection*{S4: przebieg obsługi}
+Ostrzeżenie z L1 trafia do VMS jako zdarzenie niskie i nie wymaga reakcji. Przekroczenie L2 jest alarmem: VMS pokazuje położenie na mapie, a PTZ1 prowadzi obiekt. Dla KP01 robi to Perimeter Defender PTZ Autotracking, dla KP02 VMS ustawia preset najbliższy miejscu alarmu. Operator potwierdza obiekt w ciągu 60 s i wysyła patrol. Jeśli obiekt zmierza ku L3 i strefie operacyjnej, operator powiadamia służbę operacyjną lotniska, która decyduje o ruchu w tym rejonie.\cite{S-PD,S-PDPTZ}
+
+\fig{fig-s4-swimlane}{1}{Obsługa naruszenia OG1 (S4) w torach: czujnik, VMS, SOC, patrol i służba operacyjna.}
+
+\subsection*{Poza zakresem analityki}
+Object Analytics ma scenariusz kontroli środków ochrony osobistej w wersji BETA. Wykrywa tylko brak kasku, a wykrywania kamizelek producent nie potwierdza. Dlatego nie jest to scenariusz projektu.\cite{S-AOA2}
+
+Ochrona przed wtargnięciem na drogę startową należy do odrębnych systemów lotniskowych, na przykład świateł RWSL sterowanych z dozorowania ruchu naziemnego. Analityka CCTV ich nie zastępuje i nie jest z nimi połączona.\cite{S-RWSL}
+
+\subsection*{Ocena}
+Każdy scenariusz ocenia się osobno na nagraniach z różnych dni, pór i warunków pogody. Niezależny obserwator oznacza zdarzenia prawdziwe, a zbiór strojenia oddziela się od testowego według dni.
 \[
 \mathrm{precision}=\frac{TP}{TP+FP},\qquad
 \mathrm{recall}=\frac{TP}{TP+FN}.
 \]
-Cele własne wynoszą: precision i recall co najmniej 0,90, najwyżej 0,1 fałszywego zdarzenia na kamerogodzinę oraz opóźnienie p95 do 2 s od przecięcia linii do pojawienia się alarmu w SOC. Przy 60 s obsługi fałszywego zdarzenia cel ten odpowiada 0,1 min pracy operatora na godzinę. Osobno raportuje się rzeczywiste zdarzenia i łączne obciążenie dyżuru. Raport zawiera mianowniki TP/FP/FN, przedziały niepewności, warunki pogody, zasłonięcia i utratę zdarzeń podczas awarii sieci. Żaden z tych progów nie jest wynikiem przeprowadzonego eksperymentu.
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}lY@{}}
+\toprule
+Scenariusz & Cel własny \\
+\midrule
+S1, S2, S5 & precision i recall co najmniej 0,90, najwyżej 0,1 fałszywego zdarzenia na kamerogodzinę, opóźnienie p95 do 2 s \\
+S3 & właściwa osoba wśród pierwszych 20 wyników w co najmniej 80\% zapytań \\
+S4 & recall dla przekroczenia L2 co najmniej 0,95 w dzień i w nocy, najwyżej 0,1 fałszywego alarmu na kamerogodzinę, opóźnienie p95 do 2 s \\
+\bottomrule
+\end{tabularx}
+\end{center}
+Przy 60 s obsługi fałszywego zdarzenia 0,1 zdarzenia na kamerogodzinę oznacza 6 s pracy operatora na godzinę i kamerę. Raport podaje liczby TP, FP i FN, przedziały niepewności oraz warunki pogody. Żaden z progów nie jest wynikiem przeprowadzonego eksperymentu. Plan prób jest w rozdziale 17.\cite{OWN}

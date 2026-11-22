@@ -1,0 +1,78 @@
+\documentclass[tikz,border=1mm]{standalone}
+\input{style}
+\tikzset{
+  dev/.style={draw=navy!40,fill=white,rounded corners=2pt,minimum width=2.6cm,minimum height=0.72cm,
+    align=center,inner sep=2pt,text width=2.45cm,execute at begin node={\hyphenpenalty=10000}},
+  sw/.style={draw=navy,fill=mist,rounded corners=2pt,align=center,inner sep=3pt,line width=0.6pt},
+  v10/.style={draw=teal,line width=1pt},
+  v20/.style={draw=amber,line width=1pt},
+  v40/.style={draw=navy,line width=1pt},
+  trunk/.style={draw=muted,line width=1pt,dash pattern=on 3pt off 1.5pt},
+  fiber/.style={draw=navy,line width=2.2pt,postaction={draw=white,line width=0.8pt}},
+  note/.style={font=\sffamily\scriptsize,text=muted,inner sep=1pt},
+}
+\newcommand{\devtext}[2]{{\bfseries #1}\\{\color{muted}#2}}
+\begin{document}
+\begin{tikzpicture}
+  \node[dev] (kt) at (0,1.5) {\devtext{KT01 do KT08}{terminal}};
+  \node[dev] (kp1) at (0,0.5) {\devtext{KP01}{miedź, ok. 35 m}};
+  \node[dev] (kd) at (0,-0.5) {\devtext{Kontrolery KD}{drzwi terminalu}};
+  \node[dev] (nas) at (0,-1.5) {\devtext{NAS}{zapis nagrań}};
+  \node[dev] (soc) at (0,-2.5) {\devtext{Serwer i klient VMS}{SOC}};
+  \node[dev] (fw) at (0,-3.5) {\devtext{Zapora}{filtr między VLAN}};
+
+  \node[sw,minimum width=2.3cm,minimum height=5.9cm] (n0) at (3.9,-1)
+    {\textbf{N0}\\[2pt]przełącznik\\rdzeniowy\\[4pt]{\color{muted}24 porty PoE+}\\{\color{muted}budżet 384 W}\\[4pt]{\color{muted}4 gniazda SFP}};
+
+  \draw[v10] (kt) -- (kt -| n0.west);
+  \draw[v10] (kp1) -- (kp1 -| n0.west);
+  \draw[v20] (kd) -- (kd -| n0.west);
+  \draw[v40] (nas) -- (nas -| n0.west);
+  \draw[v40] (soc) -- (soc -| n0.west);
+  \draw[trunk] (fw) -- (fw -| n0.west);
+  \node[fill=white,inner sep=0.5pt,font=\sffamily\tiny\bfseries,text=fire] at ($(kp1.east)!0.5!(kp1.east -| n0.west)$) {SPD};
+
+  \begin{scope}[on background layer]
+    \path[fill=muted!8,rounded corners=4pt] (-1.55,2.25) rectangle (5.25,-4.15);
+  \end{scope}
+  \node[font=\sffamily\scriptsize\bfseries,anchor=north west] at (-1.5,2.75) {Terminal: IT i SOC, centralny UPS};
+
+  \node[sw,minimum width=2.4cm,minimum height=1.9cm] (sp1) at (9.1,0.9)
+    {\textbf{SP1} przy B1\\[2pt]{\color{muted}4 porty PoE++}\\{\color{muted}budżet 240 W}\\{\color{muted}2 gniazda SFP}};
+  \node[sw,minimum width=2.4cm,minimum height=1.9cm] (sp2) at (9.1,-2.6)
+    {\textbf{SP2} koniec OG1\\[2pt]{\color{muted}4 porty PoE++}\\{\color{muted}budżet 240 W}\\{\color{muted}2 gniazda SFP}};
+
+  \draw[fiber] (n0.east |- sp1.west) -- (sp1.west)
+    node[pos=0.5,above=2pt,note,text=navy] {SM, ok. 170 m};
+  \draw[fiber] (n0.east |- sp2.west) -- (sp2.west)
+    node[pos=0.5,above=2pt,note,text=navy] {SM, ok. 320 m};
+  \node[note,align=center] at (6.65,-0.85) {dwa niezależne\\łącza 1 Gb/s};
+
+  \node[dev] (kp3) at (12.6,1.75) {\devtext{KP03}{kamera B1, L3}};
+  \node[dev] (ptz) at (12.6,0.9) {\devtext{PTZ1}{PoE klasy 6}};
+  \node[dev] (kdb) at (12.6,0.05) {\devtext{Kontroler B1}{czytniki, furtka}};
+  \node[dev] (kp2) at (12.6,-2.6) {\devtext{KP02}{termowizja}};
+  \draw[v10] (kp3.west) -- (kp3.west -| sp1.east);
+  \draw[v10] (ptz.west) -- (ptz.west -| sp1.east);
+  \draw[v20] (kdb.west) -- (kdb.west -| sp1.east);
+  \draw[v10] (kp2.west) -- (kp2.west -| sp2.east);
+  \node[note,anchor=north] at (12.6,-3.05) {3 porty wolne};
+  \node[note,anchor=north] at (sp1.south) {230 V, UPS DIN};
+  \node[note,anchor=north] at (sp2.south) {230 V, UPS DIN};
+
+  \begin{scope}[on background layer]
+    \path[fill=teal!8,rounded corners=4pt] (7.75,2.3) rectangle (14.05,-4.15);
+  \end{scope}
+  \node[font=\sffamily\scriptsize\bfseries,anchor=north west] at (7.8,2.75) {Teren przy OG1: szafy polowe};
+
+  \legendtable{-1.55,-4.45}{%
+    \begin{tabular}{@{}cl@{\hspace{10pt}}cl@{\hspace{10pt}}cl@{}}
+      \symline{v10} & VLAN 10, kamery &
+      \symline{v20} & VLAN 20, KD &
+      \symline{v40} & VLAN 40, VMS i zapis \\
+      \symline{trunk} & trunk VLAN do zapory &
+      \symline{fiber} & światłowód jednomodowy &
+      \textcolor{fire}{\bfseries SPD} & ogranicznik przepięć \\
+    \end{tabular}}
+\end{tikzpicture}
+\end{document}

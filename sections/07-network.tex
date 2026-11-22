@@ -1,23 +1,66 @@
 \section{Sieć i bilanse transmisji}
-Wybrano TP-Link SG3428MP v6.30: 24 porty RJ45 1 Gb/s, PoE+ do 30 W na port i budżet 384 W. Porty P01--P08 obsługują C01--C08, P09--P13 kontrolery KD-01--05, P14 NAS, P15 SOC, P16 zaporę, P17 ETHM. Pozostałe siedem portów RJ45 i wszystkie porty SFP pozostają wolne. Nie instaluje się modułów SFP ani włókien; bilans optyczny i rekonwergencja pierścienia nie dotyczą tej topologii.\cite{S-SW}
+\lead{Sieć ma jeden rdzeń N0 w pomieszczeniu IT. W terminalu jest gwiazdą miedzianą, a do szaf polowych SP1 i SP2 prowadzą osobne światłowody jednomodowe. Pasmo dwunastu kamer stanowi niewielką część łączy 1 Gb/s.}
 
-\begin{tabularx}{\linewidth}{@{}P{23mm}P{41mm}Y@{}}
-\toprule VLAN & Urządzenia & Ograniczenie komunikacji\\\midrule
-10 & Kamery C01--C08 & Strumień i zdarzenia do SOC; NTP z SOC, administracja z wydzielonej sesji.\\
-20 & KD-01--KD-05 & HTTPS i zdarzenia Secure Entry do SOC; bez komunikacji bezpośredniej kamer z kontrolerami.\\
-30 & IP-I01 / ETHM & Tylko lokalny serwis DLOADX z autoryzowanego konta SOC. Brak rutynowego sterowania z Internetu.\\
-40 & NAS-0 i SOC-0 & SMB3 do zapisu, klient lokalny, kontrola ról i eksportu.\\
-99 & Zarządzanie & Panel SW i ER605, dostęp administratora na czas serwisu.\\\bottomrule
+\fig{fig-network}{1}{Topologia sieci: rdzeń N0 w terminalu, dwa łącza światłowodowe do szaf polowych i podział ruchu na VLAN.}
+
+\subsection*{Topologia}
+Przełącznik N0 ma 24 porty PoE+ z budżetem 384 W i cztery gniazda SFP.\cite{S-SW} Zasila kamery KT01 do KT08, kontrolery KD terminalu i KP01. KP01 stoi 4 m od ściany terminalu, więc wystarcza mu ok. 35 m kabla miedzianego kat.~6A w powłoce zewnętrznej, z ogranicznikiem przepięć przy wejściu do budynku i przy kamerze.\cite{S-SPD}
+
+SP1 przy B1 i SP2 na wschodnim końcu OG1 leżą ok. 170 m i 320 m od N0, poza zasięgiem 100 m kanału miedzianego. Każda szafa ma osobny kabel światłowodowy jednomodowy i moduły SFP 1000BASE-LX. Długości tras podaje rozdział 9. Według IEEE 802.3 łącze 1000BASE-LX na włóknie jednomodowym ma zasięg do 5 km, więc długość nie ogranicza projektu. Wielomodowe OM3 też by wystarczyło, ale włókno jednomodowe pozwala przedłużyć sieć wzdłuż dalszych odcinków ogrodzenia bez wymiany kabla. Kabel jest całkowicie dielektryczny, więc nie łączy potencjałów terminalu i szaf i nie wymaga ograniczników przepięć.
+
+W szafach przykładem jest przemysłowy przełącznik AXIS T8504-R: cztery porty PoE do 60 W, budżet 240 W, dwa gniazda SFP i praca od $-40$ do $75^\circ$C. Zasila go zasilacz DIN 48 V z obwodu 230 V z lokalnym UPS.\cite{S-T8504} SP1 obsługuje KP03, PTZ1 i kontroler B1, a SP2 tylko KP02. Port 60 W tego przełącznika pracuje w trybie AXIS High PoE, więc zgodność z PTZ1 w klasie 6 IEEE 802.3bt trzeba potwierdzić u producenta przed zakupem.
+
+\subsection*{VLAN}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}lP{4.6cm}Y@{}}
+\toprule
+VLAN & Urządzenia & Dozwolona komunikacja \\
+\midrule
+10 & KT01 do KT08, KP01 do KP03, PTZ1 & strumienie i zdarzenia do serwera VMS, czas z serwera \\
+20 & kontrolery KD, w tym B1 & zdarzenia i uprawnienia Secure Entry z serwerem VMS \\
+40 & serwer i klient VMS, NAS & zapis i odczyt nagrań, obsługa operatora \\
+99 & przełączniki N0, SP1, SP2, UPS & dostęp administratora tylko na czas serwisu \\
+\bottomrule
 \end{tabularx}
+\end{center}
+Łącza światłowodowe przenoszą VLAN 10, 20 i 99 jako trunk. Ruch między VLAN przechodzi przez zaporę z zasadą domyślnej odmowy. Kamery nie komunikują się bezpośrednio z kontrolerami KD. Sieć nie ma dostępu z Internetu ani usług chmurowych.\cite{S-FW,S-VMS}
 
-ER605 filtruje ruch między VLAN; zasada domyślna to odmowa. SW nie rutuje ruchu między tymi segmentami. Port zapory jest trunkiem VLAN, a port WAN pozostaje odłączony. Brak publicznego dostępu i usług chmurowych jest założeniem konfiguracji, nie funkcją samego VLAN. Reguły dopuszczają wyłącznie zadeklarowane pary urządzeń i usługi producenta.\cite{S-FW,S-VMS}
+\subsection*{Pasmo}
+Przyjęto 6 Mb/s na strumień 1080p w H.265 i 2 Mb/s na strumień termowizyjny 640 $\times$ 480. Każda kamera nagrywa w sposób ciągły i w najgorszym przypadku wysyła drugi strumień tej samej wielkości do podglądu w SOC.\cite{OWN}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}lYrr@{}}
+\toprule
+Łącze lub port & Ruch & Suma [Mb/s] & Z zapasem 25\% \\
+\midrule
+SP1 do N0 & KP03 i PTZ1: zapis $2\cdot6$, podgląd $2\cdot6$, KD poniżej 1 & 25 & 31 \\
+SP2 do N0 & KP02: zapis 2, podgląd 2 & 4 & 5 \\
+port NAS & zapis 12 kamer: $10\cdot6+2\cdot2=64$, odczyt 64 & 128 & 160 \\
+port serwera VMS & podgląd 64, odczyt z NAS 64, inne usługi 10 & 138 & 173 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+Najbardziej obciążony port wykorzystuje ok. 17\% z 1 Gb/s. Analityka działa w kamerach, więc nie ma dodatkowych strumieni do serwera analityki.
 
-\subsection*{Porty PoE i miedź}
-Maksymalny pobór PD wynosi \PoePD{} W. Dla portów przyjęto pełną alokację klas: $8\cdot15{,}4+5\cdot30=\PoePSE{}$ W; po dodaniu 25\% otrzymano \PoeMargin{} W, mniej niż 384 W. Nie utożsamia się mocy PD z mocą AC przełącznika. Zasilanie czytników i zamków zawiera się w przyjętej granicy 25,5 W kontrolera; nie dolicza się go drugi raz do PoE. G01 ma dwa czytniki po 0,25 A maksymalnego chwilowego poboru: 0,50 A odpowiada limitowi wyjścia czytników A1210; port ten nie zasila innych odbiorników. Pozostałe kontrolery mają po jednym czytniku i zaczepie 0,28 A.\cite{S-KD,S-READER}
+\subsection*{Bilans PoE SP1}
+\begin{center}
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Odbiornik & Klasa PoE & PD maks. [W] & Przydział PSE [W] \\
+\midrule
+PTZ1, AXIS Q6355-LE & 6 & 51,0 & 60,0 \\
+Kontroler B1, np. AXIS A1210 & 4 & 25,5 & 30,0 \\
+KP03, np. AXIS P3265-LVE & 4 (przyjęta) & 10,7 & 30,0 \\
+\midrule
+Razem & & 87,2 & 120,0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+Karta KP03 podaje tylko moc maksymalną, więc przyjęto przydział klasy 4. Przydział z zapasem 25\% wynosi 150 W, poniżej budżetu 240 W. Czwarty port pozostaje wolny. KP02 w SP2 ma klasę 3 i przydział 15,4 W.\cite{S-Q6355,S-KD,S-CAM,S-Q1972}
 
-Każdy tor ma indywidualną długość. Najdłuższy kanał wraz z konserwatywnym dodatkiem 5 m patchcordów ma \CopperMax{} m wobec celu 100 m; tory stałe są krótsze od 90 m. Na zewnątrz zastosowano powłokę PE i cztery DEHNpatch: po jednym przy wejściu do budynku i przy kamerach C07/C08. Ograniczniki klasy E pozwalają na połączenie 1 Gb/s; nie deklaruje się klasy EA całego kanału tylko na podstawie kabla kat.6A. Ekrany, ograniczniki i metalowy punkt G01 mają jawne połączenia wyrównawcze PE. Nie zastępuje to projektu ochrony odgromowej.\cite{S-SPD}
+W N0 suma mocy maksymalnych ośmiu kamer terminalu, KP01 i sześciu kontrolerów KD wynosi $8\cdot10{,}7+12{,}95+6\cdot25{,}5=252$ W, a z zapasem 25\% 314 W, poniżej 384 W. Liczba kontrolerów wynika z listy drzwi w rozdziale 4. Bilans po stronie 230 V podaje rozdział 12.
 
-\subsection*{Pasmo i awarie}
-Zapis zajmuje maksymalnie 48 Mb/s. Jednoczesny zapis i odczyt NAS dają 96 Mb/s; obwiednia portu SOC obejmuje odbiór 48 Mb/s, wymianę 96 Mb/s z NAS oraz 10 Mb/s pozostałych usług. Po zapasie 25\% wynosi \NetworkLoad{} Mb/s, poniżej 1 Gb/s. Port kamery 100 Mb/s przenosi także drugi strumień podglądu; dwa pełne strumienie po 6 Mb/s nie wyczerpują go. Analityka w C08 nie wymaga przesyłania dodatkowego strumienia do osobnego serwera AI.
-
-Przerwanie pojedynczego przewodu odcina jego urządzenie. Utrata uplinku nie ma drogi obejściowej; awaria SW odcina transmisję i PoE. Przy uszkodzeniu samego połączenia danych z zachowanym zasilaniem kamery korzystają z SD, a KD z lokalnych uprawnień. Centrala SSP i wyjścia mechaniczne działają we wszystkich tych przypadkach. Sprawdzenie pasma podczas odbudowy RAID i odzyskiwania nagrań z SD stanowi próbę odbiorową, nie wykonany test wydajności.
+\subsection*{Awarie}
+Gwiazda oznacza, że przecięcie jednego światłowodu odcina jedną szafę. VMS zgłasza utratę łączności z jej kamerami jako zdarzenie (rozdział 6), a kontroler B1 dalej wpuszcza według uprawnień zapisanych lokalnie.\cite{S-KD} Awaria N0 odcina całą sieć i zasilanie PoE w terminalu. SSP i mechaniczne wyjścia działają we wszystkich tych przypadkach. Pierścień SP1 i SP2 z drugim kablem wzdłuż OG1 jest wariantem, który usuwa skutki przecięcia jednego kabla, ale wymaga przełączników z protokołem pierścienia.

@@ -1,0 +1,118 @@
+% SITE frame in metres: x east, y north, origin at the south-west corner of the drawn area.
+% Terminal local frame T: origin at SITE (180,20), no rotation.
+
+\newcommand{\SiteZones}{%
+  \path[zls] (0,0) rectangle (700,50);
+  \path[zop] (0,50) -- (250,50) -- (250,80) -- (700,80) -- (700,272) -- (0,272) -- cycle;
+  \path[zas] (250,50) rectangle (700,80);}
+
+\newcommand{\SitePavement}{%
+  \path[road] (0,0) rectangle (700,12);
+  \draw[white,line width=0.5pt,dash pattern=on 4pt off 3pt] (0,6) -- (700,6);
+  \path[paved] (180,12) rectangle (240,20);
+  \path[paved] (30,16) rectangle (160,44);
+  \foreach \x in {38,50,...,152} {\draw[white,line width=0.3pt] (\x,17) -- (\x,26) (\x,34) -- (\x,43);}
+  \path[paved] (100,50) rectangle (250,130);
+  \path[paved] (160,130) rectangle (183,166);
+  \path[paved] (100,166) rectangle (640,189);
+  \draw[amber,line width=0.5pt,dash pattern=on 3pt off 2pt] (100,177.5) -- (640,177.5);
+  \path[paved] (120,189) rectangle (143,215);
+  \path[paved] (597,189) rectangle (620,215);
+  \path[paved] (355,12) rectangle (365,100);
+  \path[paved] (250,92) rectangle (365,100);
+  \path[runway] (70,215) -- (690,215) -- (684,226) -- (692,237) -- (685,249) -- (690,260)
+    -- (70,260) -- (76,249) -- (68,237) -- (75,226) -- cycle;
+  \draw[white,line width=0.8pt,dash pattern=on 8pt off 6pt] (80,237.5) -- (682,237.5);
+  \draw[white,line width=0.4pt] (78,217) -- (682,217) (78,258) -- (682,258);}
+
+\newcommand{\SiteTerminalOutline}{%
+  \begin{scope}[shift={(180,20)}]
+    \path[zlsin] (0,0) rectangle (40,12);
+    \path[zkb] (0,12) rectangle (40,20);
+    \path[zasin] (0,20) rectangle (40,30);
+    \path[tech] (40,0) rectangle (60,30);
+    \draw[wall] (0,0) rectangle (60,30);
+  \end{scope}}
+
+\newcommand{\SitePerimeter}{%
+  \draw[fencefar] (0,50) -- (180,50);
+  \draw[fencefar] (540,50) -- (700,50);
+  \draw[fence] (240,50) -- (355,50);
+  \draw[fence] (369,50) -- (540,50);
+  \draw[lineL1] (240,40) -- (540,40);
+  \draw[lineL3] (250,80) -- (540,80);
+  \draw[fencefar,draw=fire!70] (540,80) -- (700,80);
+  \draw[navy,line width=1.6pt] (355,50) -- (365,50);
+  \draw[navy,line width=1pt] (366,50) -- (369,50);}
+
+\newcommand{\SiteThermalCoverage}{%
+  \begin{scope}
+    \clip (230,32) rectangle (550,88);
+    \fov{244}{54}{0}{31}{300}{fovthermal}
+    \fov{536}{54}{180}{31}{300}{fovthermal}
+  \end{scope}}
+
+\newcommand{\SiteGateCoverage}{%
+  \fov{368}{62}{90}{40}{45}{fovvis}
+  \fov{370}{54}{0}{60}{170}{fovptz}}
+
+\newcommand{\SiteGateDevices}{%
+  \node[camdot] at (368,62) {};
+  \node[ptzdot] at (370,54) {};
+  \node[cabinet] at (376,57) {};}
+
+\newcommand{\SiteDevices}{%
+  \node[camdot] at (244,54) {};
+  \node[camdot] at (536,54) {};
+  \node[cabinet] at (524,60) {};
+  \node[cabinet] at (232,33) {};}
+
+\newcommand{\kddoor}[2]{\node[rectangle,fill=teal,inner sep=0pt,minimum size=3pt] at (#1,#2) {};}
+
+\newcommand{\TerminalDetail}{%
+  \path[paved] (-4,-8) rectangle (64,0);
+  \path[zop] (-4,30) rectangle (64,38);
+  \path[paved] (-4,30) rectangle (64,38);
+  \path[zlsin] (0,0) rectangle (40,12);
+  \path[zkb] (0,12) rectangle (40,20);
+  \path[zasin] (0,20) rectangle (40,30);
+  \path[tech] (40,0) rectangle (60,30);
+  \path[fill=navy!12] (44,0) rectangle (60,10);
+  \path[fill=navy!12] (50,10) rectangle (60,18);
+  \draw[partition] (0,12) -- (4,12) (12,12) -- (40,12);
+  \draw[partition] (0,20) -- (23,20) (25,20) -- (40,20);
+  \draw[partition] (40,0) -- (40,24) (40,25.2) -- (40,30);
+  \draw[partition] (44,0) -- (44,7) (44,8) -- (44,10);
+  \draw[partition] (40,10) -- (41,10) (43,10) -- (60,10);
+  \draw[partition] (50,10) -- (50,14) (50,15) -- (50,24) (50,25) -- (50,30);
+  \draw[partition] (50,18) -- (60,18);
+  \draw[wall] (0,0) -- (8,0) (12,0) -- (26,0) (30,0) -- (41,0) (43,0) -- (60,0)
+    -- (60,30) -- (10,30) (6,30) -- (0,30) -- cycle;
+  \draw[navy,line width=0.4pt] (23,20) -- (23,25) (25,20) -- (25,25);
+  \draw[fence] (60,30) -- (64,30);
+  \draw[fencefar] (0,30) -- (-4,30);
+  \draw[muted,line width=0.4pt,dash pattern=on 2pt off 1pt,rounded corners=1pt] (12,14.2) rectangle (22,16.8);
+  \node[font=\sffamily\scriptsize,text=muted] at (17,15.5) {linia CT};
+  \draw[muted,line width=0.4pt,dash pattern=on 2pt off 1pt,rounded corners=1pt] (27,13) rectangle (30,15.5);
+  \node[font=\sffamily\scriptsize,text=muted] at (28.5,14.25) {ETD};
+  \draw[muted,line width=0.4pt,dash pattern=on 1pt off 1pt] (26,12.6) rectangle (38.5,19.4);
+  \node[font=\sffamily\scriptsize,text=muted,align=center] at (34.5,17) {kontrola\\dodatkowa};
+  \path[fill=amber,fill opacity=0.25] (36.5,22.4) rectangle (40,27);
+  \draw[amber,line width=0.5pt,dash pattern=on 2pt off 1pt] (36.5,22.4) rectangle (40,27);
+  \draw[lineL3] (22.6,23.6) -- (25.4,23.6);
+  \draw[fire,line width=0.8pt,-{Stealth[length=4pt]}] (26,24.8) -- (26,22.4);
+  \kddoor{42}{0}
+  \kddoor{42}{10}
+  \kddoor{44}{7.5}
+  \kddoor{50}{14.5}
+  \kddoor{50}{24.5}
+  \kddoor{40}{24.6}
+  \node[cabinet] at (57.5,16) {};
+  \path[fill=navy!45] (52,6) rectangle (58,7.2);}
+
+\newcommand{\TerminalCameras}{%
+  \path[obsarea] (18.5,20.3) rectangle (29.5,28.2);
+  \foreach \x/\y/\h in {0.5/0.5/38, 39.5/0.5/142, 24/29.6/270, 21.6/20.6/80,
+      18.8/25.2/0, 29.2/25.2/180, 33.5/21/32, 0.5/29.5/-35} {
+    \fov{\x}{\y}{\h}{55}{2.8}{camwedge}
+    \node[camdot] at (\x,\y) {};}}

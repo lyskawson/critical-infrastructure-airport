@@ -1,8 +1,57 @@
 \section{Architektura i integracja}
-CCTV i KD korzystają z jednej gwiazdy Ethernet w N0. SW-0 zasila kamery oraz pięć kontrolerów przez PoE. SOC-0 uruchamia AXIS Camera Station Pro z Secure Entry, zapisuje obraz na NAS-0 i pokazuje zdarzenia KD oraz alarm analityki C08. Przy alarmie drzwi operator otrzymuje identyfikator przejścia i przypisany obraz: D01 -- C01, D02 -- C04, D03/D04 -- przegląd C05, G01 -- C08. Kadr C05 nie zastępuje obrazu wnętrza SOC/IT.\cite{S-VMS}
+\lead{System ma pięć warstw: czujniki, analitykę w kamerze, sieć, VMS z zapisem w SOC oraz role ludzi. Analityka tworzy zdarzenia, a decyzje podejmują ludzie. SSP, SSWiN i swobodne wyjście działają bez analityki i bez sieci CCTV.}
 
-Integracja SSWiN z obsługą jest lokalna: KP-I01 w SOC pokazuje nazwę linii i strefę, a dyżurny wybiera właściwy kadr. Nie zakłada się nieudokumentowanej natywnej integracji protokołu VERSA z VMS. ETHM-1 Plus służy serwisowi lokalnemu DLOADX w wydzielonym VLAN; nie jest bramką SSP. Alarmy KD i CCTV są w aplikacji, alarmy SSWiN na manipulatorze, a SSP na panelu CSP w tym samym pomieszczeniu. To jawny zakres integracji funkcjonalnej małego obiektu.
+\fig{fig-architecture}{1}{Warstwy systemu: od czujnika do roli, która podejmuje decyzję. Dolny pas pokazuje systemy z własnym interfejsem, których SOC nie steruje.}
 
-CSP-0 ma własne zasilanie i pętlę. OUT1/OUT8 przekazują przez dwa nadzorowane przewody tylko wspólny pożar i uszkodzenie do Z11/Z12 SSWiN. Szczegółowy adres pożaru dyżurny czyta bezpośrednio z CSP. Nie zaprojektowano kasowania, blokowania ani konfigurowania SSP z komputera SOC. Nie dodano bramki IP o niepotwierdzonym interfejsie.
+\subsection*{Warstwy}
+\begin{itemize}[noitemsep]
+  \item \textbf{Czujniki.} Dwanaście kamer: KT01 do KT08 w terminalu, KP01 i KP02 z termowizją na końcach OG1, KP03 przy B1 i PTZ1. Czytniki KD przy drzwiach terminalu i obu stronach B1 dobiera rozdział 4.
+  \item \textbf{Analityka w kamerze.} Object Analytics (S1, S2, S5) i Perimeter Defender (S4) działają na procesorze kamery. Do sieci trafiają metadane i zdarzenia, a nie obraz do analizy na serwerze.\cite{S-AOA,S-PD} PTZ1 przejmuje obiekt wskazany przez KP01.\cite{S-PDPTZ} Kontroler KD sam decyduje o otwarciu drzwi, także bez łączności z SOC.\cite{S-KD}
+  \item \textbf{Sieć.} Rdzeń N0 w pomieszczeniu IT, gwiazda Ethernet w terminalu i światłowód SM do szaf polowych SP1 i SP2. Ruch CCTV, KD i zarządzania jest rozdzielony na VLAN (rozdział 7).
+  \item \textbf{VMS i zapis.} AXIS Camera Station Pro z Secure Entry łączy obraz, zdarzenia analityki i zdarzenia KD na jednej mapie. Nagrania ciągłe i klipy zdarzeń trafiają na NAS. Smart search 2 przeszukuje nagrania na potrzeby S3.\cite{S-VMS,S-SS2}
+  \item \textbf{Role.} Operator SOC, patrol ochrony, służba operacyjna lotniska i operator kontroli bagażu mają osobne zadania. Żadna z tych ról nie wykonuje zadań pozostałych.
+\end{itemize}
 
-Wszystkie informacje odnoszą się do jednoznacznych ID. Rejestr zawiera \DeviceCount{} urządzeń lub zespołów, wraz z dyskami, kartami i bateriami, i \ConnectionCount{} połączeń. Akcesoria mechaniczne bez własnego przewodu pozostają składnikami przejść. Fabryczne połączenia wewnętrzne są oznaczone osobno od kabla kupowanego na metry. Źródłem modelu jest wyłącznie \texttt{data/design.json}; eksport do tekstu nie stanowi drugiego projektu.
+\subsection*{Role}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}P{3.1cm}YY@{}}
+\toprule
+Rola & Co otrzymuje & O czym decyduje \\
+\midrule
+Operator SOC & zdarzenia, obraz na żywo, klipy, mapę, stan urządzeń & czy zdarzenie jest prawdziwe, wysłanie patrolu, powiadomienie innych ról \\
+Patrol ochrony & polecenie przez radio, opis i obraz od operatora & działania na miejscu, raport do SOC \\
+Służba operacyjna & raport SOC o obiekcie w Z-AS lub Z-OP & ograniczenie lub wstrzymanie ruchu na płycie i drodze kołowania \\
+Operator bagażu & obraz ze skanera na stanowisku CT & decyzja o bagażu i kontroli dodatkowej w PK1 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+Alarm kamery nie jest decyzją o ruchu lotniczym. Operator SOC przekazuje służbie operacyjnej informację z obrazem, a ona sama decyduje o ruchu w Z-OP.
+
+\subsection*{Macierz zdarzeń}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}YP{3.2cm}P{1.8cm}P{4.4cm}@{}}
+\toprule
+Zdarzenie & Źródło & Priorytet & Kto reaguje \\
+\midrule
+S1 pozostawanie przy DT1 ponad 120 s & KT07, Object Analytics & średni & SOC, w razie potrzeby patrol \\
+S2 ruch z Z-AS w stronę PK1 & KT03, linia S2 & wysoki & SOC, informacja do personelu PK1 \\
+S3 wyszukiwanie osoby & operator, Smart search 2 & brak alarmu & SOC na nagraniach \\
+S4 obiekt przekracza L1 & KP01, KP02 & niski & SOC obserwuje \\
+S4 przekroczenie L2 (OG1) & KP01, KP02, PTZ1 & wysoki & SOC, patrol, służba operacyjna \\
+S5 przejście przez L3 przy B1 bez ważnego przejazdu & KP03, zdarzenie KD z B1 & wysoki & SOC, patrol \\
+Drzwi wyważone lub otwarte za długo & kontroler KD & wysoki lub średni & SOC, patrol \\
+Utrata obrazu, sabotaż kamery, awaria łącza SP1 lub SP2 & kamera, przełącznik, VMS & średni & SOC, serwis \\
+\bottomrule
+\end{tabularx}
+\end{center}
+Każde zdarzenie w VMS ma identyfikator urządzenia, czas i powiązany obraz. Analityka nie otwiera i nie blokuje drzwi ani B1. Zdarzenie S5 łączy obraz KP03 ze zdarzeniem karty na B1, więc operator widzi, czy przejazd był uprawniony.
+
+\subsection*{Systemy z własnym interfejsem}
+\begin{itemize}[noitemsep]
+  \item \textbf{SSP.} Centrala CSP ma własne zasilanie i pętlę dozorową. Do SSWiN przekazuje dwiema liniami nadzorowanymi tylko wspólny sygnał pożaru i uszkodzenia. Dyżurny czyta adres pożaru z panelu CSP w SOC. Komputer SOC nie kasuje, nie blokuje i nie konfiguruje SSP.\cite{S-FIRE}
+  \item \textbf{SSWiN.} Alarmy po godzinach pracy pokazuje manipulator w SOC z nazwą linii i strefą. Dyżurny sam wybiera kadr w VMS. Projekt nie zakłada integracji SSWiN z VMS.\cite{S-SSWIN}
+  \item \textbf{Swobodne wyjście.} Drzwi na drogach ewakuacyjnych otwierają się mechanicznie od wewnątrz. Awaria sieci, VMS albo analityki nie zamyka żadnej drogi wyjścia (rozdział 5).
+  \item \textbf{Kontrola bagażu.} Operator bagażu pracuje na stanowisku CT z interfejsem producenta skanera. Projekt nie zakłada API między skanerem a VMS. SOC widzi PK1 w obrazie kamer, a o zdarzeniu w kontroli dowiaduje się telefonicznie lub przez radio. Brak integracji nie odbiera operatorowi lokalnego interfejsu (część III).
+\end{itemize}

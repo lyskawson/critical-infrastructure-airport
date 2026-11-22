@@ -1,0 +1,48 @@
+\documentclass[tikz,border=1mm]{standalone}
+\input{style}
+\tikzset{
+  stage/.style={draw=navy!40,fill=white,rounded corners=2pt,minimum width=2.25cm,minimum height=1.25cm,
+    align=center,inner sep=3pt,font=\sffamily\scriptsize,text width=2.05cm},
+  stagehead/.style={font=\sffamily\scriptsize\bfseries,text=navy},
+  risk/.style={font=\sffamily\scriptsize,text=fire!85!black,align=center,text width=2.15cm},
+  pipe/.style={draw=navy!70,line width=0.9pt,-{Stealth[length=4pt]}},
+}
+\begin{document}
+\begin{tikzpicture}
+  \foreach \i/\head/\body in {
+      1/Obraz/{KT, KP\\termowizja lub światło widzialne},
+      2/Detekcja/{człowiek, pojazd\\DLPU kamery},
+      3/Śledzenie/{tor obiektu\\w jednej kamerze},
+      4/Reguła/{strefa, linia,\\kierunek, czas},
+      5/Zdarzenie/{metadane,\\znacznik nagrania},
+      6/VMS/{priorytet, mapa,\\PTZ, klip},
+      7/Operator SOC/{ocena obrazu\\i reakcja}} {
+    \node[stage] (s\i) at ({(\i-1)*2.55},0) {{\color{navy}\bfseries\head}\\[1pt]{\color{muted}\body}};
+  }
+  \foreach \i [evaluate=\i as \j using int(\i+1)] in {1,...,6} {\draw[pipe] (s\i) -- (s\j);}
+
+  \begin{scope}[on background layer]
+    \path[fill=teal!10,rounded corners=4pt] ($(s1.north west)+(-0.15,0.55)$) rectangle ($(s5.south east)+(0.15,-0.15)$);
+    \path[fill=amber!12,rounded corners=4pt] ($(s6.north west)+(-0.15,0.55)$) rectangle ($(s7.south east)+(0.15,-0.15)$);
+  \end{scope}
+  \node[stagehead,text=teal!80!black,anchor=north west] at ($(s1.north west)+(-0.05,0.5)$) {W kamerze: brak serwera analityki};
+  \node[stagehead,text=amber!80!black,anchor=north west] at ($(s6.north west)+(-0.05,0.5)$) {SOC};
+
+  \foreach \i/\txt in {
+      1/{noc, mgła,\\oślepienie},
+      2/{mały obraz celu,\\zwierzę, cień},
+      3/{zasłonięcie\\gubi tor},
+      4/{źle ustawiona\\linia lub czas},
+      5/{utrata sieci\\opóźnia alarm},
+      6/{nadmiar zdarzeń\\niskiej wagi},
+      7/{zmęczenie,\\brak weryfikacji}} {
+    \node[risk,anchor=north] at ($(s\i.south)+(0,-0.42)$) {\txt};
+  }
+  \node[font=\sffamily\scriptsize\bfseries,text=fire!85!black,anchor=east] at ($(s1.south west)+(-0.1,-0.75)$) {Ryzyko};
+  \draw[fire!50,line width=0.4pt] ($(s1.south west)+(0,-0.3)$) -- ($(s7.south east)+(0,-0.3)$);
+
+  \draw[navy!60,line width=0.6pt,dashed,-{Stealth[length=4pt]}]
+    (s7.north) -- ++(0,0.95) -| node[pos=0.25,above,font=\sffamily\scriptsize,text=muted]
+    {potwierdzenie, korekta reguły po przeglądzie fałszywych zdarzeń} (s4.north);
+\end{tikzpicture}
+\end{document}

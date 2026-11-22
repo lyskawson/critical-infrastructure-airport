@@ -1,22 +1,75 @@
-\section{Zasilanie i ochrona obwodów}
-\subsection{Przypisanie odbiorników}
-UPS-0 zasila SW-0, NAS-0, SOC-0, MON-01/02 i FW-0. Kamery, kontrolery, czytniki i zaczepy są odbiorami pośrednimi PoE i nie są ponownie dodawane do poboru AC przełącznika. SSP i SSWiN mają własne zasilacze z bateriami; nie są odbiorami UPS IT. Karty SD i dyski są wewnątrz odpowiednich urządzeń, a ich poboru nie dolicza się ponownie do obwiedni tych urządzeń.
+\section{Zasilanie i bilans mocy}
+\lead{Terminal ma jeden centralny UPS dla rdzenia sieci, zapisu i SOC. Szafy polowe SP1 i SP2 mają własne obwody 230 V z rozdzielnicy przy N0 i lokalne UPS na szynie DIN. Rozdział podaje moc do pokrycia, a czas podtrzymania liczy rozdział 13.}
 
-\PowerTable
+\fig{fig-chart-power}{0.9}{Bilans mocy: obwiednia AC centralnego UPS oraz obciążenie zasilaczy 48 V w szafach polowych z zapasem 25\%.}
 
-Dla SW użyto największego opublikowanego poboru AC 478,6 W wraz z pełnymi 384 W PD. To konserwatywna obwiednia większa niż pobór oczekiwany dla rzeczywiście obsadzonych portów. Dla NAS przyjęto 100 W mocy wyjściowej zasilacza i własne minimum sprawności 0,8, stąd 125 W AC. Analogicznie zasilacz PC 90 W daje 112,5 W, a zasilacz zapory 12 W -- 15 W. Nie są to wyniki pomiarów ani opublikowane minimalne sprawności tych zasilaczy; są jawnie przyjętymi granicami projektowymi do próby obciążenia. Monitory uwzględniono po 65 W maksymalnie, nie według poboru typowego.\cite{S-SW,S-NAS,S-PC,S-MON,S-FW}
+\subsection*{Centralny UPS}
+Do centralnego UPS należą tylko urządzenia w pomieszczeniu IT i w SOC. Kamery terminalu, KP01, kontrolery KD z czytnikami i zaczepami są odbiorami PoE przełącznika N0, więc ich moc zawiera się w poborze AC przełącznika.
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}lrY@{}}
+\toprule
+Odbiornik & AC [W] & Podstawa \\
+\midrule
+N0, TP-Link SG3428MP & 478,6 & najgorszy pobór AC z pełnym budżetem PoE 384 W \\
+NAS, Synology DS923+ & 125,0 & zasilacz 100 W, przyjęta sprawność 0,8 \\
+Komputer SOC z serwerem i klientem VMS & 112,5 & zasilacz 90 W, przyjęta sprawność 0,8 \\
+Dwa monitory, Dell P2425H & 130,0 & 65 W maksymalnie na monitor \\
+Zapora, TP-Link ER605 & 15,0 & 7,94 W urządzenia, granica z zasilaczem \\
+\midrule
+Razem & 861,1 & z zapasem 25\%: 1076 W \\
+\bottomrule
+\end{tabularx}
+\end{center}
+Obwiednia N0 zakłada pełny budżet PoE 384 W, a suma mocy maksymalnych odbiorników PoE z rozdziału 7 wynosi 252 W. Różnica 132 W zostaje jako rezerwa na dodatkowe urządzenia PoE. Sprawności zasilaczy NAS, komputera i zapory są granicami przyjętymi w projekcie, a nie wartościami z kart. Monitory policzono mocą maksymalną, a nie typową.\cite{S-SW,S-NAS,S-PC,S-MON,S-FW}
 
-Suma wynosi \UPSLoad{} W, a po rezerwie 25\% \UPSDesign{} W. Nie dodano oddzielnego serwera AI. Centrala SSP ma granicę wejściową 0,3 A przy 230 V (69 VA) wraz z jej fabrycznym ładowaniem. Transformator SSWiN ma 40 VA. W bilansie granicy zasilania nie sumuje się ponownie ich prądów DC i ładowania.
+UPS dobrany w rozdziale 13 musi mieć moc wyjściową co najmniej 1076 W. Nie ma osobnego serwera analityki, bo analityka działa w kamerach (rozdział 6). SSP i SSWiN mają własne zasilacze z akumulatorami i nie są odbiorami UPS.\cite{S-FIRE,S-SSWIN}
 
-\subsection{Rozdział AC i PWP}
-Przyjęto istniejącą instalację TN-S 230 V z rozdzielnicą RSEC i ochroną przepięciową typu 2 na granicy opracowania. W modelu określono funkcjonalny interfejs istniejącego PWP przy E01, $(4{,}8,0,1{,}4)$ lokalnie; odrębny bezpotencjałowy styk NC jest doprowadzony do RSEC:PWP-NC. Jego obwód jest elektrycznie oddzielony od obwodów sieciowych.
+\subsection*{Szafy polowe}
+Przełącznik T8504-R pracuje z napięcia od 48 do 57 V DC. Zasila go zasilacz DIN PS56 240 W, a zasilacz pracuje z lokalnego UPS na szynie DIN.\cite{S-T8504} Karta przełącznika nie podaje poboru własnego, więc przyjęto 20 W. Odbiory PoE liczy się według przydziału portów z rozdziału 7.\cite{OWN}
+\begin{center}
+\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Pozycja & SP1 [W] & SP2 [W] \\
+\midrule
+Przydział PoE & 120,0 & 15,4 \\
+Przełącznik, wartość przyjęta & 20,0 & 20,0 \\
+\midrule
+Obciążenie zasilacza 48 V & 140,0 & 35,4 \\
+Z zapasem 25\% & 175,0 & 44,3 \\
+Pobór AC zasilacza, sprawność 0,9 & 155,6 & 39,3 \\
+Wyjście UPS DIN z zapasem 25\% & 194,4 & 49,2 \\
+\bottomrule
+\end{tabular}
+\end{center}
+Zasilacz SP1 jest obciążony w 73\% z zapasem, a SP2 w 18\%. Obie szafy mogą mieć ten sam UPS DIN o mocy wyjściowej co najmniej 195 W, co upraszcza serwis.
 
-Q0: dedykowany SSP przed PWP, B6 1P+N, NHXH-J 3 $\times$ 1,5 mm$^2$ na systemie E90. Q1: UPS po PWP, C16 1P+N, dedykowany RCD typu A 30 mA i YDY 3 $\times$ 2,5 mm$^2$. Q2: SSWiN po PWP, B6 1P+N i YDY 3 $\times$ 1,5 mm$^2$. Przyjęto obciążalność po korektach co najmniej 18 A dla przewodu UPS i 13 A dla pozostałych przewodów. Maksymalne wejście wybranego UPS wynosi 10 A; nie zasilamy z niego innych gniazd budynku. Dobór RCD wymaga sprawdzenia rzeczywistego prądu upływu całego zestawu i próby bez niepożądanych zadziałań.
+Napęd bramy B1 to przykładowo FAAC 741: 230 V, 500 W, 2,2 A, skrzydło do 900 kg.\cite{S-GATE} Napęd ma osobny wyłącznik w SP1 przed UPS DIN. Przy zaniku sieci brama pozostaje zamknięta, a patrol może ją otworzyć ręcznie po odblokowaniu napędu. Furtka z czytnikiem działa dalej, bo kontroler B1 jest zasilany z PoE.\cite{S-KD}
 
-Przy PWP odłącza się wejście AC UPS oraz fizycznie otwiera jego wejście RPO. Kabel PWP-RPO jest ujęty oddzielnie. Konfiguracja UPS: funkcja RPO, stan aktywny otwarty, opóźnienie 0 s; ustawienie fabryczne bez przypisanej funkcji byłoby niewystarczające. Dedykowany styk zatrzaskuje się, pozostaje aktywny ponad 250 ms i nie łączy się z napięciem sieciowym. Po RPO powrót wymaga odblokowania PWP i lokalnego uruchomienia UPS. Zwykły zanik sieci nie otwiera styku RPO, więc umożliwia podtrzymanie.\cite{S-UPS-GUIDE}
+\subsection*{Obwody 230 V do szaf}
+Każda szafa ma osobny obwód z rozdzielnicy przy N0, prowadzony trasą T3 (rozdział 9). Prąd obwodu z zapasem 25\% obejmuje też ładowanie UPS DIN:
+\[
+I_{\mathrm{SP1}} = 1{,}25\left(\frac{155{,}6}{230\cdot0{,}9}+2{,}2\right)=3{,}7\ \mathrm{A},\qquad
+I_{\mathrm{SP2}} = 1{,}25\cdot\frac{39{,}3}{230\cdot0{,}9}=0{,}24\ \mathrm{A}.
+\]
+Spadek napięcia dla obwodu jednofazowego, z $\gamma=56\ \mathrm{m}/(\Omega\,\mathrm{mm}^2)$ dla miedzi i $\cos\varphi=1$ jako przypadkiem niekorzystnym:
+\[
+\Delta U\% = \frac{200\,L\,I}{\gamma\,S\,U}.
+\]
+\begin{center}
+\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Obwód & $L$ [m] & $I$ [A] & $S$ [mm$^2$] & $\Delta U$ [\%] \\
+\midrule
+SP1 & 166,6 & 3,7 & 2,5 & 3,8 \\
+SP1, przyjęty & 166,6 & 3,7 & 4 & 2,4 \\
+SP2, przyjęty & 317,6 & 0,24 & 2,5 & 0,5 \\
+\bottomrule
+\end{tabular}
+\end{center}
+Przyjęto granicę 3\%.\cite{OWN} Dla SP1 przekrój 2,5 mm$^2$ jej nie spełnia, więc przyjęto kabel ziemny 3 $\times$ 4 mm$^2$. Dla SP2 wystarcza 3 $\times$ 2,5 mm$^2$. Prądu rozruchu napędu nie sprawdzano. Oba obwody mają wyłącznik różnicowoprądowy 30 mA, który zapewnia samoczynne wyłączenie przy długim przewodzie. Rzeczywiste impedancje pętli zwarcia podlegają pomiarom przed uruchomieniem.
 
-SSP z Q0 pozostaje zasilony; niezależnie dysponuje własną baterią. SSWiN po odłączeniu Q2 może nadal pracować z baterii w obwodach SELV. Nie ma zasilania zwrotnego instalacji ogólnej z UPS. Nie przewidziano agregatu ani SZR: skala i przyjęty cel podtrzymania nie uzasadniają ich dodania.
-
-Dla obwodów B6 sprawdzenie SWZ wymaga $Z_s\leq230/(5\cdot6)=7{,}67\ \Omega$, a dla C16 przy granicy $10I_n$ -- $Z_s\leq1{,}44\ \Omega$. To granice obliczeniowe dla przyjętych charakterystyk, nie zmierzone impedancje i nie pełne sprawdzenie selektywności. Przy pracy UPS z baterii ograniczony prąd zwarcia wymaga także próby ochrony jego obwodów wyjściowych; nie wolno wyprowadzać jej skuteczności z samego warunku wejściowego TN-S.
-
-Granica zasilania z rezerwą, sprawnością UPS co najmniej 0,9, dodatkiem 300 W na jego ładowanie i obwiedniami SSP/SSWiN wynosi około \BoundaryVA{} VA. Dodatek ładowania UPS jest własnym ograniczeniem do sprawdzenia; nie zastępuje maksymalnego wejścia katalogowego 10 A. Rzeczywiste impedancje, uziemienie, RCD i charakterystyki zabezpieczeń podlegają pomiarom przed uruchomieniem.
+\subsection*{Wyłącznik pożarowy i systemy z własnym zasilaniem}
+Przeciwpożarowy wyłącznik prądu odłącza wejście AC centralnego UPS i otwiera jego wejście RPO osobnym bezpotencjałowym stykiem. Wejście RPO trzeba włączyć w konfiguracji UPS, bo fabrycznie nie ma przypisanej funkcji. Zwykły zanik sieci nie otwiera RPO, więc UPS podtrzymuje zasilanie.\cite{S-UPS-GUIDE} Obwody SP1 i SP2 wychodzą z rozdzielnicy za wyłącznikiem pożarowym. UPS DIN w szafach zasilają tylko urządzenia w szafie i przy OG1, a nie instalację budynku. SSP pracuje z własnego obwodu przed wyłącznikiem pożarowym i z własnej baterii.\cite{S-FIRE}

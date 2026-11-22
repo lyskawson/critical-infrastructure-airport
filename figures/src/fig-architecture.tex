@@ -1,0 +1,75 @@
+\documentclass[tikz,border=1mm]{standalone}
+\input{style}
+\tikzset{
+  blk/.style={draw=navy!40,fill=white,rounded corners=2pt,minimum width=2.9cm,minimum height=1.0cm,
+    align=center,inner sep=2pt,text width=2.75cm,font=\sffamily\scriptsize,
+    execute at begin node={\hyphenpenalty=10000}},
+  indep/.style={blk,draw=muted!70,dash pattern=on 2pt off 1pt},
+  colhead/.style={font=\sffamily\scriptsize\bfseries,text=navy,anchor=south},
+  link/.style={draw=navy!70,line width=0.8pt,-{Stealth[length=4pt]}},
+  voice/.style={draw=muted,line width=0.6pt,dashed,-{Stealth[length=4pt]}},
+  linklabel/.style={font=\sffamily\scriptsize,text=muted,inner sep=1pt},
+}
+\newcommand{\blktext}[2]{{\color{navy}\bfseries #1}\\{\color{muted}#2}}
+\begin{document}
+\begin{tikzpicture}
+  \def\dx{3.45}
+  \def\dy{1.3}
+
+  \node[blk] (c1) at (0,0) {\blktext{KT01 do KT08}{terminal, obraz widzialny}};
+  \node[blk] (c2) at (0,-\dy) {\blktext{KP01, KP02}{termowizja wzdłuż OG1}};
+  \node[blk] (c3) at (0,-2*\dy) {\blktext{KP03, PTZ1}{B1, prowadzenie obiektu}};
+  \node[blk] (c4) at (0,-3*\dy) {\blktext{Czytniki KD}{drzwi terminalu, B1}};
+
+  \node[blk] (a1) at (\dx,0) {\blktext{Object Analytics}{S1, S2, S5}};
+  \node[blk] (a2) at (\dx,-\dy) {\blktext{Perimeter Defender}{S4, linie L1 i L2}};
+  \node[blk] (a3) at (\dx,-2*\dy) {\blktext{PTZ Autotracking}{PTZ1 przejmuje obiekt}};
+  \node[blk] (a4) at (\dx,-3*\dy) {\blktext{Kontroler KD}{decyzja lokalna, bez SOC}};
+
+  \node[blk,minimum height={3*\dy cm+1.0cm}] (n0) at (2*\dx,-1.5*\dy)
+    {\blktext{N0 w IT}{gwiazda Ethernet\\w terminalu\\[3pt]światłowód SM\\do SP1 i SP2\\[3pt]osobne VLAN\\CCTV, KD,\\zarządzanie}};
+
+  \node[blk] (v1) at (3*\dx,0) {\blktext{Camera Station Pro}{Secure Entry, mapa, priorytet}};
+  \node[blk] (v2) at (3*\dx,-\dy) {\blktext{Smart search 2}{S3, tylko nagrania}};
+  \node[blk] (v3) at (3*\dx,-2*\dy) {\blktext{NAS}{zapis ciągły i klipy}};
+  \node[blk] (v4) at (3*\dx,-3*\dy) {\blktext{Klient VMS}{monitory w SOC}};
+
+  \node[blk,fill=amber!12] (r1) at (4*\dx,0) {\blktext{Operator SOC}{ocena obrazu, wybór reakcji}};
+  \node[blk] (r2) at (4*\dx,-\dy) {\blktext{Patrol ochrony}{reakcja na miejscu}};
+  \node[blk] (r3) at (4*\dx,-2*\dy) {\blktext{Służba operacyjna}{decyzja o ruchu w Z-OP}};
+
+  \begin{scope}[on background layer]
+    \path[fill=teal!10,rounded corners=4pt] ($(a1.north west)+(-0.12,0.12)$) rectangle ($(a3.south east)+(0.12,-0.12)$);
+    \path[fill=amber!10,rounded corners=4pt] ($(v1.north west)+(-0.12,0.12)$) rectangle ($(v4.south east)+(0.12,-0.12)$);
+  \end{scope}
+
+  \node[colhead] at ($(c1.north)+(0,0.18)$) {Czujniki};
+  \node[colhead,text=teal!80!black] at ($(a1.north)+(0,0.18)$) {Analityka w kamerze};
+  \node[colhead] at ($(n0.north)+(0,0.18)$) {Sieć};
+  \node[colhead,text=amber!80!black] at ($(v1.north)+(0,0.18)$) {SOC: VMS i zapis};
+  \node[colhead] at ($(r1.north)+(0,0.18)$) {Role};
+
+  \foreach \i in {1,...,4} {
+    \draw[link] (c\i) -- (a\i);
+    \draw[link] (a\i.east) -- (a\i.east -| n0.west);
+    \draw[link] (n0.east |- v\i.west) -- (v\i.west);
+  }
+  \draw[link] (v1) -- (r1);
+  \draw[link] (r1) -- node[linklabel,right] {radio} (r2);
+  \draw[link] (r2) -- node[linklabel,right] {raport} (r3);
+
+  \def\by{-5.75}
+  \node[indep] (i1) at (0,\by) {\blktext{SSP, centrala CSP}{własne zasilanie, panel w SOC}};
+  \node[indep] (i2) at (\dx,\by) {\blktext{SSWiN}{manipulator w SOC}};
+  \node[indep] (i3) at (2*\dx,\by) {\blktext{Swobodne wyjście}{mechaniczne, bez sieci}};
+  \node[indep] (i4) at (3*\dx,\by) {\blktext{Stanowisko CT}{interfejs skanera, część III}};
+  \node[blk] (r4) at (4*\dx,\by) {\blktext{Operator bagażu}{decyzja w PK1}};
+  \draw[link] (i1.south) -- ++(0,-0.3) -| node[linklabel,pos=0.25,below] {pożar, uszkodzenie: dwie linie nadzorowane} (i2.south);
+  \draw[link] (i4) -- (r4);
+  \draw[voice] (r4.east) -- ++(0.35,0) |- node[linklabel,pos=0.25,right,align=left,xshift=2pt] {telefon,\\radio} (r1.east);
+
+  \node[colhead,anchor=south west,text=muted] at ($(i1.north west)+(0,0.12)$)
+    {Działa bez analityki i bez sieci CCTV. SOC tylko odczytuje stan, nie steruje.};
+  \draw[muted!50,line width=0.4pt] ($(i1.north west)+(-0.1,0.6)$) -- ($(r4.north east)+(0.1,0.6)$);
+\end{tikzpicture}
+\end{document}

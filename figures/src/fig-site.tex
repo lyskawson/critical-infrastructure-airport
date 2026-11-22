@@ -1,0 +1,58 @@
+\documentclass[tikz,border=1mm]{standalone}
+\input{style}
+\input{site}
+\begin{document}
+\begin{tikzpicture}[x=0.0243cm,y=0.0243cm]
+  \SiteZones
+  \SitePavement
+  \SiteTerminalOutline
+  \SitePerimeter
+  \SiteDevices
+
+  \node[text=white,font=\sffamily\scriptsize\bfseries] at (380,237.5) [fill=navy!62,inner sep=1.5pt]
+    {PAS (fragment, długość poza skalą)};
+  \node at (380,182) [font=\sffamily\scriptsize] {Droga kołowania};
+  \node[align=center] at (140,100) {Płyta\\postojowa};
+  \node at (95,30) [font=\sffamily\scriptsize,fill=muted!24,inner sep=1pt] {Parking (kontekst)};
+  \node[text=white,font=\sffamily\scriptsize] at (90,6) [fill=muted!38,inner sep=1pt] {Droga dojazdowa};
+  \node[font=\sffamily\scriptsize] at (310,104) {droga serwisowa};
+
+  \node[tag,anchor=north] at (210,19) {Terminal};
+  \node[zonelabel] at (430,25) {Z-LS};
+  \node[zonelabel] at (455,66) {Z-AS};
+  \node[zonelabel] at (470,130) {Z-OP};
+
+  \node[tag,anchor=west] at (543,40) {L1};
+  \node[tag,anchor=west,text=fire,fill=white] at (545,50) {L2};
+  \node[tag,anchor=west,text=fire,fill=white] at (545,80) {L3};
+  \node[tag,fill=white,fill opacity=0.85,text opacity=1] at (300,58) {OG1 (300 m)};
+
+  \node[tag,anchor=south east] at (244,56) {KP01};
+  \node[tag,anchor=south west] at (536,56) {KP02};
+  \node[tag,anchor=east] at (521,60) {SP2};
+  \node[tag,anchor=north] at (232,31) {N0};
+  \draw[navy,line width=0.3pt] (362,52) -- (400,130);
+  \node[legendbox,anchor=south,align=left,font=\sffamily\scriptsize] at (400,130)
+    {\textbf{B1} brama służbowa\\z furtką, KP03, PTZ1, SP1};
+
+  \scalebar{560}{18}{100}{50}
+  \northarrow{680}{20}
+
+  \legendtable{0,-16}{%
+    \begin{tabular}{@{}cl@{\hspace{10pt}}cl@{\hspace{10pt}}cl@{}}
+      \symswatch{zlsin} & Z-LS landside &
+        \symline{fence} & OG1 ogrodzenie (opracowanie) &
+        \symdot{camdot} & kamera termowizyjna KP \\
+      \symswatch{zkb} & Z-KB kontrola &
+        \symline{fencefar} & granica poza opracowaniem &
+        \symdot{cabinet} & rdzeń N0 / szafa polowa SP \\
+      \symswatch{zasin} & Z-AS airside (zastrzeżona) &
+        \symline{lineL1} & L1 strefa ostrzegawcza &
+        \symline{navy,line width=1.6pt} & brama B1 \\
+      \symswatch{zop} & Z-OP strefa operacyjna &
+        \symline{lineL3} & L3 wejście do obszaru krytycznego & & \\
+    \end{tabular}\\[3pt]
+    {\color{muted}\scriptsize L2 to linia ogrodzenia OG1. L1, L2 i L3 są liniami analityki,
+     a nie oznakowaniem lotniskowym. B1, pokrycie czujników i terminal na kolejnych rysunkach.}}
+\end{tikzpicture}
+\end{document}

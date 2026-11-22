@@ -1,14 +1,46 @@
-\section{Obserwacja osoby podczas przejścia}
-Celem PATH1 jest uzyskanie kilku kierunków obserwacji osoby, nie skan biometryczny ani rekonstrukcja jej całej powierzchni. Drogę przyjęto w osi $x=20$ m od D01 na $y=0$ do $y=9$ m w R102. Otwarty pas ma 1,8 m szerokości i nie zawiera bramek obrotowych ani przesłon. Bezpośrednie wyjście prowadzi przez D01 lub E03; obserwacja nie wymusza postoju ani dodatkowego odcinka ewakuacji.
+\section{Obserwacja osoby na wyjściu z kontroli}
+\lead{Przejście PATH1 daje cztery kierunki obserwacji każdej osoby opuszczającej PK1. Obraz służy do oceny zdarzeń S2 i do wyszukiwania osoby w nagraniach (S3), a nie do jej identyfikacji biometrycznej.}
 
-Wymaganym ujęciem jest górna część osoby: barki, górny tułów i głowa w bezwzględnym zakresie wysokości 1,2--2,0 m. Nie przyjęto widoczności stóp ani całej sylwetki w tych czterech kadrach. Obwiednia osoby w rzucie ma 0,6 $\times$ 0,6 m; środek może odchylić się o $\pm0{,}6$ m od osi drogi, pozostając w wolnym pasie 1,8 m. Dla osób, których głowa leży niżej niż 1,2 m, nie deklaruje się równoważnego ujęcia. Brak takiego kadru nie blokuje dostępu uprawnionej osoby ani wyjścia.
+PATH1 prowadzi z PK1 do holu Z-AS w osi $x=24$ m (układ T). Ma 2 m szerokości i balustrady o długości 5 m, od $y=20$ do $y=25$. Nie ma bramek obrotowych ani przesłon, więc obserwacja nie zatrzymuje ruchu i nie wydłuża drogi wyjścia. Kamery KT03 do KT06 patrzą na osobę z przodu, z tyłu i z obu boków. Wymaganym ujęciem jest górna część ciała, od 1,2 do 2,0 m nad podłogą. Balustrady sięgają do 1,0 m i jej nie zasłaniają.
 
-\PathViewTable
+\fig{fig-path1}{1}{PATH1: pola widzenia KT03 do KT06 w rzucie oraz przekrój wzdłuż przejścia z kadrem KT03 i gęstością pikseli w trzech punktach.}
 
-C01 patrzy z północy na przód osoby idącej na północ, C02 z południa na tył, C03 z zachodu na lewy profil, C04 ze wschodu na prawy profil. Wszystkie cztery odcinki mają wspólną część $y=4{,}2$--5,5 m. Podane minima px/m obejmują także krańce odcinków, odchylenie środka, głębokość obwiedni oraz oba poziomy wysokości. Współrzędne obrazu są znormalizowane; każdy wynik mieści się w $\pm0{,}96$ i w granicach near/far.
+\subsection*{Wymagana gęstość pikseli}
+Norma IEC 62676-4:2025 opisuje poziom Characterize (250 px/m) jako obraz pozwalający rozróżnić osobę po typie sylwetki, chodzie i zachowaniu. Taki obraz wystarcza do oceny ruchu pod prąd i do wyszukiwania po wyglądzie. Poziomy Validate (500 px/m) i Scrutinize (1500 px/m) służą potwierdzaniu tożsamości, więc nie są celem PATH1. Przyjęto co najmniej 250 px/m na całej długości balustrad.\cite{S-PXD}
 
-Porównano przebieg prosty 9 m i załamany przez $(20,4)$, $(22,4)$, $(22,9)$, długości 11 m. Zakręt zmienia ustawienie ciała, ale bez dodatkowych kamer nie zapewnia tyłu i obu profili. Przesłony na zakręcie zasłaniałyby część kadru, a ruch boczny utrudniałby mijanie i przejazd wózka. Ponieważ cztery stałe kamery uzyskują wymagane kierunki na prostej, wybrano prosty przebieg.
+\subsection*{Obliczenie dla KT03}
+KT03 wisi na ścianie północnej holu Z-AS w punkcie $(24{,}0;\ 29{,}6)$, 3,0 m nad podłogą, i patrzy na południe wzdłuż PATH1. Przykładem jest kamera 1920 $\times$ 1080 z obiektywem o regulowanym kącie, ustawionym na HFOV 40$^\circ$.\cite{S-CAM} Gęstość pikseli w odległości poziomej $D$ od kamery, dla twarzy na wysokości 1,6 m ($\Delta h = 1{,}4$ m), wynosi
+\[
+R = \sqrt{D^2 + \Delta h^2},\qquad
+n = \frac{N_h}{2R\tan(\mathrm{HFOV}/2)} = \frac{1920}{2R\tan 20^\circ}.
+\]
 
-Kontrola geometrii używa prostokątnego kadru 3D, HFOV/VFOV, wysokości, pochylenia i granic promieniowych. Obliczono narożniki obwiedni na obu krańcach odcinka oraz w krokach do 0,1 m wewnątrz R102. Nie ma ścian ani szaf między tymi kamerami a osią przejścia. Skrzydło D02 i wyposażenie pozostają poza pasem $x=19{,}1$--20,9 m. W modelu zapisano także regały i szafę IT w innych pomieszczeniach, aby nie rysować kadrów przez ściany lub meble.
+\begin{center}
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Punkt na osi PATH1 & $D$ [m] & $R$ [m] & $n$ [px/m] \\
+\midrule
+koniec balustrad od strony holu, $y=25$ & 4,6 & 4,81 & 549 \\
+linia S2, $y=23{,}6$ & 6,0 & 6,16 & 428 \\
+wyjście z PK1, $y=20$ & 9,6 & 9,70 & 272 \\
+\bottomrule
+\end{tabular}
+\end{center}
 
-Inna osoba, niesiony bagaż lub zwrot głowy mogą zasłonić obraz; sam kształt drogi nie jest dowodem widoczności każdej strony. Przyjęty odstęp operacyjny 3 s odpowiada teoretycznie 1200 osobom/h, lecz do doboru przyjęto tylko 240 osób/h wobec zapotrzebowania 120 osób/h. To założenia przepustowości do próby, nie wyniki obserwacji ruchu. Próba obejmuje grupy, bagaż, osoby niższe, wózki i obu kierunki ruchu; niedostępny kadr nie blokuje wyjścia.
+Najmniejsza wartość 272 px/m przekracza wymagane 250 px/m. W najbliższym punkcie kadr ma 3,5 m szerokości, więc obejmuje całe przejście 2 m. Kadr 16:9 przy HFOV 40$^\circ$ ma VFOV 23,1$^\circ$. Górna część ciała w całym przejściu leży od 5,9$^\circ$ do 21,4$^\circ$ poniżej poziomu kamery, więc pochylenie 13,7$^\circ$ mieści ją w kadrze z zapasem. Stopy nie są wymagane.
+
+KT04 patrzy na PATH1 od strony PK1 i ma podobną geometrię. KT05 i KT06 stoją 4,2 m od bliższej balustrady na wysokości końca przejścia. Przy HFOV 45$^\circ$ widzą profil osoby od $y \approx 23{,}5$ do $y \approx 27$, z gęstością od 365 do 524 px/m. Ustawienia pozostałych kamer sprawdza się przy odbiorze (rozdział 17).
+
+\subsection*{Ograniczenia}
+Osoba idąca w grupie, niesiony bagaż albo zwrot głowy mogą zasłonić jeden lub dwa kierunki. Cztery kamery zmniejszają tę stratę, ale jej nie usuwają. Brak kadru nigdy nie blokuje wyjścia ani dostępu. Obliczenie zakłada model otworkowy bez dystorsji i nie zastępuje próby z ludźmi o różnym wzroście.
+
+\subsection*{Wyszukiwanie osoby (S3)}
+Object Analytics śledzi obiekt tylko w obrębie jednej kamery. Połączenie śladów z kilku kamer wykonuje operator przy użyciu Smart search 2 w AXIS Camera Station Pro, na nagraniach.\cite{S-AOA,S-SS2}
+\begin{enumerate}[noitemsep]
+  \item Operator zaznacza osobę w klipie, najczęściej z KT03 (widok z przodu).
+  \item Wyszukuje podobne obiekty w KT01 do KT08 w wybranym przedziale czasu, z filtrem klasy i koloru ubrania.
+  \item Ręcznie odrzuca błędne wyniki i układa trasę osoby na planie terminalu.
+  \item Eksportuje potwierdzone klipy według procedury dowodowej.
+\end{enumerate}
+Smart search 2 nie używa biometrii, więc dwie osoby w podobnym ubraniu dają podobne wyniki, a decyzja należy do operatora. Śledzenie osoby na żywo między kamerami wymagałoby dodatkowego oprogramowania i osobnej oceny skutków dla ochrony danych. Pozostaje wariantem poza projektem.\cite{S-SS2,L-GDPR}
