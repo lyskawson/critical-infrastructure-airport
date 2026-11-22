@@ -1,0 +1,52 @@
+\documentclass[tikz,border=1mm]{standalone}
+\input{style}
+\input{site}
+\begin{document}
+\begin{tikzpicture}[x=0.245cm,y=0.245cm]
+  \TerminalDetail
+  \TerminalCameras
+  \draw[flowbefore,rounded corners=6pt] (10,-7) -- (10,5) -- (8,8) -- (8,18) -- (21.5,18);
+  \draw[flowafter,rounded corners=6pt] (24,19.2) -- (24,27.4) -- (8,27.4) -- (8,36.5);
+
+  \node[zonelabel] at (20,3) {Hol ogólnodostępny (Z-LS)};
+  \node[zonelabel,anchor=west] at (0.6,19) {PK1 (Z-KB)};
+  \node[zonelabel] at (8.5,22.3) {Hol po kontroli\\(Z-AS)};
+  \node[zonelabel] at (52,3) {SOC};
+  \node[font=\sffamily\scriptsize,anchor=north] at (55,6) {stanowiska};
+  \node[font=\sffamily\scriptsize,align=center] at (55,14) {IT\\N0};
+  \node[font=\sffamily\scriptsize,align=center] at (55,24) {zaplecze\\techniczne};
+  \node[font=\sffamily\scriptsize,align=center,rotate=90] at (45,20) {korytarz techniczny};
+  \node[font=\sffamily\scriptsize,align=center] at (42,5) {wejście\\prac.};
+  \node[zonelabel] at (30,-5) {Plac przed terminalem};
+  \node[zonelabel] at (34,34) {Płyta postojowa (Z-OP)};
+  \node[font=\sffamily\scriptsize,anchor=west] at (61,31.5) {OG1};
+
+  \node[tag,anchor=north west] at (0.5,-0.3) {KT01};
+  \node[tag,anchor=north east] at (39.5,-0.3) {KT02};
+  \node[tag,anchor=south] at (24,29.6) [yshift=1pt] {KT03};
+  \node[tag,anchor=north east] at (21.6,20.6) {KT04};
+  \node[tag,anchor=east] at (18.8,25.2) {KT05};
+  \node[tag,anchor=west] at (29.2,25.2) {KT06};
+  \node[tag,anchor=north] at (33.5,21) {KT07};
+  \node[tag,anchor=south west] at (0.5,30.3) {KT08};
+  \node[tag,anchor=west,text=amber!80!black] at (40.5,27.5) {DT1};
+  \node[tag,anchor=west,text=fire] at (26.2,22.6) {S2};
+  \node[tag,text=amber!80!black] at (38.2,28) {S1};
+  \node[tag,anchor=north west,text=teal!80!black] at (18.6,28.1) [font=\sffamily\scriptsize\bfseries] {PATH1};
+
+  \scalebar{50}{-7}{10}{5}
+  \northarrow{62}{-6}
+
+  \legendtable{-4,-10}{%
+    \begin{tabular}{@{}cl@{\hspace{10pt}}cl@{\hspace{10pt}}cl@{}}
+      \symline{flowbefore} & ruch przed kontrolą &
+        \symdot{camdot}\,\tikz[baseline=-0.6ex]{\fov{0}{0}{0}{55}{8pt}{camwedge}} & kamera KT i kierunek obserwacji &
+        \symswatch{fill=amber,fill opacity=0.25,draw=amber} & S1: strefa czasu przy DT1 \\
+      \symline{flowafter} & ruch po kontroli &
+        \symswatch{obsarea} & obszar PATH1, kamery KT03 do KT06 &
+        \symline{lineL3} & S2: linia, ruch ku PK1 = zdarzenie \\
+      \symswatch{zkb} & punkt kontroli PK1 (wnętrze: część III) &
+        \symdot{rectangle,fill=teal,inner sep=0pt,minimum size=3pt} & przejście z KD & & \\
+    \end{tabular}}
+\end{tikzpicture}
+\end{document}

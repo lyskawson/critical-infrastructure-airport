@@ -1,0 +1,66 @@
+\documentclass[tikz,border=1mm]{standalone}
+\input{style}
+\tikzset{
+  seg/.style={draw=white,line width=0.6pt},
+  segtxt/.style={font=\sffamily\scriptsize\bfseries,text=white,align=center,inner sep=0pt},
+  margin/.style={fill=mist,draw=navy!50,line width=0.5pt,dash pattern=on 2pt off 1.5pt},
+  axislbl/.style={font=\sffamily\scriptsize,text=muted},
+  title/.style={font=\sffamily\scriptsize\bfseries,anchor=south west},
+}
+% #1 scale [cm per W], #2 max [W], #3 tick step [W], #4 axis y
+\newcommand{\wattaxis}[4]{%
+  \draw[navy!60,line width=0.4pt] (0,#4) -- (#1*#2,#4);
+  \pgfmathsetmacro{\nsteps}{int(#2/#3)}
+  \foreach \i in {0,...,\nsteps} {
+    \pgfmathtruncatemacro{\w}{\i*#3}
+    \draw[navy!60,line width=0.4pt] (#1*\w,#4) -- ++(0,-0.08);
+    \node[axislbl,anchor=north] at (#1*\w,#4-0.1) {\w};}
+}
+\begin{document}
+\begin{tikzpicture}
+  \def\sa{0.01}
+  \node[title] at (0,1.15) {a) centralny UPS, obwiednia AC [W]};
+  \foreach \a/\b/\c/\lbl in {0/478.6/navy/{N0\\478,6}, 478.6/603.6/teal/{NAS\\125},
+      603.6/716.1/amber/{PC SOC\\112,5}, 716.1/846.1/muted/{monitory\\130}} {
+    \fill[\c,seg] (\sa*\a,0) rectangle (\sa*\b,0.8);
+    \node[segtxt] at ({\sa*(\a+\b)/2},0.4) {\lbl};}
+  \fill[fire!75,seg] (\sa*846.1,0) rectangle (\sa*861.1,0.8);
+  \draw[margin] (\sa*861.1,0) rectangle (\sa*1076.4,0.8);
+  \node[font=\sffamily\scriptsize,text=navy,align=center] at ({\sa*(861.1+1076.4)/2},0.4) {zapas 25\%\\215,3};
+  \draw[navy!60,line width=0.3pt] (\sa*853.6,0.8) -- (\sa*853.6,1.0) -- (\sa*880,1.0);
+  \node[font=\sffamily\scriptsize,anchor=west,inner sep=1pt] at (\sa*880,1.0) {zapora 15};
+  \node[font=\sffamily\scriptsize\bfseries,anchor=west] at (\sa*1076.4+0.1,0.4) {1076};
+  \wattaxis{\sa}{1200}{200}{-0.1}
+
+  \begin{scope}[yshift=-3.3cm]
+    \def\sb{0.048}
+    \node[title] at (0,2.25) {b) szafy polowe, obciążenie zasilacza DIN 48 V [W]};
+    \fill[navy!6] (0,-0.1) rectangle (\sb*240,2.05);
+    \draw[fire!70,line width=0.8pt,dash pattern=on 3pt off 2pt] (\sb*240,-0.1) -- (\sb*240,2.05);
+    \node[font=\sffamily\scriptsize,text=fire!80!black,anchor=south east,inner sep=1.5pt] at (\sb*240,2.05) {DIN PS56, 240 W};
+
+    \node[font=\sffamily\scriptsize\bfseries,anchor=east] at (-0.1,1.45) {SP1};
+    \foreach \a/\b/\c/\lbl in {0/60/navy/PTZ1, 60/90/amber/{KD B1}, 90/120/teal/KP03,
+        120/140/muted/{przeł.}} {
+      \fill[\c,seg] (\sb*\a,1.1) rectangle (\sb*\b,1.8);
+      \node[segtxt] at ({\sb*(\a+\b)/2},1.45) {\lbl};}
+    \draw[margin] (\sb*140,1.1) rectangle (\sb*175,1.8);
+    \node[font=\sffamily\scriptsize\bfseries,anchor=west] at (\sb*175+0.1,1.45) {175};
+
+    \node[font=\sffamily\scriptsize\bfseries,anchor=east] at (-0.1,0.45) {SP2};
+    \fill[teal,seg] (0,0.1) rectangle (\sb*15.4,0.8);
+    \fill[muted,seg] (\sb*15.4,0.1) rectangle (\sb*35.4,0.8);
+    \draw[margin] (\sb*35.4,0.1) rectangle (\sb*44.3,0.8);
+    \node[segtxt] at ({\sb*15.4/2},0.45) {KP02};
+    \node[segtxt] at ({\sb*25.4},0.45) {przeł.};
+    \node[font=\sffamily\scriptsize\bfseries,anchor=west] at (\sb*44.3+0.1,0.45) {44};
+    \wattaxis{\sb}{250}{50}{-0.1}
+  \end{scope}
+
+  \legendtable{0,-4.05}{%
+    \begin{tabular}{@{}cl@{\hspace{10pt}}cl@{}}
+      \symswatch{fill=mist,draw=navy!50,dash pattern=on 2pt off 1.5pt} & zapas 25\% &
+      \symswatch{fill=navy!6} & wolna moc zasilacza \\
+    \end{tabular}}
+\end{tikzpicture}
+\end{document}

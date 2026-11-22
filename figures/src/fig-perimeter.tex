@@ -1,0 +1,100 @@
+\documentclass[tikz,border=1mm]{standalone}
+\input{style}
+\input{site}
+\tikzset{
+  barlabel/.style={anchor=east,font=\sffamily\scriptsize},
+  barnote/.style={anchor=west,font=\sffamily\scriptsize,text=muted},
+  pxid/.style={fill=fire!80},
+  pxrec/.style={fill=fire!45},
+  pxdet/.style={fill=fire!18},
+}
+% fence metre m maps to SITE x = 240 + m, drawn at 0.05 cm per metre
+\newcommand{\covbar}[4]{\path[#4] ({#2*0.05},{#1-0.16}) rectangle ({#3*0.05},{#1+0.16});}
+\begin{document}
+\begin{tikzpicture}
+  \begin{scope}[x=0.05cm,y=0.05cm,shift={(-240,-30)}]
+    \begin{scope}
+      \clip (240,30) rectangle (540,90);
+      \path[zls] (240,30) rectangle (540,50);
+      \path[zas] (240,50) rectangle (540,80);
+      \path[zop] (240,80) rectangle (540,90);
+      \path[paved] (355,30) rectangle (365,90);
+      \SiteThermalCoverage
+      \fov{368}{62}{90}{40}{26}{fovvis}
+    \end{scope}
+    \draw[lineL1] (240,40) -- (540,40);
+    \draw[fence] (240,50) -- (355,50);
+    \draw[fence] (369,50) -- (540,50);
+    \draw[navy,line width=1.6pt] (355,50) -- (365,50);
+    \draw[navy,line width=1pt] (366,50) -- (369,50);
+    \draw[lineL3] (250,80) -- (540,80);
+    \node[camdot] at (244,54) {};
+    \node[camdot] at (536,54) {};
+    \node[cabinet] at (524,60) {};
+    \SiteGateDevices
+    \draw[navy!40,line width=0.3pt] (240,30) rectangle (540,90);
+
+    \node[tag,anchor=north west] at (242,48.5) {KP01};
+    \node[tag,anchor=north east] at (538,48.5) {KP02};
+    \node[tag,anchor=south east] at (366,63) {KP03};
+    \node[tag,anchor=west] at (378,63) {PTZ1, SP1};
+    \draw[navy!60,line width=0.3pt] (378,63) -- (371,55);
+    \node[tag,anchor=east] at (521,60) {SP2};
+    \node[tag,anchor=north] at (360,49) {B1};
+    \node[font=\sffamily\scriptsize,text=amber!80!black,anchor=south west] at (440,40.5) {L1};
+    \node[font=\sffamily\scriptsize,anchor=south west] at (440,50.5) {L2 = OG1};
+    \node[font=\sffamily\scriptsize,text=fire,anchor=south west] at (440,80.5) {L3};
+    \node[zonelabel,anchor=west] at (270,35) {Z-LS};
+    \node[zonelabel,anchor=west] at (270,70) {Z-AS};
+    \node[zonelabel,anchor=west] at (270,85) {Z-OP};
+  \end{scope}
+
+  \path[fill=navy!7] ({115*0.05},-0.65) rectangle ({125*0.05},-3.55);
+  \node[font=\sffamily\scriptsize,text=muted,anchor=south] at ({120*0.05},-0.65) {B1};
+
+  \node[barlabel] at (-0.15,-1.0) {\textbf{KP01} termowizja};
+  \covbar{-1.0}{18}{74}{pxid}
+  \covbar{-1.0}{74}{144}{pxrec}
+  \covbar{-1.0}{144}{300}{pxdet}
+
+  \node[barlabel] at (-0.15,-1.55) {\textbf{KP02} termowizja};
+  \covbar{-1.55}{0}{156}{pxdet}
+  \covbar{-1.55}{156}{226}{pxrec}
+  \covbar{-1.55}{226}{282}{pxid}
+
+  \node[barlabel] at (-0.15,-2.1) {\textbf{PTZ1} po alarmie};
+  \path[fill=amber!25,draw=amber,line width=0.4pt,dash pattern=on 2pt off 1pt]
+    (0,-2.26) rectangle (15,-1.94);
+  \node[font=\sffamily\scriptsize,text=amber!50!black] at (7.5,-2.1) {prowadzenie obiektu na całym OG1};
+
+  \node[barlabel] at (-0.15,-2.65) {\textbf{KP03} przy B1};
+  \covbar{-2.65}{115}{125}{fill=teal}
+  \node[barnote] at ({126*0.05},-2.65) {przejazd przez B1 i linia L3};
+
+  \node[barlabel] at (-0.15,-3.2) {\textbf{radar} (wariant)};
+  \foreach \m [count=\k] in {0,55,...,275} {
+    \pgfmathsetmacro{\e}{min(\m+55,300)}
+    \ifodd\k \covbar{-3.2}{\m}{\e}{fill=muted!40} \else \covbar{-3.2}{\m}{\e}{fill=muted!22} \fi
+  }
+  \node[font=\sffamily\scriptsize,text=navy] at (7.5,-3.2) {D2210-VE: 6 szt. co 55 m};
+
+  \draw[navy,line width=0.4pt] (0,-3.6) -- (15,-3.6);
+  \foreach \m in {0,50,...,300} {
+    \draw[navy,line width=0.4pt] ({\m*0.05},-3.6) -- ++(0,-0.08);
+    \node[anchor=north,inner sep=1pt] at ({\m*0.05},-3.7) {\m};
+  }
+  \node[anchor=north east,text=muted] at (15,-3.98) {odległość wzdłuż OG1 od wschodniej ściany terminalu [m]};
+
+  \legendtable{0,-4.45}{%
+    \begin{tabular}{@{}cl@{\hspace{10pt}}cl@{\hspace{10pt}}cl@{}}
+      \symswatch{pxid} & identyfikacja, co najmniej 12 px &
+      \symswatch{pxrec} & rozpoznanie, co najmniej 6 px &
+      \symswatch{pxdet} & wykrycie, co najmniej 1,5 px \\
+      \symswatch{fovthermal} & pole widzenia KP01, KP02 (31\textdegree) &
+      \symswatch{fovvis} & pole widzenia KP03 &
+      \symswatch{fill=navy!7} & szerokość B1 \\
+    \end{tabular}}
+  \node[anchor=north west,text=muted,font=\sffamily\scriptsize] at (0,-5.25)
+    {Piksele na wymiarze krytycznym 0,75 m według DRI producenta. Odcinki 0 do 18 m i 282 do 300 m leżą poza polem widzenia bliższej kamery.};
+\end{tikzpicture}
+\end{document}

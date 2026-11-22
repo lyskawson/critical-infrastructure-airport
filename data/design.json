@@ -11642,6 +11642,94 @@
       "pinpoint": "Supervised inputs: Serial first connection, equal1kohm/2.2kohm/4.7kohm/10kohm; chosen1kohm at5DPS contacts",
       "access_date": "2026-10-24",
       "kind": "manufacturer"
+    },
+    {
+      "id": "S-AOA2",
+      "title": "AXIS Object Analytics, scenariusze i ustawienia",
+      "url": "https://help.axis.com/en-us/axis-object-analytics",
+      "pinpoint": "Scenarios: Time in area (time limit per object in include area), Line crossing with Change trigger direction, Tailgating detection, PPE monitoring BETA (humans without hard hats); note: time in area over 30 s not recommended as recording trigger",
+      "access_date": "2026-11-22",
+      "kind": "manufacturer"
+    },
+    {
+      "id": "S-SS2",
+      "title": "AXIS Camera Station Pro, Smart search 2",
+      "url": "https://help.axis.com/en-us/axis-camera-station-pro",
+      "pinpoint": "Smart search 2: search in recordings by object class, clothing colour and visual similarity; non-biometric; no live cross-camera tracking",
+      "access_date": "2026-11-22",
+      "kind": "manufacturer"
+    },
+    {
+      "id": "S-PD",
+      "title": "AXIS Perimeter Defender, dokumentacja",
+      "url": "https://help.axis.com/en-US/axis-perimeter-defender",
+      "pinpoint": "perimeter intrusion, zone crossing and loitering scenarios; calibration and detection distance per camera model",
+      "access_date": "2026-11-22",
+      "kind": "manufacturer"
+    },
+    {
+      "id": "S-PDPTZ",
+      "title": "AXIS Perimeter Defender PTZ Autotracking",
+      "url": "https://www.axis.com/products/axis-perimeter-defender-ptz-autotracking",
+      "pinpoint": "fixed camera alarm steers one paired PTZ to follow the object; pairing and placement constraints in product documentation",
+      "access_date": "2026-11-22",
+      "kind": "manufacturer"
+    },
+    {
+      "id": "S-Q1972",
+      "title": "AXIS Q1972-E Thermal Camera datasheet",
+      "url": "https://www.axis.com/dam/public/7c/6e/e4/datasheet-axis-q1972-e-thermal-camera-en-US-555471.pdf",
+      "pinpoint": "640x480 microbolometer, 8.3/30 fps; 10 mm HFOV 63 deg, 19 mm HFOV 31 deg; DRI human detect (1.5 px) 291 m with 10 mm, 559 m with 19 mm, recognize (6 px) 73/140 m; PoE class 3 typical 5.0 W max 12.95 W; AXIS Perimeter Defender supported",
+      "access_date": "2026-11-22",
+      "kind": "manufacturer"
+    },
+    {
+      "id": "S-Q6355",
+      "title": "AXIS Q6355-LE PTZ Camera datasheet",
+      "url": "https://www.axis.com/dam/public/fd/a5/0c/datasheet-axis-q6355-le-ptz-camera-en-US-555456.pdf",
+      "pinpoint": "PoE IEEE 802.3bt class 6, typical 13 W without IR, max 51 W; IR illumination, AXIS Object Analytics, 300 presets",
+      "access_date": "2026-11-22",
+      "kind": "manufacturer"
+    },
+    {
+      "id": "S-D2210",
+      "title": "AXIS D2210-VE Radar datasheet",
+      "url": "https://www.axis.com/dam/public/5d/97/08/datasheet-axis-d2210-ve-radar-en-US-480992.pdf",
+      "pinpoint": "area monitoring: human 5 to 60 m, vehicle 5 to 90 m at 5 m height and 15 deg tilt; 95 deg coverage; PoE IEEE 802.3at class 4, typical 5.88 W, max 8 W",
+      "access_date": "2026-11-22",
+      "kind": "manufacturer"
+    },
+    {
+      "id": "S-T8504",
+      "title": "AXIS T8504-R Industrial PoE Switch datasheet",
+      "url": "https://www.axis.com/dam/public/89/81/ca/datasheet-axis-t8504-r-industrial-poe-switch-en-US-308120.pdf",
+      "pinpoint": "4 PoE++ ports up to 60 W each, 2 RJ45 and 2 SFP data ports, 240 W PoE budget, 48 to 57 V DC input (optional DIN PS56 240 W), -40 to 75 C",
+      "access_date": "2026-11-22",
+      "kind": "manufacturer"
+    },
+    {
+      "id": "S-RWSL",
+      "title": "FAA, Runway Status Lights",
+      "url": "https://www.faa.gov/air_traffic/technology/rwsl/pet",
+      "pinpoint": "runway entrance and takeoff hold lights switched automatically from surface surveillance; separate airport system, not CCTV analytics",
+      "access_date": "2026-11-22",
+      "kind": "official"
+    },
+    {
+      "id": "S-PXD",
+      "title": "Axis, Pixel density based on IEC 62676-4:2025, white paper",
+      "url": "https://whitepapers.axis.com/en-us/pixel-density-based-on-iec-62676-4-2025",
+      "pinpoint": "IEC 62676-4:2025 operational requirements: Discern 80 px/m, Perceive 125 px/m, Characterize 250 px/m (person type, gait, behaviour), Validate 500 px/m, Scrutinize 1500 px/m (identity with high certainty); September 2026",
+      "access_date": "2026-11-22",
+      "kind": "manufacturer"
+    },
+    {
+      "id": "S-GATE",
+      "title": "FAAC 740/741 installation manual 732484 rev D",
+      "url": "https://faac.blob.core.windows.net/web/1/gate-automation/faac-sliding-gates/740-230v-sliding-gate-operator/740-741-732484-revd-en.pdf",
+      "pinpoint": "technical specifications: 741 at 230 V 50 Hz absorbed power 500 W, current 2.2 A, leaf max 900 kg, use frequency S3 40%, -20 to +55 C; manual release",
+      "access_date": "2026-11-22",
+      "kind": "manufacturer"
     }
   ],
   "bom_accessories": [

@@ -1,25 +1,43 @@
 \section{Trasy i połączenia instalacyjne}
-Każde połączenie ma dwa istniejące końce urządzenie:port, typ kabla, identyfikator trasy, pełną łamaną 3D w SITE, rzut, pion, zapas montażowy i długość zakupu. Dla odcinka o punktach $P_i=(x_i,y_i,z_i)$:
+\lead{Trasy dzielą się na koryta w terminalu i jeden rów kablowy wzdłuż OG1 po stronie airside. Rozdział podaje siedem tras głównych z długością do zakupu, a nie rejestr każdego przewodu.}
+
+\fig{fig-routes}{1}{Trasy główne: rów kablowy z N0 do SP1 i SP2 wzdłuż OG1 oraz koryta w terminalu z najdłuższym torem miedzianym T5.}
+
+\subsection*{Przebieg}
+Rów biegnie 4 m za OG1, po stronie Z-AS, od północnej ściany terminalu do SP2. Kabel nie jest więc dostępny z terenu ogólnodostępnego, a KP01, PTZ1 i KP02 stoją bezpośrednio przy nim. Rów ma 0,8 m głębokości i osobne rury dla światłowodów i kabla 230 V. Drogę serwisową przy B1 kabel przecina w przepuście. Studzienki stoją przy wyjściu z terminalu, po obu stronach przepustu i przy SP2. W terminalu przewody biegną w korytach pod stropem: jedno nad holem Z-LS, drugie nad holem Z-AS, oba od szafy N0 w pomieszczeniu IT.
+
+Przyjęte wysokości: port w szafie N0 1,5 m, koryto 3,0 m, port w szafie polowej 1,0 m, KP01, KP02 i KP03 na masztach 4 m, PTZ1 na maszcie 6 m. Zasilanie 230 V szaf polowych wychodzi z rozdzielnicy obok N0, więc T3 ma długości T1 i T2.\cite{OWN}
+
+\subsection*{Długości}
+Długość trasy to suma odcinków poziomych z planu $L_r$ i pionowych $L_p$. Długość zakupu zawiera zapas $f$ na łuki, zakończenia i zwoje serwisowe w szafach i studzienkach:
 \[
-L_r=\sum_i\sqrt{(x_{i+1}-x_i)^2+(y_{i+1}-y_i)^2},\quad
-L_p=\sum_i|z_{i+1}-z_i|,
+L = L_r + L_p,\qquad L_{\mathrm{zak}} = \left\lceil L\,(1+f) \right\rceil,
 \]
-\[
-L_{\mathrm{inst}}=L_r+L_p+L_z,\qquad
-L_{\mathrm{zak}}=\left\lceil L_{\mathrm{inst}}(1+f)\right\rceil.
-\]
-Dla kabla instalacyjnego $f=0{,}10$, a zapas końcowy wynosi zasadniczo 0,4--2 m, z większym zapasem na odcinku zewnętrznym; wartości są indywidualnie zapisane. Zaokrąglenie dotyczy każdego cięcia, więc suma zakupowa nie musi równać się zaokrąglonej długości całej grupy. Połączenia fabryczne oraz patchcordy ujęte w osprzęcie są oznaczone gwiazdką i nie są ponownie kupowane na metry.
+z $f=0{,}10$ w terminalu i $f=0{,}15$ na zewnątrz.
 
-\RouteTable
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}lYP{3.6cm}rrrr@{}}
+\toprule
+ID & Od, do & Medium & $L_r$ [m] & $L_p$ [m] & $f$ & $L_{\mathrm{zak}}$ [m] \\
+\midrule
+T1 & N0 do SP1 & światłowód SM & 159,5 & 7,1 & 0,15 & 192 \\
+T2 & N0 do SP2 & światłowód SM & 310,5 & 7,1 & 0,15 & 366 \\
+T3 & rozdzielnica do SP1 i SP2 & kabel 230 V & \multicolumn{3}{c}{jak T1 i T2} & 192, 366 \\
+T4 & N0 do KP01 & miedź kat.~6A zewn. & 24,5 & 10,1 & 0,15 & 40 \\
+T5 & N0 do KT01 & miedź kat.~6A & 72,5 & 2,0 & 0,10 & 82 \\
+T6 & SP1 do KP03, PTZ1, czytnika B1 & miedź kat.~6A zewn. & do 31,0 & do 8,6 & 0,15 & 21 do 40 \\
+T7 & SP2 do KP02 & miedź kat.~6A zewn. & 18,0 & 6,6 & 0,15 & 29 \\
+\bottomrule
+\end{tabularx}
+\end{center}
 
-R1/R2 są trasami wspólnymi tylko mechanicznie: koryto ma rozdzielone funkcje IP, KD i SSWiN. SSP ma odrębne podpory i przejścia R3/R4; energia 230 V biegnie osobnym korytem. R5--R8 tworzą zewnętrzne drzewo kanalizacji teletechnicznej długości \DuctLength{} m, z zakupem \DuctPurchase{} m rury i trzema studzienkami poza pasem ruchu i obrysem otwarcia bramy. Rury nie są kablami; nie sumuje się ich do długości kabla. Współrzędne tras głównych określają korytarze prowadzenia, a indywidualne łamane kabli uwzględniają wszystkie odejścia i piony. To łamane kabli są podstawą długości i rysunku połączenia. JC03 przesunięto z $(65,11)$ na $(62,11)$ na istniejącym przebiegu R5; obrys 0,4 $\times$ 0,4 m kończy się na $x=62{,}2$, poza pasem od $x=63$. Nie zmienia to długości zasilania G01. Odgałęzienie C08 prowadzi teraz po R8 od $(63,11)$ do $(63,20)$; zaktualizowano przewód IP, PE i ich przedmiar.
+T1 i T2 mają po ok. 170 m i 320 m, czyli tyle, ile przyjęto w bilansie łączy w rozdziale 7. T5 jest najdłuższym torem w terminalu. Jego część stała ma 74,5 m, mniej niż 90 m dopuszczone dla stałego toru kanału 100 m, więc pozostałe kamery terminalu także się mieszczą. T4 ma 34,6 m. Zapas zaokrągla się dla każdego cięcia osobno.
 
-Dane OSDP i zasilanie czytników stanowią osobne przewody i osobne połączenia. RS485 ma parę skręcaną 120 $\Omega$, zasilanie lokalne 2 $\times$ 0,75 mm$^2$, a długie zasilanie dwóch czytników G01 2 $\times$ 6 mm$^2$. Przy zacisku stosuje się krótkie przejście na przekrój dopuszczony przez producenta. Magistrala G01 prowadzi KD-05--czytnik IN--czytnik OUT, bez gwiazdy i długich odnóg; terminatory występują na obu końcach. Sygnał i wspólna masa nie są zastępowane ekranem.\cite{S-KD,S-READER}
-
-Dla PIR przewód 6 $\times$ 0,5 mm$^2$ obejmuje oddzielną parę zasilania AUX i parę linii 2EOL; wolna para jest izolowana. Linie kontaktronów i przekaźników mają własne przewody sygnałowe. SSP wykorzystuje adresowalny przewód 1 $\times$ 2 $\times$ 1,0 mm, gdzie 1,0 mm oznacza średnicę żyły: przekrój wynosi 0,785 mm$^2$. Nie wolno w obliczeniu używać dla niego przekroju 1 mm$^2$.
-
-Wybrano dedykowane zasilanie SSP kablem NHXH-J FE180/E90 z kompatybilnym systemem mocowań E90; pozostałe obwody 230 V mają odrębne YDY. Oznaczenie kabla nie dowodzi zachowania funkcji całego zespołu w pożarze. W rzeczywistej realizacji trzeba sprawdzić system podłoże--uchwyt--kabel i sposób uszczelnienia przejść. Nie deklaruje się przebadania ani certyfikacji instalacji.
-
-\subsection*{Rejestr połączeń i długości}
-Gwiazdka oznacza połączenie fabryczne albo długość już zawartą w pozycji patchcordów. Pełne współrzędne każdej łamanej podaje rejestr danych; tabela poniżej pozwala sprawdzić końce, podział długości i przedmiar.
-\ConnectionTable
+\subsection*{Zasady prowadzenia}
+\begin{itemize}[noitemsep]
+  \item Światłowody, kabel 230 V i miedź teletechniczna mają osobne rury w rowie i osobne przegrody w korytach.
+  \item Światłowód jest dielektryczny. Miedź wychodząca z budynku ma ogranicznik przepięć przy wejściu i przy urządzeniu (rozdział 7).
+  \item Przewody czytników B1 przechodzą pod OG1 w rurze. Czytnik po stronie Z-LS jest jedynym elementem KD dostępnym od strony publicznej. Kontroler stoi w SP1, a transmisję chroni OSDP Secure Channel.\cite{S-READER}
+  \item SSP ma własne trasy z części I i nie korzysta z koryt CCTV.
+\end{itemize}
